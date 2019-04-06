@@ -2,17 +2,15 @@ package it.polimi.ProgettoIngSW2019.model;
 
 public abstract class Square {
     private RoomColor roomColor;
-    private int positionX;
-    private int positionY;
+    private boolean isSpowingPoint;
     private InfoCardinal weastSide;
     private InfoCardinal eastSide;
     private InfoCardinal northSide;
     private InfoCardinal sudSide;
 
-    Square(RoomColor roomColor, int positionX, int positionY, InfoCardinal weastSide, InfoCardinal eastSide, InfoCardinal northSide, InfoCardinal sudSide){
+    Square(RoomColor roomColor, boolean isSpowingPoint, InfoCardinal weastSide, InfoCardinal eastSide, InfoCardinal northSide, InfoCardinal sudSide){
         this.roomColor = roomColor;
-        this.positionX = positionX;
-        this.positionY = positionY;
+        this.isSpowingPoint = isSpowingPoint;
         this.weastSide = weastSide;
         this.eastSide = eastSide;
         this.northSide = northSide;
@@ -24,11 +22,11 @@ public abstract class Square {
     }
 
     public int getPositionX(){
-        return this.positionX;
+
     }
 
     public int getPositionY(){
-        return this.positionY;
+
     }
 
     public InfoCardinal getSideInfo() {

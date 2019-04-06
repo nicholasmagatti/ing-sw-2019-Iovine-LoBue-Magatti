@@ -1,6 +1,5 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-//written by Nicholas Magatti
 public class User {
 
     private String username;

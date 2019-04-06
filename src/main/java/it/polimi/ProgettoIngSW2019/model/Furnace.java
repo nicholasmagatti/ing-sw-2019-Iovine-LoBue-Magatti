@@ -2,27 +2,10 @@ package it.polimi.ProgettoIngSW2019.model;
 
 import java.util.ArrayList;
 
-public class Furnace extends WeaponCard{
-    Furnace(String name, String description, ArrayList<AmmoType> ammoCost){
-        super(name, description, ammoCost);
-    }
-    @Override
-    public void activateBaseEffect() {
-        //TODO
-    }
+public class Furnace implements WeaponEffect{
 
     @Override
-    public void activateAdvancedEffect() {
-        //TODO
-    }
+    public void activateEffect () {
 
-    @Override
-    public void activateOptional1Effect() {
-        //TODO
-    }
-
-    @Override
-    public void activateOptional2Effect() {
-        //TODO
     }
 }

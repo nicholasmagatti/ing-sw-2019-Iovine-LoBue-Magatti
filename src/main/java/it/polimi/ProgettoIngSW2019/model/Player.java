@@ -1,9 +1,11 @@
 package it.polimi.ProgettoIngSW2019.model;
 
 import java.util.ArrayList;
+import it.polimi.ProgettoIngSW2019.utilities.Observable;
 
-//written by Nicholas Magatti
-public class Player {
+public class Player extends Observable <String>{
+
+    private int idPlayer;
     private GameTable gameTable;
     private String charaName;
     private ArrayList<HitPoint> damageLine;

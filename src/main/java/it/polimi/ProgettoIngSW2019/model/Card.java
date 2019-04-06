@@ -1,6 +1,9 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-public abstract class Card{
+import it.polimi.ProgettoIngSW2019.utilities.Observable;
+
+
+public abstract class Card extends Observable <String>{
     private int idCard;
     private DeckType cardType;
 }

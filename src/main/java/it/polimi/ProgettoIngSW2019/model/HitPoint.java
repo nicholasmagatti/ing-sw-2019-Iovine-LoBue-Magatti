@@ -1,6 +1,5 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-//written by Nichoals Magatti
 public class HitPoint {
 
     //character name

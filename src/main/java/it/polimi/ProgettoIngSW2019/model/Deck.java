@@ -7,7 +7,7 @@ public class Deck {
     private ArrayList <Card> cards;
     private CardFactory cardFactory;
 
-    public ArrayLista<Card> getCards(){
+    public ArrayList<Card> getCards(){
 
     }
 

@@ -1,9 +1,10 @@
 package it.polimi.ProgettoIngSW2019.model;
 
 import java.util.ArrayList;
+import it.polimi.ProgettoIngSW2019.utilities.Observable;
 
-//written by Nicholas Magatti
-public class TurnManager {
+
+public class TurnManager extends Observable <String>{
 
     private ArrayList<Player> players;
     private GameTable gameTable;

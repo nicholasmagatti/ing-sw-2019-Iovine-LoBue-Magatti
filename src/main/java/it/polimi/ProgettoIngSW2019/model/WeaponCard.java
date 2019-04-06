@@ -2,17 +2,24 @@ package it.polimi.ProgettoIngSW2019.model;
 
 import java.util.ArrayList;
 
-public abstract class WeaponCard extends Card{
+public class WeaponCard extends Card {
+
     private String name;
     private String description;
     private ArrayList<AmmoType> ammoCost;
     private ArrayList<Boolean> paramShootList;
+    private WeaponEffect weaponEffect;
     private Boolean loaded;
 
     WeaponCard(String name, String description, ArrayList<AmmoType> ammoCost){
         this.name  = name;
         this.description = description;
         this.ammoCost = ammoCost;
+    }
+
+    @Override
+    public void activateEffect () {
+
     }
 
     public Boolean isLoaded(){
@@ -35,10 +42,6 @@ public abstract class WeaponCard extends Card{
         return this.ammoCost;
     }
 
-    public void paramShootList(){
-        //TODO
-    }
-
     public void effect(ArrayList<Boolean> paramShootList){
         //TODO
     }
@@ -55,15 +58,23 @@ public abstract class WeaponCard extends Card{
     public void activateOptional2Effect() {
     }
 
-    public void dealDamage(Player player, int nrDamage){
+    public void dealDamage(int nrDamage, Player targetPlayer){
         //TODO
     }
 
-    public void markPlayer(Player player, int nrDamage){
+    public void markPlayer(int nrMark, Player targetPlayer){
         //TODO
     }
 
-    public void moveTargetPlayer(Player player, int nrSquare){
+    public void moveTargetPlayer(int nrSquare, Player player){
         //TODO
+    }
+
+    public void showWeaponCardInfo () {
+
+    }
+
+    public void setParamShoot () {
+
     }
 }
