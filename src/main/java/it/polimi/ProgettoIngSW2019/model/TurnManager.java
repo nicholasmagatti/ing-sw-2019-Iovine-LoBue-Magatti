@@ -18,7 +18,9 @@ public class TurnManager extends Observable <String>{
     //in other words: have all the skull tokens been removed
     //from the skull line?
     public boolean isSkullLineFull(){
-
+        //TODO: temporary variable to make Sonar work (it will be deteted)
+        boolean temporaryVariable = true;
+        return temporaryVariable;
     }
 
     public void changePlayer(){

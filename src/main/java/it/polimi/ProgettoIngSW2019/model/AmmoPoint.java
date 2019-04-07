@@ -1,13 +1,16 @@
 package it.polimi.ProgettoIngSW2019.model;
 
+import it.polimi.ProgettoIngSW2019.model.enums.InfoCardinal;
+import it.polimi.ProgettoIngSW2019.model.enums.RoomColor;
+
 import java.util.ArrayList;
 
 public class AmmoPoint extends Square {
 
     private ArrayList<AmmoCard> AmmoCards;
 
-    AmmoPoint(RoomColor roomColor, int positionX, int positionY, InfoCardinal weastSide, InfoCardinal eastSide, InfoCardinal northSide, InfoCardinal sudSide) {
-        super(roomColor, positionX, positionY, weastSide, eastSide, northSide, sudSide);
+    public AmmoPoint(RoomColor roomColor, InfoCardinal westSide, InfoCardinal eastSide, InfoCardinal northSide, InfoCardinal southSide) {
+        super(roomColor, false, westSide, eastSide, northSide, southSide);
     }
 
     public ArrayList<AmmoCard> getAmmoCards() {

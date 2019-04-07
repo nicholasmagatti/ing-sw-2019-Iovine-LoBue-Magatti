@@ -13,10 +13,10 @@ public class HitPoint {
     }
 
     public String getNameChara(){
-
+        return nameChara;
     }
 
     public int getNrOfHit(){
-
+        return nrOfHit;
     }
 }

@@ -1,6 +1,8 @@
 package it.polimi.ProgettoIngSW2019.model;
 
 import java.util.ArrayList;
+
+import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.utilities.Observable;
 
 public class GameTable extends Observable <String>{
@@ -11,7 +13,7 @@ public class GameTable extends Observable <String>{
     private ArrayList<PowerUp> powerUpDiscarded;
     private ArrayList<AmmoType> ammoDiscarded;
     private Square[][] map;
-    // dovrà essere Square[4][3]
+    // it'll be Square[4][3]
     
     private ArrayList<HitPoint> skullLine;
     private ArrayList<HitPoint> frenzyKillList;
@@ -42,7 +44,9 @@ public class GameTable extends Observable <String>{
 
 
     public ArrayList<ArrayList<Square>> getMap () {
-
+        //TODO: temporary variable to make Sonar work (it will be deteted)
+        ArrayList<ArrayList<Square>> tempVar = new ArrayList<ArrayList<Square>>();
+        return tempVar;
     }
 
 
@@ -52,6 +56,8 @@ public class GameTable extends Observable <String>{
 
 
     public int calculateFinalScore () {
-
+        //TODO: temporary variable to make Sonar work (it will be deteted)
+        int tempVar = 3;
+        return tempVar;
     }
 }

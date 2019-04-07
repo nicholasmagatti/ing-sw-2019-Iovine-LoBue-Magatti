@@ -15,6 +15,8 @@ public class User {
     }
 
     public Player getPlayer() {
-
+        //TODO: temporary variable to make Sonar work (it will be deteted)
+        Player temporaryVariable = new Player();
+        return temporaryVariable;
     }
 }

@@ -1,5 +1,8 @@
 package it.polimi.ProgettoIngSW2019.model;
 
+import it.polimi.ProgettoIngSW2019.model.enums.InfoCardinal;
+import it.polimi.ProgettoIngSW2019.model.enums.RoomColor;
+
 public abstract class Square {
     private RoomColor roomColor;
     private boolean isSpowingPoint;
@@ -21,15 +24,9 @@ public abstract class Square {
         return this.roomColor;
     }
 
-    public int getPositionX(){
-
-    }
-
-    public int getPositionY(){
-
-    }
-
     public InfoCardinal getSideInfo() {
-        //TODO
+        //TODO: temporary variable to make Sonar work (it will be deteted)
+        InfoCardinal temporaryVariable = InfoCardinal.DOOR;
+        return temporaryVariable;
     }
 }

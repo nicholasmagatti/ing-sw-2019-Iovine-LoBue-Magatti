@@ -1,5 +1,8 @@
 package it.polimi.ProgettoIngSW2019.model;
 
+import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.model.interfaces.WeaponEffect;
+
 import java.util.ArrayList;
 
 public class WeaponCard extends Card {
@@ -17,10 +20,6 @@ public class WeaponCard extends Card {
         this.ammoCost = ammoCost;
     }
 
-    @Override
-    public void activateEffect () {
-
-    }
 
     public Boolean isLoaded(){
         return this.loaded;
@@ -42,20 +41,12 @@ public class WeaponCard extends Card {
         return this.ammoCost;
     }
 
+    /*
+     * paramShootList represents all the possible effects: base, advanced, optional1, optional2.
+     * It is used to specify which ones are going to be used in the specific action
+     */
     public void effect(ArrayList<Boolean> paramShootList){
         //TODO
-    }
-
-    public void activateBaseEffect() {
-    }
-
-    public void activateAdvancedEffect() {
-    }
-
-    public void activateOptional1Effect() {
-    }
-
-    public void activateOptional2Effect() {
     }
 
     public void dealDamage(int nrDamage, Player targetPlayer){
