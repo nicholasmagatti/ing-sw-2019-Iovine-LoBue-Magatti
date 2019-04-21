@@ -15,8 +15,8 @@ public class GameTable extends Observable <String>{
     private Square[][] map;
     // it'll be Square[4][3]
     
-    private ArrayList<HitPoint> skullLine;
-    private ArrayList<HitPoint> frenzyKillList;
+    private ArrayList<KillToken> skullLine;
+    private ArrayList<KillToken> frenzyKillList;
 
 
     //set left/right board A/B are used to create all the possible 4 faces of the two boards

@@ -1,8 +1,10 @@
 package it.polimi.ProgettoIngSW2019.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.model.enums.Directions;
 import it.polimi.ProgettoIngSW2019.utilities.Observable;
 
 public class Player extends Observable <String>{
@@ -10,18 +12,20 @@ public class Player extends Observable <String>{
     private int idPlayer;
     private GameTable gameTable;
     private String charaName;
-    private ArrayList<HitPoint> damageLine;
+    private ArrayList<KillToken> damageLine;
     //every mark is represented by a string that
     //is the name of the palyer who marked this player
     private ArrayList<String> markLine;
-    //skulls = times this palyer has been killed
-    //necessary for counting scores after he/she get killed
-    //IMPORTANT: 'skulls' doesn't increment right after the player has
-    //been killed, but after the score update
-    private int skulls;
+    //NumberOfkulls = times this palyer has been killed
+    //necessary for counting scores after he/she gets killed
+    //IMPORTANT: 'numberOfSkulls' doesn't increment right after the player has
+    //been killed, but after the score updates
+    private int numberOfSkulls;
+    private boolean playerDown;
     private Square square;
     private int score;
-    private ArrayList<WeaponCard> weapons;
+    private ArrayList<WeaponCard> loadedWeapons;
+    private ArrayList<WeaponCard> unloadedWeapons;
     private ArrayList<PowerUp> powerUps;
     private boolean startingPlayer;
     private ArrayList<AmmoType> ammoBox;
@@ -29,21 +33,15 @@ public class Player extends Observable <String>{
 
 
     public GameTable getGameTable(){
-        //TODO: temporary variable to make Sonar work (it will be deteted)
-        GameTable temporaryVariable = new GameTable();
-        return temporaryVariable;
+        return gameTable;
     }
 
-    public int getSkullNr(){
-        //TODO: temporary variable to make Sonar work (it will be deteted)
-        int temporaryVariable = 1;
-        return temporaryVariable;
+    public int getNumberOfSkulls() {
+        return numberOfSkulls;
     }
 
-    public ArrayList<HitPoint> getDamageLine(){
-        //TODO: temporary variable to make Sonar work (it will be deteted)
-        ArrayList<HitPoint> temporaryVariable = new ArrayList<HitPoint>();
-        return temporaryVariable;
+    public List<KillToken> getDamageLine(){
+        return damageLine;
     }
 
     public void respawn(){
@@ -51,19 +49,27 @@ public class Player extends Observable <String>{
     }
 
     public boolean isStartingPlayer(){
-        //TODO: temporary variable to make Sonar work (it will be deteted)
-        boolean temporaryVariable = true;
-        return temporaryVariable;
+        return startingPlayer;
     }
 
-    public ArrayList<AmmoType> getAmmoBox() {
-        //TODO: temporary variable to make Sonar work (it will be deteted)
-        ArrayList<AmmoType> temporaryVariable = new ArrayList<AmmoType>();
-        return temporaryVariable;
+    public void dealDamage(int nrDamage, Player targetPlayer){
+
     }
 
-    public void move(){
+    public void markPlayer(int nrMark, Player targetPlayer){
 
+    }
+
+    public void move(List<Directions> movementDirections){
+
+    }
+
+    public boolean isPlayerDown(){
+        return playerDown;
+    }
+
+    public List<AmmoType> getAmmoBox() {
+        return ammoBox;
     }
 
     public void grabAmmo(){
@@ -79,6 +85,10 @@ public class Player extends Observable <String>{
     }
 
     public void reload(){
+
+    }
+
+    public void discardAmmo(List<AmmoType> ammoToSpend){
 
     }
 

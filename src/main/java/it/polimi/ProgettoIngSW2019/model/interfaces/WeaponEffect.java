@@ -1,5 +1,10 @@
 package it.polimi.ProgettoIngSW2019.model.interfaces;
 
+import it.polimi.ProgettoIngSW2019.model.Player;
+import it.polimi.ProgettoIngSW2019.model.enums.*;
+
+import java.util.List;
+
 public interface WeaponEffect {
-    public void activateEffect();
+    void activateEffectOn(Player targetPlayer, Player ownerPlayer, List<Directions> movementDirections);
 }
