@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
+import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.view.View;
 import it.polimi.ProgettoIngSW2019.model.Game;
 
