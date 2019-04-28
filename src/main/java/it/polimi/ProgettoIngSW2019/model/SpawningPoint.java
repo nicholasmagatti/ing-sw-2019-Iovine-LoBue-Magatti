@@ -63,7 +63,7 @@ public class SpawningPoint extends Square {
     public void reset(Deck deck){
         for(int i = 0; i < MAX_CARD; i++){
             if(weaponCards.get(i) == null){
-                weaponCards.get(i) = (WeaponCard) deck.drawCard();
+                weaponCards.add((WeaponCard) deck.drawCard());
             }
         }
     }

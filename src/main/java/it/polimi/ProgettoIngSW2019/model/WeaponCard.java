@@ -33,8 +33,8 @@ public class WeaponCard extends Card {
      * @param pathFileEff : path of json file to associate the proper effect
      * @author Luca Iovine
      */
-    WeaponCard(String name, String description, List<AmmoType> reloadCost, String pathFileEff){
-        Super(id, deckType);
+    WeaponCard(int idCard, DeckType cardType, String name, String description, List<AmmoType> reloadCost, String pathFileEff){
+        super(idCard, cardType);
         this.name  = name;
         this.description = description;
         this.reloadCost = reloadCost;
