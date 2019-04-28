@@ -20,20 +20,21 @@ public class WeaponCard extends Card {
     private Gson gson = new Gson();
     private AreaOfEffect aoe;
     private int moveDueToBaseEff;
-    private List<WeaponEffect> weaponEffect;
+    private List<WeaponEffect> weaponEffects;
     private Boolean loaded;
     private List<AmmoType> reloadCost;
 
     /**
-     * Costruttore della classe
+     * Constructor
      *
-     * @param name
-     * @param description
-     * @param reloadCost
-     * @param pathEffJson : percorso nella quale sono presenti i file JSON degli effetti delle carte arma
+     * @param name name of the weapon
+     * @param description textual description of the card
+     * @param reloadCost ammo needed to reload the weapon
+     * @param pathFileEff : path of json file to associate the proper effect
      * @author Luca Iovine
      */
-    WeaponCard(String name, String description, List<AmmoType> reloadCost, String pathEffJson){
+    WeaponCard(String name, String description, List<AmmoType> reloadCost, String pathFileEff){
+        Super(id, deckType);
         this.name  = name;
         this.description = description;
         this.reloadCost = reloadCost;
@@ -44,7 +45,7 @@ public class WeaponCard extends Card {
          */
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(pathEffJson));
+            BufferedReader br = new BufferedReader(new FileReader(pathFileEff));
             JsonObject jsonObj = gson.fromJson(br, JsonObject.class);
 
             /*
@@ -59,27 +60,21 @@ public class WeaponCard extends Card {
             decide to move his target.
              */
             this.moveDueToBaseEff = jsonObj.get("moveDueToBaseEff").getAsInt();
-            /*
-            At index 0 we'll got the base effect
-             */
-            WeaponEffect effBase = (targetPlayer, ownerPlayer, movementDirections) -> {
+
+            WeaponEffect effBase = (targetPlayer, ownerPlayer) -> {
                 targetPlayer.dealDamage(jsonObj.get("dmg").getAsInt(), ownerPlayer);
                 targetPlayer.markPlayer(jsonObj.get("mark").getAsInt(), ownerPlayer);
-                targetPlayer.move(movementDirections);
                 this.loaded = false;
             };
+            weaponEffects.add(effBase);
 
-            weaponEffect.add(effBase);
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
     /**
-     * Restituisce il nome dell'arma
-     *
-     * @return name
-     *
+     * @return name of the weapon
      * @author Luca Iovine
      */
     public String getName(){
@@ -87,9 +82,7 @@ public class WeaponCard extends Card {
     }
 
     /**
-     * Restituisce la descrizione dell'arma
-     *
-     * @return description
+     * @return description of the weapon
      * @author Luca Iovine
      */
     public String getDescription(){
@@ -97,9 +90,7 @@ public class WeaponCard extends Card {
     }
 
     /**
-     * Restituisce il costo di ricarica dell'arma
-     *
-     * @return reloadCost
+     * @return ammo need to reload the weapon
      * @author Luca Iovine
      */
     public List<AmmoType> getreloadCost(){
@@ -107,7 +98,7 @@ public class WeaponCard extends Card {
     }
 
     /**
-     * Ricarica l'arma consumando le munizioni disponibili del player
+     * Reload weapon using ammo from the ammobox of the player
      *
      * @author Luca Iovine
      */
@@ -117,9 +108,7 @@ public class WeaponCard extends Card {
     }
 
     /**
-     * Resistuisce un valore booleano per rappresentare se l'arma è carica o meno
-     *
-     * @return loaded
+     * @return if the weapon is loaded (true) or unloaded (false)
      * @author Luca Iovine
      */
     public Boolean isLoaded(){
@@ -127,9 +116,7 @@ public class WeaponCard extends Card {
     }
 
     /**
-     * Restituisce tutte le informazioni dell'arma
-     *
-     * @return weapon info
+     * @return weapon info in a formatted String
      * @author Luca Iovine
      */
     public String getWeaponCardInfo(){
