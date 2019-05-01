@@ -14,8 +14,8 @@ import it.polimi.ProgettoIngSW2019.utilities.Observable;
 public class Player extends Observable <PlayerView>{
 
     private int idPlayer;
-    private GameTable gameTable;
     private String charaName;
+    private GameTable gameTable;
     private List<String> damageLine = new ArrayList<>();
     //every mark is represented by a string that
     //is the name of the palyer who marked this player
@@ -24,8 +24,8 @@ public class Player extends Observable <PlayerView>{
     //necessary for counting scores after he/she gets killed
     //IMPORTANT: 'numberOfSkulls' doesn't increment right after the player has
     //been killed, but after the score updates
-    private int numberOfSkulls;
-    private boolean playerDown;
+    private int numberOfSkulls = 0;
+    private boolean playerDown = false;
     private Square square;
     private int score = 0;
     private List<WeaponCard> loadedWeapons = new ArrayList<>();
@@ -34,6 +34,17 @@ public class Player extends Observable <PlayerView>{
     private boolean startingPlayer;
     private AmmoBox ammoBox = new AmmoBox();
     private boolean active = true;
+
+
+    /**
+     * Constructor
+     */
+    public Player(int idPlayer, String charaName, GameTable gameTable, boolean startingPlayer){
+        this.idPlayer = idPlayer;
+        this.charaName = charaName;
+        this.gameTable = gameTable;
+        this.startingPlayer = startingPlayer;
+    }
 
     /**
      * Get the game table
@@ -49,6 +60,14 @@ public class Player extends Observable <PlayerView>{
      */
     public int getIdPlayer() {
         return idPlayer;
+    }
+
+    /**
+     * Get the name of the character
+     * @return name of the character
+     */
+    public String getCharaName() {
+        return charaName;
     }
 
     /**
@@ -68,6 +87,14 @@ public class Player extends Observable <PlayerView>{
     }
 
     /**
+     * Return the mark line of the player
+     * @return the damage line of the player
+     */
+    public List<String> getMarkLine(){
+        return markLine;
+    }
+
+    /**
      * Return true if the player is the starting player
      * @return true if the player is the starting player, false otherwise
      */
@@ -76,23 +103,84 @@ public class Player extends Observable <PlayerView>{
     }
 
     /**
-     * This player deals damage to another player
+     * Get the number of weapons owned by the player
+     * @return number of weapons owned by the player
+     */
+    public int getNumberOfWeapons(){
+        return loadedWeapons.size() + unloadedWeapons.size();
+    }
+
+    /**
+     * Get the number of powerups owned by the player
+     * @return number of powerups owned by the player
+     */
+    public int getNumberOfPoweUps(){
+        return powerUps.size();
+    }
+
+    /**
+     * Get the number of times the name occurs in the list
+     * @param name
+     * @param list
+     * @return the number of times the name occurs in the list
+     */
+    private int occurrenceOfNameInList(String name, List<String> list){
+        int occurrence = 0;
+        for(String element : list){
+            if(element.equals(name)){
+                occurrence++;
+            }
+        }
+        return occurrence;
+    }
+
+    /**
+     * Remove the marks previously placed by this player on the target and return their number
+     * @param targetPlayer
+     * @return number of marks previously placed by this player on the target
+     */
+    private int removeMyMarksOnTargetPlayerAndReturnNumber(Player targetPlayer){
+        int removedMarks = 0;
+        while(targetPlayer.getMarkLine().remove(charaName)){
+            removedMarks++;
+        }
+        return removedMarks;
+    }
+
+    /**
+     * This player deals damage to another player, converts marks that already are on the target into damages
+     * and also set that player down if he/she dies as a result of this attack
      * @param nrDamage - number of damages
      * @param targetPlayer
      */
     public void dealDamage(int nrDamage, Player targetPlayer){
-        for(int i=0; i < nrDamage; i++) {
-            targetPlayer.damageLine.add(charaName);
+        //marks that will be converted into damage
+        int marksJustRemoved = removeMyMarksOnTargetPlayerAndReturnNumber(targetPlayer);
+        final int totDamageToKill = 11;
+        final int totDamageToOverkill = 12;
+        int totDamageOnTarget = targetPlayer.getDamageLine().size();
+
+        for(int i=0; i < (nrDamage + marksJustRemoved) && totDamageOnTarget < totDamageToOverkill; i++, totDamageOnTarget++) {
+            targetPlayer.getDamageLine().add(charaName);
+        }
+        if(totDamageOnTarget >= totDamageToKill){
+            targetPlayer.putPlayerDown();
         }
     }
 
     /**
-     * This player marks another player
+     * This player marks another player, but wasting the marks that exceed the limit of three marks from this player
      * @param nrMark - number of marks
      * @param targetPlayer
      */
     public void markPlayer(int nrMark, Player targetPlayer){
-        for(int i=0; i < nrMark; i++){
+        int myMarksOnTarget = 0;
+        for(String mark : targetPlayer.getMarkLine()){
+            if(mark.equals(charaName)){
+                myMarksOnTarget++;
+            }
+        }
+        for(int i=0; i < nrMark && myMarksOnTarget < 3; i++, myMarksOnTarget++){
             targetPlayer.markLine.add(charaName);
         }
     }
@@ -214,13 +302,7 @@ public class Player extends Observable <PlayerView>{
      * @return the damage that this player has received from the specified player
      */
     public int damageReceivedFrom(Player player){
-        int damage = 0;
-        for(String name : damageLine){
-            if(name.equals(player.charaName)){
-                damage++;
-            }
-        }
-        return damage;
+        return occurrenceOfNameInList(player.getCharaName(), damageLine);
     }
 
     /**

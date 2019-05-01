@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.ProgettoIngSW2019.utilities.Observable;
-
+//TODO: evaluate whether this class should be in the controller instead
 /**
  * @author Nicholas Magatti
  */
@@ -40,71 +40,151 @@ public class TurnManager extends Observable <String>{
     }
 
     /**
-     * Return an array of points to assign to the players according to the specific circumstance
-     * @param skulls - number of skulls on the player to score,
-     *                 or 0 if we are scoring the killshot track
+     * Convert the name of the character in the actual player if present,
+     * return null otherwise
+     * @param charaName - Name of the character
+     * @return the player with that character name if there is one, null otherwise
+     */
+    private Player getPlayerFromCharaName(String charaName){
+        for(Player player : gameTable.getPlayers()) {
+            if (player.getCharaName().equals(charaName)) {
+                return player;
+            }
+        }
+        //if there is no player with such name, return null
+        return null;
+    }
+
+    /**
+     * Return an array of points to assign to the players who damaged the player to score, according to the specific circumstance
+     * @param playerToScore
      * @return array of points to assign to the players
      */
-    private int[] pointsToAssign(int skulls){
+    private int[] pointsToAssignWhenScoringAPlayer(Player playerToScore){
 
-        final int lengthOfPointsWithNoSkulls = 5;
+        //succession of points to assign without considering the number of skulls
+        final int lengthOfSuccessionOfPoints = 5;
+        int[] successionOfPoints = new int[lengthOfSuccessionOfPoints];
 
-        int[] pointsWithNoSkulls = new int[lengthOfPointsWithNoSkulls];
+        successionOfPoints[0] = 8;
+        successionOfPoints[1] = 6;
+        successionOfPoints[2] = 4;
+        successionOfPoints[3] = 2;
+        successionOfPoints[4] = 1;
 
-        pointsWithNoSkulls[0] = 8;
-        pointsWithNoSkulls[1] = 6;
-        pointsWithNoSkulls[2] = 4;
-        pointsWithNoSkulls[3] = 2;
-        pointsWithNoSkulls[4] = 1;
+        //excluding the player to score
+        int lengthOfPointsToAssign = gameTable.getNumberOfPlayers()-1;
 
-        int[] pointsToAssign = new int[gameTable.getNumberOfPlayers()-1];
+        //succession of points to assign considering the number of skulls on the player to score
+        int[] pointsToAssign = new int[lengthOfPointsToAssign];
 
-        for(int i=0, j = skulls; i < gameTable.getNumberOfPlayers(); i++, j++){
-            if(j < lengthOfPointsWithNoSkulls) {
-                pointsToAssign[i] = pointsWithNoSkulls[j];
+        for(int i=0, j = playerToScore.getNumberOfSkulls(); i < lengthOfPointsToAssign; i++, j++){
+            if(j < lengthOfSuccessionOfPoints) {
+                pointsToAssign[i] = successionOfPoints[j];
             }
             else{
-                //assign the last element of arrayOfPointsToAssign
-                pointsToAssign[i] = pointsWithNoSkulls[lengthOfPointsWithNoSkulls-1];
+                //assign the last element of successionOfPoints
+                pointsToAssign[i] = successionOfPoints[lengthOfPointsToAssign-1];
             }
         }
         return pointsToAssign;
     }
 
     /**
-     * Assign points to players after the death of the specified player, from his/her damage line;
-     * or at the end of the game (in witch every player with damage get scored)
-     * @param killedPlayer - killed player to score, or any player at the end of the game
+     * Given a list of integers, return a list of integers of the positions of the elements with the greater integer value
+     * @param list
+     * @return list of integers of the positions of the elements with the greater integer value
      */
-    public void scorePlayer(Player killedPlayer){
+    private List<Integer> indexesOfGreaterValue(List<Integer> list){
+        List<Integer> positionsOfGreaterValue = new ArrayList<>();
+        int max = max(list);
+        for(Integer elem : list){
+            if(elem.equals(max)) {
+                positionsOfGreaterValue.add(elem);
+            }
+        }
+        return positionsOfGreaterValue;
+    }
+
+    /**
+     * Return the greater value contained in a list of integers
+     * @param list
+     * @return greater value contained in a list of integers
+     */
+    private int max(List<Integer> list){
+        int max = 0;
+        for(Integer elem : list){
+            if (elem > max){
+                max = elem;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * Get the id of the player who hit first between the given ids
+     * @param ids
+     * @param playersInOrderOfFirstHit
+     * @return id of the player who hit first between the given ids
+     */
+    private int IdOfThePlayerWhoHitFirstBetweenThese(List<Integer> ids, List<Player> playersInOrderOfFirstHit) {
+        for (Player p : playersInOrderOfFirstHit) {
+            for (Integer id : ids) {
+                if (id.equals(p.getIdPlayer())) {
+                    return id;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Assign points to players after the death of the specified player(the player to score), from his/her damage line;
+     * or at the end of the game (in witch every player with damage get scored)
+     * @param playerToScore - killed player to score, or any player at the end of the game
+     */
+    //TODO: make this a general method that will be used both by updateScores(Player) and scoreKillshotTrack()
+    public void updateScores(Player playerToScore) {
+
+        //list of damages from players in order of who hit first:
+        List<String> charaNamesInOrderOfFirstHit = playerToScore.charaNamesInOrderOfFirstHit();
+        //convert list of names in list of players
+        List<Player> playersInOrderOfFistHit = new ArrayList<>();
+        for(String name : charaNamesInOrderOfFirstHit){
+            playersInOrderOfFistHit.add(getPlayerFromCharaName(name));
+        }
+        //assign 1 point for first blood
+        playersInOrderOfFistHit.get(0).addPointsToScore(1);
+
+        /*
+        determine how many points the first get, the second etc (create a method that,
+        given the number of skulls on a player, returns an array of the number of points his/her killers get)
+         */
+        int[] pointsToAssign = pointsToAssignWhenScoringAPlayer(playerToScore);
 
         int numberOfPlayers = gameTable.getNumberOfPlayers();
 
-        //list of damages from players in order of who hit first
-        List<String> charaNamesInOrderOfFirstHit = killedPlayer.charaNamesInOrderOfFirstHit();
-        //array of damages from players in order of player ids
-        int [] arrayOfDamagesFromPlayers = new int[numberOfPlayers];
-        Player[] arrayOfPlayers = gameTable.getPlayers();
-
-        for(int i=0; i < numberOfPlayers; i++){
-            if(killedPlayer == arrayOfPlayers[i]){
-                arrayOfDamagesFromPlayers[i] = 0;
+        //create array of damages from players in order of player ids (it is still empty now)
+        List<Integer> listOfDamagesFromPlayers = new ArrayList<>();
+        Player[] allPlayers = gameTable.getPlayers();
+        //fill the array of damages from players
+        for (int i = 0; i < numberOfPlayers; i++) {
+            if (playerToScore == allPlayers[i]) {
+                listOfDamagesFromPlayers.add(0);
             }
-            else{
-                arrayOfDamagesFromPlayers[i] = killedPlayer.damageReceivedFrom(arrayOfPlayers[i]);
+            else {
+                listOfDamagesFromPlayers.add(playerToScore.damageReceivedFrom(allPlayers[i]));
             }
         }
-        //put in a list the first, the second etc (in order of who dealt more damage)
-        //TODO
-        List<Player> orderedByGreaterDamage = new ArrayList<>();
-
-        //determine how many points the first get, the second etc (create a method that,
-        // given the number of skulls on a player, returns a list with points his/her killers get)
-        int[] pointsToAssign = pointsToAssign(killedPlayer.getNumberOfSkulls());
-        //Then assign the points to the players, handling possible ties
-        //TODO
-        //then if we are not in frenzy mode, assign first blood
-        //TODO
+        //find the greater and if more than one, find the one that hit first and assign pointsToAssign[i] to that one
+        //then make it =0 in listOfDamagesFromPlayer and do all of this again
+        int tmpId;
+        for(int i=0; max(listOfDamagesFromPlayers) > 0; i++) {
+            tmpId = IdOfThePlayerWhoHitFirstBetweenThese
+                    (indexesOfGreaterValue(listOfDamagesFromPlayers), playersInOrderOfFistHit);
+            allPlayers[tmpId].addPointsToScore(pointsToAssign[i]);
+            listOfDamagesFromPlayers.set(tmpId, 0);
+        }
     }
 
     /**
