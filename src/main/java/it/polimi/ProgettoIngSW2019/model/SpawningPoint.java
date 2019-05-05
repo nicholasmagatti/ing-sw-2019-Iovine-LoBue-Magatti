@@ -1,7 +1,6 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import it.polimi.ProgettoIngSW2019.model.enums.RoomColor;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,16 +15,16 @@ public class SpawningPoint extends Square {
     /**
      * Constructor
      *
-     * @param roomColor
-     * @param idRoom
-     * @param isBlockedAtWeast
-     * @param isBlockedAtEast
-     * @param isBlockedAtNorth
-     * @param isBlockedAtSouth
+     * @param idRoom identify the room of appartenance
+     * @param isBlockedAtWest identify if there is a wall at its left
+     * @param isBlockedAtEast identify if there is a wall at its right
+     * @param isBlockedAtNorth identify if there is a wall at its up
+     * @param isBlockedAtSouth identify if there is a wall at its down
      * @Author: Luca Iovine
      */
-    SpawningPoint(RoomColor roomColor, int idRoom, Boolean isBlockedAtWeast, Boolean isBlockedAtEast, Boolean isBlockedAtNorth, Boolean isBlockedAtSouth) {
-        super(roomColor, idRoom, isBlockedAtWeast, isBlockedAtEast, isBlockedAtNorth, isBlockedAtSouth);
+    public SpawningPoint(int idRoom, Boolean isBlockedAtWest, Boolean isBlockedAtEast, Boolean isBlockedAtNorth, Boolean isBlockedAtSouth) {
+        super(idRoom, isBlockedAtWest, isBlockedAtEast, isBlockedAtNorth, isBlockedAtSouth);
+        weaponCards = new ArrayList<>();
     }
 
     /**
@@ -38,20 +37,12 @@ public class SpawningPoint extends Square {
     /**
      * Pick the Weapon Card chosen by the player and remove it from the table
      *
-     * @param idCard identifier for the WeaponCards
+     * @param weaponCardToGrab card to grab
      * @return weapon card grabbed from the game table by the player
      * @Author: Luca Iovine
      */
-    public WeaponCard grabCard(int idCard){
-        WeaponCard w = null;
-
-        for(int i = 0; i < MAX_CARD; i++){
-            if(idCard == weaponCards.get(i).getIdCard()){
-                w = weaponCards.get(i);
-                weaponCards.remove(i);
-            }
-        }
-        return w;
+    public void removeWeaponFromSpawnPoint(WeaponCard weaponCardToGrab){
+        weaponCards.remove(weaponCardToGrab);
     }
     /**
      * At the end of the turn every weapon card missing on the table has to be replaced
@@ -61,10 +52,8 @@ public class SpawningPoint extends Square {
      */
     @Override
     public void reset(Deck deck){
-        for(int i = 0; i < MAX_CARD; i++){
-            if(weaponCards.get(i) == null){
-                weaponCards.add((WeaponCard) deck.drawCard());
-            }
+        while(weaponCards.size() != MAX_CARD){
+            weaponCards.add((WeaponCard) deck.drawCard());
         }
     }
 
@@ -73,13 +62,12 @@ public class SpawningPoint extends Square {
      *
      * @Author: Luca Iovine
      */
-    public WeaponCard swapWeaponCard(WeaponCard cardToGrab, WeaponCard cardToFree){
+    public void swapWeaponsOnSpawnPoint(WeaponCard cardToGrab, WeaponCard cardToFree){
         WeaponCard cardGrabbed = cardToGrab;
         for(WeaponCard w: weaponCards){
             if(cardToGrab == w){
                 w = cardToFree;
             }
         }
-        return cardGrabbed;
     }
 }

@@ -1,8 +1,5 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import it.polimi.ProgettoIngSW2019.model.enums.RoomColor;
-
-import java.util.List;
 /**
  * Class AmmoPoint extends Square
  *
@@ -11,9 +8,18 @@ import java.util.List;
 public class AmmoPoint extends Square {
 
     private AmmoCard ammoCard;
-
-    AmmoPoint(RoomColor roomColor, int idRoom, Boolean isBlockedAtWeast, Boolean isBlockedAtEast, Boolean isBlockedAtNorth, Boolean isBlockedAtSouth) {
-        super(roomColor, idRoom, isBlockedAtWeast, isBlockedAtEast, isBlockedAtNorth, isBlockedAtSouth);
+    /**
+     * Constructor
+     *
+     * @param idRoom identify the room of appartenance
+     * @param isBlockedAtWest identify if there is a wall at its left
+     * @param isBlockedAtEast identify if there is a wall at its right
+     * @param isBlockedAtNorth identify if there is a wall at its up
+     * @param isBlockedAtSouth identify if there is a wall at its down
+     * @Author: Luca Iovine
+     */
+    public AmmoPoint(int idRoom, Boolean isBlockedAtWest, Boolean isBlockedAtEast, Boolean isBlockedAtNorth, Boolean isBlockedAtSouth) {
+        super(idRoom, isBlockedAtWest, isBlockedAtEast, isBlockedAtNorth, isBlockedAtSouth);
     }
 
     /**
@@ -21,6 +27,7 @@ public class AmmoPoint extends Square {
      * @Author: Luca Iovine
      */
     public AmmoCard getAmmoCard() {
+        //TODO: ritornare solo le info?
         return ammoCard;
     }
 

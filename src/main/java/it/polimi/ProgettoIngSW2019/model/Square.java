@@ -1,6 +1,6 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import it.polimi.ProgettoIngSW2019.model.enums.RoomColor;
+import it.polimi.ProgettoIngSW2019.custom_exception.NotPartOfBoardException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +13,11 @@ import java.util.List;
 public abstract class Square {
     private int idRoom;
     private List<Player> playerOnSquare;
-    private RoomColor roomColor;
-    private Square weastSquare;
+    private Square westSquare;
     private Square eastSquare;
     private Square northSquare;
     private Square southSquare;
-    private Boolean isBlockedAtWeast;
+    private Boolean isBlockedAtWest;
     private Boolean isBlockedAtEast;
     private Boolean isBlockedAtNorth;
     private Boolean isBlockedAtSouth;
@@ -26,31 +25,20 @@ public abstract class Square {
     /**
      * Constructor
      *
-     * @param roomColor
-     * @param idRoom
-     * @param isBlockedAtWeast
-     * @param isBlockedAtEast
-     * @param isBlockedAtNorth
-     * @param isBlockedAtSouth
+     * @param idRoom identify the room of appartenance
+     * @param isBlockedAtWest identify if there is a wall at its left
+     * @param isBlockedAtEast identify if there is a wall at its right
+     * @param isBlockedAtNorth identify if there is a wall at its up
+     * @param isBlockedAtSouth identify if there is a wall at its down
      * @Author: Luca Iovine
      */
-    Square(RoomColor roomColor, int idRoom, Boolean isBlockedAtWeast, Boolean isBlockedAtEast, Boolean isBlockedAtNorth, Boolean isBlockedAtSouth){
-        this.roomColor = roomColor;;
+    Square(int idRoom, Boolean isBlockedAtWest, Boolean isBlockedAtEast, Boolean isBlockedAtNorth, Boolean isBlockedAtSouth){
         this.idRoom = idRoom;
         this.isBlockedAtEast = isBlockedAtEast;
-        this.isBlockedAtWeast = isBlockedAtWeast;
+        this.isBlockedAtWest = isBlockedAtWest;
         this.isBlockedAtNorth = isBlockedAtNorth;
         this.isBlockedAtSouth = isBlockedAtSouth;
-    }
-
-    /**
-     * Get the room's color
-     *
-     * @return room color value
-     * @Author: Luca Iovine
-     */
-    public RoomColor getRoomColor(){
-        return this.roomColor;
+        playerOnSquare = new ArrayList<>();
     }
 
     /**
@@ -97,7 +85,7 @@ public abstract class Square {
      * @Author: Luca Iovine
      */
     public Square getWestSquare() {
-        return weastSquare;
+        return westSquare;
     }
     /**
      * This is used whenever you have to setup the eastSquare value properly
@@ -123,8 +111,8 @@ public abstract class Square {
      * @return if there is a wall at left direction
      * @Author: Luca Iovine
      */
-    public Boolean getIsBlockedAtWeast() {
-        return isBlockedAtWeast;
+    public Boolean getIsBlockedAtWest() {
+        return isBlockedAtWest;
     }
     /**
      * This is used whenever you have to setup the southSquare value properly
@@ -173,8 +161,8 @@ public abstract class Square {
         if(eastSquare != null){
             cardinal.add(eastSquare);
         }
-        if(weastSquare != null){
-            cardinal.add(weastSquare);
+        if(westSquare != null){
+            cardinal.add(westSquare);
         }
         if(northSquare != null){
             cardinal.add(northSquare);
@@ -194,4 +182,83 @@ public abstract class Square {
      * @Author: Luca Iovine
      */
     public void reset(Deck deck){}
+
+    /**
+     * It is used to add player on a square after a movement on it
+     *
+     * @param p player to be added on the square
+     */
+    public void setPlayerOnSquare(Player p){
+        playerOnSquare.add(p);
+    }
+
+    /**
+     * It will set what there are around the square.
+     *
+     * @param board the actual map that is used
+     */
+    public void setDependency(Square[][] board){
+        try {
+            int[] axis = getCoordinates(board);
+            Square east;
+            Square west;
+            Square north;
+            Square south;
+            if (axis[0] + 1 < board.length) {
+                south = board[axis[0] + 1][axis[1]];
+                if (!isBlockedAtSouth || south.getIdRoom() == this.idRoom) {
+                    northSquare = south;
+                }
+            }
+            if (axis[0] - 1 >= 0) {
+                north = board[axis[0] - 1][axis[1]];
+                if (!isBlockedAtNorth || north.getIdRoom() == this.idRoom) {
+                    southSquare = north;
+                }
+            }
+            if (axis[1] + 1 < board[0].length) {
+                east = board[axis[0]][axis[1] + 1];
+                if (!isBlockedAtEast || east.getIdRoom() == this.idRoom) {
+                    eastSquare = east;
+                }
+            }
+            if (axis[1] - 1 >= 0) {
+                west = board[axis[0]][axis[1] - 1];
+                if (!isBlockedAtWest || west.getIdRoom() == this.idRoom) {
+                    westSquare = west;
+                }
+            }
+        }catch(NotPartOfBoardException e){
+            System.out.print("Map doesn't own the square you trying to setup");
+        }
+    }
+
+    /**
+     * @param board the actual map that is used
+     * @return the coordinates (x,y) in order to know the exact position in the space of the map
+     * @throws NotPartOfBoardException it will be thrown only if the square you try to get coordinates are not part of the board
+     */
+    public int[] getCoordinates(Square[][] board) throws NotPartOfBoardException {
+        int axis[] = new int[2];
+        int x = -1;
+        int y = -1;
+        axis[0] = -1;
+        axis[1] = -1;
+
+        for (Square[] s : board) {
+            x++;
+            y = -1;
+            for (Square squareOnBoard : s) {
+                y++;
+                if (squareOnBoard == this) {
+                    axis[0] = x;
+                    axis[1] = y;
+                }
+            }
+        }
+        if(axis[0] == -1 && axis[1] == -1)
+            throw new NotPartOfBoardException();
+
+        return axis;
+    }
 }

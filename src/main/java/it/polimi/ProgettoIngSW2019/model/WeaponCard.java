@@ -1,12 +1,10 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import it.polimi.ProgettoIngSW2019.model.enums.*;
-import it.polimi.ProgettoIngSW2019.model.interfaces.WeaponEffect;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,12 +15,10 @@ import java.util.List;
 public class WeaponCard extends Card {
     private String name;
     private String description;
-    private Gson gson = new Gson();
-    private AreaOfEffect aoe;
-    private int moveDueToBaseEff;
-    private List<WeaponEffect> weaponEffects;
-    private Boolean loaded;
     private List<AmmoType> reloadCost;
+    private List<List<Player>> targetPlayerBySquare;
+    private List<WeaponEffect> weaponEffects;
+    private String pathOfEffectFile;
 
     /**
      * Constructor
@@ -30,47 +26,18 @@ public class WeaponCard extends Card {
      * @param name name of the weapon
      * @param description textual description of the card
      * @param reloadCost ammo needed to reload the weapon
-     * @param pathFileEff : path of json file to associate the proper effect
+     * @param effectFileName name of the file of the effect to associate
      * @author Luca Iovine
      */
-    WeaponCard(int idCard, DeckType cardType, String name, String description, List<AmmoType> reloadCost, String pathFileEff){
+    public WeaponCard(int idCard, DeckType cardType, String name, String description, List<AmmoType> reloadCost, String effectFileName){
         super(idCard, cardType);
         this.name  = name;
         this.description = description;
         this.reloadCost = reloadCost;
-
-        /*
-        Here it load the json file and create the effect for the weapon.
-        It uses lambda expression to do so.
-         */
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(pathFileEff));
-            JsonObject jsonObj = gson.fromJson(br, JsonObject.class);
-
-            /*
-            Based on the aoe type, the player will see the possible target.
-            This will be done thanks to a dictionary where the AreaOfEffect is associated with a function
-            which evaluate the possible targets in range of the player who called it.
-             */
-            this.aoe = AreaOfEffect.valueOf(jsonObj.get("aoe").toString());
-            /*
-            Movement due the activation of an effect:
-            the game will check if moveDueToBaseEff > 0. If it is, then the player who has used the card could
-            decide to move his target.
-             */
-            this.moveDueToBaseEff = jsonObj.get("moveDueToBaseEff").getAsInt();
-
-            WeaponEffect effBase = (targetPlayer, ownerPlayer) -> {
-                targetPlayer.dealDamage(jsonObj.get("dmg").getAsInt(), ownerPlayer);
-                targetPlayer.markPlayer(jsonObj.get("mark").getAsInt(), ownerPlayer);
-                this.loaded = false;
-            };
-            weaponEffects.add(effBase);
-
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        weaponEffects = new ArrayList<>();
+        pathOfEffectFile = new File("").getAbsolutePath()+"\\resoruces\\json\\weaponeff\\"+effectFileName;
+        WeaponEffect effBase = new WeaponEffect(pathOfEffectFile);
+        weaponEffects.add(effBase);
     }
 
     /**
@@ -98,29 +65,49 @@ public class WeaponCard extends Card {
     }
 
     /**
-     * Reload weapon using ammo from the ammobox of the player
+     * Every list of the list represent all the player in a certain square.
      *
-     * @author Luca Iovine
+     * @param square position from where you want to know the target visible for that specific weapon
+     * @return all the target visible to be hitted by the weapon
+     * @suthor: Luca Iovine
      */
-    public void reload(Player p){
-        p.discardAmmo(reloadCost);
-        this.loaded = true;
+    public List<List<Player>> getTarget(Square square, DistanceDictionary distDictionary) {
+        int idx = -1;
+
+        List<Square> targetPos = distDictionary.getTargetPosition(weaponEffects.get(0).getEffAoe(), square);
+        targetPlayerBySquare = new ArrayList<>();
+
+        for(Square s: targetPos){
+            targetPlayerBySquare.add(new ArrayList<>());
+            idx++;
+            for(Player p: s.getPlayerOnSquare()){
+                targetPlayerBySquare.get(idx).add(p);
+            }
+        }
+
+        return targetPlayerBySquare;
     }
 
     /**
-     * @return if the weapon is loaded (true) or unloaded (false)
-     * @author Luca Iovine
+     * Activate the base effect of the weapon.
+     *
+     * @param targetPlayer list of the player to be damaged by the weapon
+     * @param fromPlayer player who does the damage
+     * @param targetMove list of the movement of tragetted players (1:1 with targetPlayer list)
+     * @param userMove movement of the player who deals damage
+     * @suthor: Luca Iovine
      */
-    public Boolean isLoaded(){
-        return this.loaded;
-    }
+    public void useBaseEff(List<Player> targetPlayer, Player fromPlayer, List<Square> targetMove, Square userMove){
+        for(Player p: targetPlayer)
+            weaponEffects.get(0).activateEffect(p, fromPlayer);
 
-    /**
-     * @return weapon info in a formatted String
-     * @author Luca Iovine
-     */
-    public String getWeaponCardInfo(){
-        return "Nome: " + this.name + "\nDescrizione: " + this.description +
-                "\nCosto di ricarica: " + this.reloadCost;
+        if(targetMove.size() != 0){
+            for(int i = 0; i < targetMove.size(); i++)
+                targetPlayer.get(i).moveTo(targetMove.get(i));
+        }
+
+        if(userMove != null) {
+            fromPlayer.moveTo(userMove);
+        }
     }
 }
