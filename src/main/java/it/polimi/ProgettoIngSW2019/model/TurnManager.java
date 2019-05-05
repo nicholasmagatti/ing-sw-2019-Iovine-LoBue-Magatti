@@ -3,12 +3,11 @@ package it.polimi.ProgettoIngSW2019.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.polimi.ProgettoIngSW2019.utilities.Observable;
-//TODO: evaluate whether this class should be in the controller instead
+
 /**
  * @author Nicholas Magatti
  */
-public class TurnManager extends Observable <String>{
+public class TurnManager{
 
     private GameTable gameTable;
     private Player currentPlayer;
@@ -143,8 +142,8 @@ public class TurnManager extends Observable <String>{
      * or at the end of the game (in witch every player with damage get scored)
      * @param playerToScore - killed player to score, or any player at the end of the game
      */
-    //TODO: make this a general method that will be used both by updateScores(Player) and scoreKillshotTrack()
-    public void updateScores(Player playerToScore) {
+    //TODO: make this method use as much general methods as possible that will be used by both updateScores(Player) and scoreKillshotTrack()
+    public void updateScore(Player playerToScore) {
 
         //list of damages from players in order of who hit first:
         List<String> charaNamesInOrderOfFirstHit = playerToScore.charaNamesInOrderOfFirstHit();
@@ -169,6 +168,7 @@ public class TurnManager extends Observable <String>{
         Player[] allPlayers = gameTable.getPlayers();
         //fill the array of damages from players
         for (int i = 0; i < numberOfPlayers; i++) {
+            //TODO: remove this if so that can be used for the
             if (playerToScore == allPlayers[i]) {
                 listOfDamagesFromPlayers.add(0);
             }

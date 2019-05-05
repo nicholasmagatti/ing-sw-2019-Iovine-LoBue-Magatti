@@ -8,9 +8,9 @@ import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
  */
 public class AmmoBox {
     //number of the following attributes between 0 and 3
-    private int redAmmo;
-    private int blueAmmo;
-    private int yellowAmmo;
+    private int redAmmo = 1;
+    private int blueAmmo = 1;
+    private int yellowAmmo = 1;
 
     /**
      * Get the number of red ammo units

@@ -1,4 +1,4 @@
-package it.polimi.ProgettoIngSW2019;
+package it.polimi.ProgettoIngSW2019.modelTest;
 
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;

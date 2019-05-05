@@ -1,4 +1,4 @@
-package it.polimi.ProgettoIngSW2019;
+package it.polimi.ProgettoIngSW2019.modelTest;
 
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
@@ -6,6 +6,8 @@ import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
 import org.junit.*;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -71,7 +73,7 @@ public class WeaponCardTest {
     public void shouldShowPlayerSeenFromP2(){
         //WeaponEffect file must have "can_see" as aoe
         DistanceDictionary d = new DistanceDictionary(map);
-        WeaponCard c = new WeaponCard(0, DeckType.WEAPON_CARD, "Test", "Test", Arrays.asList(AmmoType.BLUE, AmmoType.RED, AmmoType.RED), "D:\\\\File_JSON\\HammerEff.json");
+        WeaponCard c = new WeaponCard(0, DeckType.WEAPON_CARD, "Test", "Test", Arrays.asList(AmmoType.BLUE, AmmoType.RED, AmmoType.RED), "CyberBladeEff.json");
         List<List<Player>> target = c.getTarget(map[0][1], d);
 
         assertTrue(target.contains(map[0][0].getPlayerOnSquare()));

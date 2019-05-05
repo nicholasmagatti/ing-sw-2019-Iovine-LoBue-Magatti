@@ -1,4 +1,4 @@
-package main.Test.it.polimi.ProgettoIngSW2019;
+package it.polimi.ProgettoIngSW2019.modelTest;
 
 import it.polimi.ProgettoIngSW2019.model.AmmoCard;
 import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 
-class AmmoCardTest {
+public class AmmoCardTest {
     private AmmoCard ammoCard1;
     private AmmoCard ammoCard2;
 

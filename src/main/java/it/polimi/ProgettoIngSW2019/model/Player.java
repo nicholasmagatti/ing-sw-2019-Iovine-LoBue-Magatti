@@ -1,17 +1,15 @@
 package it.polimi.ProgettoIngSW2019.model;
 
+
 import java.util.ArrayList;
 import java.util.List;
-
 import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
-import it.polimi.ProgettoIngSW2019.model.modelView.PlayerView;
-import it.polimi.ProgettoIngSW2019.utilities.Observable;
 
 /**
  * Class that represents the player
  * @author Nicholas Magatti
  */
-public class Player extends Observable <PlayerView>{
+public class Player{
 
     private int idPlayer;
     private String charaName;
@@ -154,6 +152,17 @@ public class Player extends Observable <PlayerView>{
      * @param targetPlayer
      */
     public void dealDamage(int nrDamage, Player targetPlayer){
+
+        if(targetPlayer == null){
+            throw new NullPointerException("The target of a damage cannot be null.");
+        }
+
+        if(targetPlayer == this){
+            throw new IllegalArgumentException("A player cannot damage himself/herself.");
+        }
+        if(nrDamage < 0){
+            throw new IllegalArgumentException("Damage cannot be negative.");
+        }
         //marks that will be converted into damage
         int marksJustRemoved = removeMyMarksOnTargetPlayerAndReturnNumber(targetPlayer);
         final int totDamageToKill = 11;
@@ -211,7 +220,7 @@ public class Player extends Observable <PlayerView>{
     /**
      * Set the player as alive after he/she has been respawned
      */
-    public void raisePlayerUp(){
+    public void risePlayerUp(){
         playerDown = false;
     }
 
@@ -238,13 +247,16 @@ public class Player extends Observable <PlayerView>{
      * (and also draw a power up if the ammo card give you one
      * @param ammoPoint - a square with an ammo card on it, that the player wants to grab
      */
-    private void grabAmmoFromAmmoPoint(AmmoPoint ammoPoint){
+    private void grabAmmoCardFromAmmoPoint(AmmoPoint ammoPoint){
 
         AmmoCard grabbedCard = ammoPoint.grabCard();
         addAmmo(grabbedCard.getAmmo());
 
         if(grabbedCard.hasPowerUp()){
-            //TODO: draw a powerup card
+            //draw a powerup card if you can
+            if(powerUps.size() < 3){
+                powerUps.add((PowerUp) gameTable.getPowerUpDeck().drawCard());
+            }
         }
     }
 
@@ -252,12 +264,27 @@ public class Player extends Observable <PlayerView>{
      * Grab the ammo card from the square the player is on, adding ammo to the ammo box and also,
      * if specified on the ammo card, get the player
      */
-    public void grabAmmoCardFromSquare(){
+    public void grabAmmoCardFromThisSquare(){
         if(square instanceof AmmoPoint) {
-            grabAmmoFromAmmoPoint((AmmoPoint)square);
+            grabAmmoCardFromAmmoPoint((AmmoPoint)square);
         }
         else{
-            //TODO: throws exception
+            throw new RuntimeException("Trying to grab an ammo card from a spawn point");
+        }
+    }
+
+    public void grabWeapon(WeaponCard cardToGet, WeaponCard cardToLeave){
+        if(square instanceof SpawningPoint){
+            loadedWeapons.add(cardToGet);
+            if(cardToLeave == null) {
+                ((SpawningPoint) square).removeWeaponFromSpawnPoint(cardToGet);
+            }
+            else{
+                ((SpawningPoint) square).swapWeaponsOnSpawnPoint(cardToGet, cardToLeave);
+            }
+        }
+        else{
+            throw new RuntimeException("Trying to grab a weapon from an a mmo point");
         }
     }
 
@@ -278,6 +305,48 @@ public class Player extends Observable <PlayerView>{
         for(AmmoType element : ammoToSpend){
             ammoBox.remove(element);
         }
+    }
+
+    /**
+     * Check if the player can spend the required quantity of ammo
+     * @param ammoToSpend - the specified quantity of ammo
+     * @return true if the player can spend that ammo, false otherwise
+     */
+    public boolean hasEnoughAmmo(List<AmmoType> ammoToSpend){
+        int blueToSpend = 0;
+        int redToSpend = 0;
+        int yellowToSpend = 0;
+        for(AmmoType element : ammoToSpend){
+            switch (element){
+                case BLUE:
+                    blueToSpend++;
+                    break;
+                case RED:
+                    redToSpend++;
+                    break;
+                case YELLOW:
+                    yellowToSpend++;
+                    break;
+            }
+        }
+        if(ammoBox.getBlueAmmo() >= blueToSpend &&
+                ammoBox.getRedAmmo() >= redToSpend &&
+                ammoBox.getYellowAmmo() >= yellowToSpend){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Reload a weapon
+     * @param weapon - weapon to reload
+     */
+    public void reload(WeaponCard weapon){
+        discardAmmo(weapon.getreloadCost());
+        loadedWeapons.add(weapon);
+        unloadedWeapons.remove(weapon);
     }
 
     /**
@@ -317,15 +386,6 @@ public class Player extends Observable <PlayerView>{
             }
         }
         return list;
-    }
-
-    /**
-     * Reload a weapon
-     * @param weapon - weapon to reload
-     */
-    public void reload(WeaponCard weapon){
-        loadedWeapons.add(weapon);
-        unloadedWeapons.remove(weapon);
     }
 
     /**

@@ -4,33 +4,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
-import it.polimi.ProgettoIngSW2019.utilities.Observable;
+import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
 
 /**
  * Class used to represent the game table and everything on it
  * @author Nicholas Magatti
  */
-public class GameTable extends Observable <String>{
+public class GameTable{
 
     private Player[] players;
     private int numberOfPlayers;
     private int activePlayers;
-    private Deck weaponDeck;
-    private Deck powerUpDeck;
-    private Deck ammoDeck;
+    private Deck weaponDeck = new Deck(DeckType.WEAPON_CARD);
+    private Deck powerUpDeck = new Deck(DeckType.POWERUP_CARD);
+    private Deck ammoDeck = new Deck(DeckType.AMMO_CARD);
     private List<PowerUp> powerUpDiscarded = new ArrayList<>();
     private List<AmmoType> ammoDiscarded = new ArrayList<>();
     private Square[][] map = new Square[4][3];
     private List<KillToken> killshotTrack;
-    private int spacesOnKillshotTrack; //between 5 and 8, chosen by the first user
+    private int numberOfSkullsForTheGame; //between 5 and 8, chosen by the first user
     private boolean frenzyMode = false;
 
-    //TODO: left and right board will probably be substituted by something else to create the board
-    //set the whole board putting the two boards to form the map requested by the first user
-    //parameters: 1 is side A, 0 is side B
-    //and set the number of skull that you want to use for the game (requested by the first user)
-    public GameTable(boolean leftBoard, boolean rightBoard, int spacesOnKillshotTrack){
+    /**
+     * Constructor
+     * Set the map and the number of skulls(spaces available on the killshotTrack for tokens) as the first user requested
+     * @param idMap - identifier of the map requested
+     * @param initialNumberOfSkulls - number of skulls requested
+     */
+    public GameTable(int idMap, int initialNumberOfSkulls){
 
+    }
+
+    /**
+     * Get the powerup deck on the table
+     * @return the powerup deck
+     */
+    public Deck getPowerUpDeck() {
+        return powerUpDeck;
+    }
+
+    /**
+     * Get the weapon deck on the table
+     * @return the weapon deck
+     */
+    public Deck getWeaponDeck() {
+        return weaponDeck;
+    }
+
+    /**
+     * Get the ammo deck on the table
+     * @return the ammo deck
+     */
+    public Deck getAmmoDeck() {
+        return ammoDeck;
     }
 
     /**
@@ -63,25 +89,9 @@ public class GameTable extends Observable <String>{
      *         false otherwise
      */
     public boolean isKillshotTrackFull(){
-        return killshotTrack.size() == spacesOnKillshotTrack;
+        return killshotTrack.size() == numberOfSkullsForTheGame;
     }
 
-    //set left/right board A/B are used to create all the possible 4 faces of the two boards
-    private void setLeftBoardA(){
-
-    }
-
-    private void setLeftBoardB(){
-
-    }
-
-    private void setRightBoardA(){
-
-    }
-
-    private void setRightBoardB(){
-
-    }
 
     /**
      * Get the map of the game table(composed by squares)
