@@ -1,14 +1,13 @@
 package it.polimi.ProgettoIngSW2019.model;
 
 import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
-import it.polimi.ProgettoIngSW2019.utilities.Observable;
 
 /**
  * Class abstract Card
  * @author Priscilla Lo Bue
  */
 
-public abstract class Card extends Observable <String>{
+public abstract class Card {
     private int idCard;
     private DeckType cardType;
 
@@ -20,6 +19,8 @@ public abstract class Card extends Observable <String>{
      * @param cardType  type of the card: ammo, powerUp, weapon
      */
     public Card(int idCard, DeckType cardType) {
+        if(idCard < 0)
+            throw new IllegalArgumentException("the idCard cannot be negative");
         this.idCard = idCard;
         this.cardType = cardType;
     }

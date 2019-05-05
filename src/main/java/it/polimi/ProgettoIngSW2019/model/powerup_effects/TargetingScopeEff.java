@@ -9,7 +9,7 @@ import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
  * Class effect Targeting Scope (powerUp)
  * @author Priscilla Lo Bue
  */
-public class TargettingScopeEff implements PowerUpEffect {
+public class TargetingScopeEff implements PowerUpEffect {
 
     /**
      * effect of the card

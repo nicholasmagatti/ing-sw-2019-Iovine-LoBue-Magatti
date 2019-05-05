@@ -16,6 +16,7 @@ public interface PowerUpEffect {
      * @param playerTarget          player target of the powerUp effect
      * @param playerOwner           player who use the effect of the powerUp
      * @param position              a square, the final position
+     * @param ammoDiscard           ammo to be discarded to do the effect
      */
     void activateEffect(AmmoType ammoDiscard, Player playerTarget, Player playerOwner, Square position);
 }

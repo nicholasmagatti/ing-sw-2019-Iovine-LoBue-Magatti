@@ -2,7 +2,6 @@ package it.polimi.ProgettoIngSW2019.model;
 
 import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,8 +12,18 @@ import java.util.List;
  */
 public class Deck {
     private DeckType deckType;
-    private List <Card> cards = new ArrayList<>();
-    private DeckFactory deckFactory = new DeckFactory();
+    private List <Card> cards;
+
+
+    /**
+     * method that creates the deck
+     * @param deckType  type of the cards
+     */
+    public Deck (DeckType deckType){
+        DeckFactory deckFactory = new DeckFactory();
+        this.cards = deckFactory.setDeck(deckType);
+        this.deckType = deckType;
+    }
 
 
     /**
@@ -28,7 +37,7 @@ public class Deck {
 
     /**
      * get the deck type
-     * @return  decktype
+     * @return  deckType
      */
     public DeckType getDecktType(){
         return this.deckType;
@@ -40,33 +49,6 @@ public class Deck {
      */
     public void shuffle(){
         Collections.shuffle(cards);
-    }
-
-
-    /**
-     * method that creates the deck
-     * @param deckType  type of the cards
-     * @return  cards, a list of cards of the deck
-     */
-    public List<Card> initialize(DeckType deckType){
-        cards = deckFactory.setDeck(deckType);
-        this.deckType = deckType;
-        return cards;
-    }
-
-
-    /**
-     * draw(remove) a card from the top of the deck and add it in the cards of the player
-     * @param playerOwner   the player who draws the card
-     */
-    public void drawPowerUp(Player playerOwner){
-        if(cards.get(0) instanceof PowerUp) {
-            playerOwner.getPowerUps().add((PowerUp) cards.get(0));
-            cards.remove(0);
-        }
-        else {
-            //TODO: ECCEZIONE
-        }
     }
 
 

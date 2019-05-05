@@ -28,6 +28,13 @@ public class PowerUp extends Card {
      */
     public PowerUp (int idCard, DeckType cardType, AmmoType ammo, String name, String description, PowerUpEffect powerUpEffect) {
         super(idCard, cardType);
+        if(name == null)
+            throw new NullPointerException("the `name` must be not null");
+        if(description == null)
+            throw new NullPointerException("the `description` must be not null");
+        if(powerUpEffect == null)
+            throw new NullPointerException("the powerUpEffect cannot be null");
+
         this.name  = name;
         this.description = description;
         this.gainAmmoColor = ammo;
@@ -55,7 +62,7 @@ public class PowerUp extends Card {
 
     /**
      *Get the ammo color in the PowerUp card
-     * @return      ammotype ammo color
+     * @return      ammoType ammo color
      */
     public AmmoType getGainAmmoColor (){
         return gainAmmoColor;
