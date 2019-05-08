@@ -35,7 +35,7 @@ public class WeaponCard extends Card {
         this.description = description;
         this.reloadCost = reloadCost;
         weaponEffects = new ArrayList<>();
-        pathOfEffectFile = new File("").getAbsolutePath()+"\\resoruces\\json\\weaponeff\\"+effectFileName;
+        pathOfEffectFile = new File("").getAbsolutePath()+"\\resources\\json\\weaponeff\\"+effectFileName;
         WeaponEffect effBase = new WeaponEffect(pathOfEffectFile);
         weaponEffects.add(effBase);
     }

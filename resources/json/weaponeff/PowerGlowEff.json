@@ -1,4 +1,4 @@
-{{
+{
 	"effect":{
 		"dmg":1,
 		"mark":2,
@@ -9,13 +9,13 @@
 	"must_move":{
 		"move_target":0,
 		"move_target_aoe_end": "none",
-		"move_yourself":1
-		"move_yoruself_aoe_end": "target_square",
+		"move_yourself":1,
+		"move_yoruself_aoe_end": "target_square"
 	},
 	"optional_move":{
 		"move_target":0,
 		"move_target_aoe_end": "none",
-		"move_yourself":0
-		"move_yoruself_aoe_end": "none",
+		"move_yourself":0,
+		"move_yoruself_aoe_end": "none"
 	}
 }

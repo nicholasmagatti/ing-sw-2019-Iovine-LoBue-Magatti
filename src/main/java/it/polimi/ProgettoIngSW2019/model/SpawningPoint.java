@@ -22,8 +22,8 @@ public class SpawningPoint extends Square {
      * @param isBlockedAtSouth identify if there is a wall at its down
      * @Author: Luca Iovine
      */
-    public SpawningPoint(int idRoom, Boolean isBlockedAtWest, Boolean isBlockedAtEast, Boolean isBlockedAtNorth, Boolean isBlockedAtSouth) {
-        super(idRoom, isBlockedAtWest, isBlockedAtEast, isBlockedAtNorth, isBlockedAtSouth);
+    public SpawningPoint(int idRoom, Boolean isBlockedAtNorth, Boolean isBlockedAtEast, Boolean isBlockedAtSouth, Boolean isBlockedAtWest) {
+        super(idRoom, isBlockedAtNorth, isBlockedAtEast, isBlockedAtSouth, isBlockedAtWest);
         weaponCards = new ArrayList<>();
     }
 
@@ -63,11 +63,7 @@ public class SpawningPoint extends Square {
      * @Author: Luca Iovine
      */
     public void swapWeaponsOnSpawnPoint(WeaponCard cardToGrab, WeaponCard cardToFree){
-        WeaponCard cardGrabbed = cardToGrab;
-        for(WeaponCard w: weaponCards){
-            if(cardToGrab == w){
-                w = cardToFree;
-            }
-        }
+        weaponCards.remove(cardToGrab);
+        weaponCards.add(cardToFree);
     }
 }

@@ -32,7 +32,7 @@ public abstract class Square {
      * @param isBlockedAtSouth identify if there is a wall at its down
      * @Author: Luca Iovine
      */
-    Square(int idRoom, Boolean isBlockedAtWest, Boolean isBlockedAtEast, Boolean isBlockedAtNorth, Boolean isBlockedAtSouth){
+    Square(int idRoom, Boolean isBlockedAtNorth, Boolean isBlockedAtEast, Boolean isBlockedAtSouth, Boolean isBlockedAtWest){
         this.idRoom = idRoom;
         this.isBlockedAtEast = isBlockedAtEast;
         this.isBlockedAtWest = isBlockedAtWest;

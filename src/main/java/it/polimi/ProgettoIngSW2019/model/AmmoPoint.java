@@ -18,8 +18,8 @@ public class AmmoPoint extends Square {
      * @param isBlockedAtSouth identify if there is a wall at its down
      * @Author: Luca Iovine
      */
-    public AmmoPoint(int idRoom, Boolean isBlockedAtWest, Boolean isBlockedAtEast, Boolean isBlockedAtNorth, Boolean isBlockedAtSouth) {
-        super(idRoom, isBlockedAtWest, isBlockedAtEast, isBlockedAtNorth, isBlockedAtSouth);
+    public AmmoPoint(int idRoom, Boolean isBlockedAtNorth, Boolean isBlockedAtEast, Boolean isBlockedAtSouth, Boolean isBlockedAtWest) {
+        super(idRoom, isBlockedAtNorth, isBlockedAtEast, isBlockedAtSouth, isBlockedAtWest);
     }
 
     /**
