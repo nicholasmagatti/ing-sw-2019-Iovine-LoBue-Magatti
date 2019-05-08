@@ -197,6 +197,7 @@ public abstract class Square {
      *
      * @param board the actual map that is used
      */
+    //TODO: make sure not to have problem in case of squares set as null
     public void setDependency(Square[][] board){
         try {
             int[] axis = getCoordinates(board);

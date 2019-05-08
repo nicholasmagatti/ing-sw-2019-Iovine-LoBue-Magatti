@@ -13,9 +13,17 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class TestAmmoBox {
 
+    private AmmoBox ammoBox;
+
+    @Before
+    public void setUp(){
+        ammoBox  = new AmmoBox();
+    }
+
+
     @Test
     public void testMaxCapacity(){
-        AmmoBox ammoBox  = new AmmoBox();
+
         for(int i=0; i < 7; i++) {
             ammoBox.addWhenPossible(AmmoType.BLUE);
             ammoBox.addWhenPossible(AmmoType.RED);

@@ -11,6 +11,8 @@ public class TurnManager{
 
     private GameTable gameTable;
     private Player currentPlayer;
+    //TODO:add to uml
+    private int actionsLeftForThisTurn;
 
     /**
      * Constructor
@@ -38,6 +40,40 @@ public class TurnManager{
 
     }
 
+    /**
+     * Set the number of actions available to this player on this turn
+     * @param num - number of actions available to this player on this turn
+     */
+    //TODO: add to uml
+    public void setNrActionsForTurn(int num){
+        actionsLeftForThisTurn = num;
+    }
+
+    /**
+     * Decrease the number of actions left to this player for the current turn
+     */
+    //TODO: add to uml
+    public void decreaseActionsLeft(){
+        actionsLeftForThisTurn--;
+    }
+
+    /**
+     * Return the player whom this turn is
+     * @return the player whom this turn is
+     */
+    //TODO: add to uml
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    /**
+     * Return the number of actions left to the current player for this turn
+     * @return number of actions left to the current player for this turn
+     */
+    //TODO: add to uml
+    public int getActionsLeft(){
+        return actionsLeftForThisTurn;
+    }
     /**
      * Convert the name of the character in the actual player if present,
      * return null otherwise

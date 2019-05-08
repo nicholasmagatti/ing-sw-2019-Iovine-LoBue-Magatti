@@ -29,7 +29,7 @@ public class Player{
     private List<WeaponCard> loadedWeapons = new ArrayList<>();
     private List<WeaponCard> unloadedWeapons = new ArrayList<>();
     private List<PowerUp> powerUps = new ArrayList<>();
-    private boolean startingPlayer;
+    //TODO: delete startingPlayer from uml
     private AmmoBox ammoBox = new AmmoBox();
     private boolean active = true;
 
@@ -37,11 +37,11 @@ public class Player{
     /**
      * Constructor
      */
-    public Player(int idPlayer, String charaName, GameTable gameTable, boolean startingPlayer){
+    //TODO: update UML
+    public Player(int idPlayer, String charaName, GameTable gameTable){
         this.idPlayer = idPlayer;
         this.charaName = charaName;
         this.gameTable = gameTable;
-        this.startingPlayer = startingPlayer;
     }
 
     /**
@@ -97,7 +97,12 @@ public class Player{
      * @return true if the player is the starting player, false otherwise
      */
     public boolean isStartingPlayer(){
-        return startingPlayer;
+        if(idPlayer == 0){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     /**
@@ -179,17 +184,26 @@ public class Player{
 
     /**
      * This player marks another player, but wasting the marks that exceed the limit of three marks from this player
-     * @param nrMark - number of marks
+     * @param nrMarks - number of marks
      * @param targetPlayer
      */
-    public void markPlayer(int nrMark, Player targetPlayer){
+    public void markPlayer(int nrMarks, Player targetPlayer){
+        if(nrMarks < 0){
+            throw new IllegalArgumentException("Number of marks to assign cannot be negative.");
+        }
+        if(targetPlayer == this){
+            throw new IllegalArgumentException("A player cannot mark him/herself");
+        }
+        if(targetPlayer == null){
+            throw new NullPointerException("A player is trying to mark but the target is null.");
+        }
         int myMarksOnTarget = 0;
         for(String mark : targetPlayer.getMarkLine()){
             if(mark.equals(charaName)){
                 myMarksOnTarget++;
             }
         }
-        for(int i=0; i < nrMark && myMarksOnTarget < 3; i++, myMarksOnTarget++){
+        for(int i=0; i < nrMarks && myMarksOnTarget < 3; i++, myMarksOnTarget++){
             targetPlayer.markLine.add(charaName);
         }
     }
@@ -350,6 +364,15 @@ public class Player{
     }
 
     /**
+     * Right after using the effect of a weapon, set that weapon as unloaded.
+     * @param weapon
+     */
+    public void unloadWeaponAfterUse(WeaponCard weapon){
+        unloadedWeapons.add(weapon);
+        loadedWeapons.remove(weapon);
+    }
+
+    /**
      * Get loaded weapons (that are only visible to their own player)
      * @return loaded weapons
      */
@@ -434,5 +457,14 @@ public class Player{
     public void reactivatePlayer(){
         active = true;
         gameTable.increaseNumberOfActivePlayers();
+    }
+
+    //TODO: add in UML
+    /**
+     * Return the square on which the player is
+     * @return the square
+     */
+    public Square getPosition() {
+        return square;
     }
 }

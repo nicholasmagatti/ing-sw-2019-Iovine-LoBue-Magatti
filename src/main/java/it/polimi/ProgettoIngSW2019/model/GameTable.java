@@ -19,20 +19,50 @@ public class GameTable{
     private Deck powerUpDeck = new Deck(DeckType.POWERUP_CARD);
     private Deck ammoDeck = new Deck(DeckType.AMMO_CARD);
     private List<PowerUp> powerUpDiscarded = new ArrayList<>();
-    private List<AmmoType> ammoDiscarded = new ArrayList<>();
-    private Square[][] map = new Square[4][3];
-    private List<KillToken> killshotTrack;
+    //TODO: update on uml
+    private List<AmmoCard> ammoDiscarded = new ArrayList<>();
+    //[][] indicate row and column respectively ([row][column])
+    private Square[][] map;
+    private List<KillToken> killshotTrack = new ArrayList<>();
     private int numberOfSkullsForTheGame; //between 5 and 8, chosen by the first user
     private boolean frenzyMode = false;
 
     /**
      * Constructor
      * Set the map and the number of skulls(spaces available on the killshotTrack for tokens) as the first user requested
-     * @param idMap - identifier of the map requested
+     * @param chosenMap - requested map
      * @param initialNumberOfSkulls - number of skulls requested
      */
-    public GameTable(int idMap, int initialNumberOfSkulls){
+    //TODO: update on uml
+    public GameTable(Square[][] chosenMap, int initialNumberOfSkulls){
+        if(initialNumberOfSkulls < 5 || initialNumberOfSkulls > 8){
+            throw new IllegalArgumentException("The number of skulls for the game is " + initialNumberOfSkulls +
+                    " but should be between 5 and 8.");
+        }
+        numberOfSkullsForTheGame = initialNumberOfSkulls;
+        map = chosenMap;
+        //set dependencies for every square of the map
+        for(int i=0; i < 3; i++){
+            for(int j=0; j < 4; j++){
+                if(map[i][j] != null){
+                    map[i][j].setDependency(map);
+                }
+            }
+        }
+    }
 
+    /**
+     * Set the players for the game, before its begin
+      * @param listOfNames - ordered list of names of the players to create
+     */
+    //TODO: add to UML
+    public void setPlayersBeforeStart(List<String> listOfNames) {
+        numberOfPlayers = listOfNames.size();
+        activePlayers = numberOfPlayers;
+        players = new Player[numberOfPlayers];
+        for(int i=0; i < numberOfPlayers; i++){
+            players[i] = new Player(i, listOfNames.get(i), this);
+        }
     }
 
     /**
@@ -57,6 +87,24 @@ public class GameTable{
      */
     public Deck getAmmoDeck() {
         return ammoDeck;
+    }
+
+    /**
+     * Get the list of discarded powerups
+     * @return list of discarded powerups
+     */
+    //TODO: add to uml
+    public List<PowerUp> getPowerUpDiscarded() {
+        return powerUpDiscarded;
+    }
+
+    /**
+     * Get the list of discarded ammo cards
+     * @return list of discarded ammo cards
+     */
+    //TODO: add to uml
+    public List<AmmoCard> getAmmoDiscarded() {
+        return ammoDiscarded;
     }
 
     /**
@@ -99,25 +147,6 @@ public class GameTable{
      */
     public Square[][] getMap () {
         return map;
-    }
-
-    /**
-     * Get the coordinates of a square
-     * @param square
-     * @return position of the square
-     */
-    //TODO: if it turns out not to be useful, delete it
-    public int[] getPositionOfSquare(Square square){
-        int[] position = new int[2];
-        for(int i=0; i < 4; i++){
-            for (int j=0; j < 3; j++){
-                if(map[i][j] == square){
-                    position[0] = i;
-                    position[1] = j;
-                }
-            }
-        }
-        return position;
     }
 
     /**
