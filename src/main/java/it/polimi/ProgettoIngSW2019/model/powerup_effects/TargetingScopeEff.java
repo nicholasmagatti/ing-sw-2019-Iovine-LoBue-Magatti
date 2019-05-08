@@ -5,6 +5,7 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
 
 
+
 /**
  * Class effect Targeting Scope (powerUp)
  * @author Priscilla Lo Bue

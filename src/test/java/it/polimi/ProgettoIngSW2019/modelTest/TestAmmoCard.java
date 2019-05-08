@@ -11,7 +11,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 
-public class AmmoCardTest {
+public class TestAmmoCard {
     private AmmoCard ammoCard1;
     private AmmoCard ammoCard2;
 

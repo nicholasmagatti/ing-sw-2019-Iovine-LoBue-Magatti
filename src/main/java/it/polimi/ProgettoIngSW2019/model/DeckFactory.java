@@ -150,6 +150,8 @@ public class DeckFactory {
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "SLEDGEHAMMER", "", Arrays.asList(AmmoType.YELLOW), "SledgeHammerEff.json"));
                 break;
 
+             default:
+                 throw new IllegalArgumentException("It is not passed a DeckType");
         }
         return deck;
     }

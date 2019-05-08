@@ -2,7 +2,11 @@ package it.polimi.ProgettoIngSW2019.model.powerup_effects;
 
 import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.model.Square;
+import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.model.enums.AreaOfEffect;
+
+import java.util.List;
 
 
 /**
@@ -10,7 +14,7 @@ import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
  * @author Priscilla Lo Bue
  */
 public class TagbackGrenadeEff implements PowerUpEffect {
-
+    DistanceDictionary d;
 
     /**
      * the effect of the card
@@ -22,5 +26,22 @@ public class TagbackGrenadeEff implements PowerUpEffect {
     @Override
     public void activateEffect(AmmoType ammoDiscard, Player playerTarget, Player playerOwner, Square position){
         playerOwner.markPlayer(1, playerTarget);
+    }
+
+
+    /**
+     * Check if the powerUp can be activated.
+     * The target must be visible from the owner
+     * @param playerOwner       player who use the effect of the powerUp
+     * @param playerTarget      player target of the powerUp effect
+     * @return                  a boolean, if the target is visible
+     */
+    public boolean canSeeTarget(Player playerOwner, Player playerTarget) {
+        Square positionOwner = playerOwner.getPosition();
+        Square positionTarget = playerTarget.getPosition();
+
+        List<Square> posCanSee = d.getTargetPosition(AreaOfEffect.CAN_SEE, positionOwner);
+
+        return posCanSee.contains(positionTarget);
     }
 }
