@@ -13,11 +13,12 @@ import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
 public class GameTable{
 
     private Player[] players;
-    private int numberOfPlayers;
+    //TODO: delete numberOfPlayers from uml
     private int activePlayers;
-    private Deck weaponDeck = new Deck(DeckType.WEAPON_CARD);
-    private Deck powerUpDeck = new Deck(DeckType.POWERUP_CARD);
-    private Deck ammoDeck = new Deck(DeckType.AMMO_CARD);
+    //the decks are sill not shuffled: they will be shuffled in the constructor
+    private Deck weaponDeck;
+    private Deck powerUpDeck;
+    private Deck ammoDeck;
     private List<PowerUp> powerUpDiscarded = new ArrayList<>();
     //TODO: update on uml
     private List<AmmoCard> ammoDiscarded = new ArrayList<>();
@@ -29,7 +30,8 @@ public class GameTable{
 
     /**
      * Constructor
-     * Set the map and the number of skulls(spaces available on the killshotTrack for tokens) as the first user requested
+     * Set the map and the number of skulls(spaces available on the killshotTrack for tokens) as the first user requested and
+     * also shuffle the three decks on the table
      * @param chosenMap - requested map
      * @param initialNumberOfSkulls - number of skulls requested
      */
@@ -40,6 +42,16 @@ public class GameTable{
                     " but should be between 5 and 8.");
         }
         numberOfSkullsForTheGame = initialNumberOfSkulls;
+
+        DeckFactory deckFactory = new DeckFactory();
+        weaponDeck = new Deck(DeckType.WEAPON_CARD, deckFactory);
+        powerUpDeck = new Deck(DeckType.POWERUP_CARD, deckFactory);
+        ammoDeck = new Deck(DeckType.AMMO_CARD, deckFactory);
+
+        weaponDeck.shuffle();
+        powerUpDeck.shuffle();
+        ammoDeck.shuffle();
+
         map = chosenMap;
         //set dependencies for every square of the map
         for(int i=0; i < 3; i++){
@@ -57,7 +69,7 @@ public class GameTable{
      */
     //TODO: add to UML
     public void setPlayersBeforeStart(List<String> listOfNames) {
-        numberOfPlayers = listOfNames.size();
+        int numberOfPlayers = listOfNames.size();
         activePlayers = numberOfPlayers;
         players = new Player[numberOfPlayers];
         for(int i=0; i < numberOfPlayers; i++){
@@ -117,10 +129,11 @@ public class GameTable{
 
     /**
      * Get the number of the players on the board (inactive players included)
+     * @deprecated //TODO delete this but ONLY when I am sure that both my team mates removed it everywhere (in the code they haven't committed yet)
      * @return number of the players on the board
      */
     public int getNumberOfPlayers() {
-        return numberOfPlayers;
+        return players.length;
     }
 
     /**
@@ -140,6 +153,44 @@ public class GameTable{
         return killshotTrack.size() == numberOfSkullsForTheGame;
     }
 
+    /**
+     * Get list of character names in order of first hit on the killshot track
+     * @return list of character names in order of first hit on the killshot track
+     */
+    //TODO: add to uml
+    public List<String> namesOnKillshotTrackInOrderOfFirstHit(){
+        List<String> list = new ArrayList<>();
+        String tmp;
+        for(KillToken element : killshotTrack){
+            tmp = element.getCharacterName();
+            if(!list.contains(tmp)){
+                list.add(tmp);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * Number of tokens on the killshot track belonging to the specified player,
+     * considering that a KillToken with overkill worths as two tokens.
+     * @param player - player whose this tokens belongs to
+     * @return
+     */
+    //TODO: add to uml
+    public int tokensOnKillshotTrackBelongingTo(Player player){
+        int nrTokens = 0;
+        for(KillToken element : killshotTrack){
+            if(player.getCharaName().equals(element.getCharacterName())){
+                if(element.isOverkill()){
+                    nrTokens += 2;
+                }
+                else {
+                    nrTokens += 1;
+                }
+            }
+        }
+        return nrTokens;
+    }
 
     /**
      * Get the map of the game table(composed by squares)

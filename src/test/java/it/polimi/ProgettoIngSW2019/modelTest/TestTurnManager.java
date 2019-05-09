@@ -8,12 +8,13 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Nichoals Magatti
  */
-//TODO: test this
+
 public class TestTurnManager {
 
     private TurnManager turnManager;
@@ -25,21 +26,29 @@ public class TestTurnManager {
     public void setUp(){
         maps = new Maps();
         gameTable = new GameTable(maps.getMap4(),5);
+        List<String> names = new ArrayList<>();
+        names.add("Nome1");
+        names.add("Nome2");
+        names.add("Nome3");
+        names.add("Nome4");
+        gameTable.setPlayersBeforeStart(names);
         turnManager = new TurnManager(gameTable);
-        player1 = new Player(0, "Nome1", gameTable);
-        player2 = new Player(1, "Nome2", gameTable);
-        player3 = new Player(2, "Nome3", gameTable);
-        player4 = new Player(3, "Nome4", gameTable);
     }
 
     @Test
     public void checkDeadPlayersCorrectly(){
+
+            Player player1 = gameTable.getPlayers()[0];
+            Player player2 = gameTable.getPlayers()[1];
+            Player player3 = gameTable.getPlayers()[2];
+            Player player4 = gameTable.getPlayers()[3];
 
             player2.dealDamage(11, player1);
             player2.dealDamage(11, player3);
 
             List<Player> deadPlayersFound = turnManager.checkDeadPlayers();
 
+            assertEquals(2, deadPlayersFound.size());
             assertTrue(deadPlayersFound.contains(player1));
             assertTrue(deadPlayersFound.contains(player3));
 

@@ -1,10 +1,12 @@
 package it.polimi.ProgettoIngSW2019.modelTest;
 
-import it.polimi.ProgettoIngSW2019.model.GameTable;
-import it.polimi.ProgettoIngSW2019.model.Maps;
-import it.polimi.ProgettoIngSW2019.model.Player;
+import it.polimi.ProgettoIngSW2019.model.*;
+import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -16,6 +18,7 @@ public class TestPlayer {
     private GameTable gameTable;
     private Maps maps = new Maps();
     private Player player1, player2, player3, player4;
+    private AmmoPoint ammoPoint1, ammoPoint2, ammoPoint3;
 
     @Before
     public void setUp(){
@@ -24,6 +27,15 @@ public class TestPlayer {
         player2 = new Player(1, "Nome2", gameTable);
         player3 = new Player(2, "Nome3", gameTable);
         player4 = new Player(3, "Nome4", gameTable);
+
+        ammoPoint1 = new AmmoPoint(3, true, true, true, true);
+        ammoPoint2 = new AmmoPoint(3, true, true, true, true);
+        ammoPoint3 = new AmmoPoint(3, true, true, true, true);
+
+        ammoPoint1.reset(gameTable.getAmmoDeck());
+        ammoPoint2.reset(gameTable.getAmmoDeck());
+        ammoPoint3.reset(gameTable.getAmmoDeck());
+
     }
 
     @Test
@@ -87,5 +99,100 @@ public class TestPlayer {
         //this time the damaged player should be still alive
         player1.dealDamage(6, player4);
         assertFalse(player4.isPlayerDown());
+    }
+
+    @Test
+    public void tryToGrabAmmoFromSpawnPoint(){
+        player1.moveTo(new SpawningPoint(0, true, true, true, true));
+        try{
+            player1.grabAmmoCardFromThisSquare();
+            fail();
+        }
+        catch (RuntimeException e){
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void tryToGrabAmmoOnAmmoPointWhenEmpty(){
+        player1.moveTo(ammoPoint1);
+        player1.grabAmmoCardFromThisSquare();
+        //now it is empty and the player tries to grab again from the same square (something that should never happen)
+        try{
+            player1.grabAmmoCardFromThisSquare();
+            fail();
+        }
+        catch (NullPointerException e){
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void testHasEnoughAmmoAtStart(){
+
+        //at first, the player has 1 of each color
+        List<AmmoType> listOfAmmo = new ArrayList<>();
+        //the list is empty
+        assertTrue(player1.hasEnoughAmmo(listOfAmmo));
+        //other way to say the ammo to spend is nothing, is using null as parameter
+        assertTrue(player1.hasEnoughAmmo(null));
+        //fill the listOfAmmo
+        listOfAmmo.add(AmmoType.BLUE);
+        assertTrue(player1.hasEnoughAmmo(listOfAmmo));
+        listOfAmmo.add(AmmoType.YELLOW);
+        listOfAmmo.add(AmmoType.RED);
+        //1b, 1r, 1y
+        assertTrue(player1.hasEnoughAmmo(listOfAmmo));
+        listOfAmmo.add(AmmoType.RED);
+        assertFalse(player1.hasEnoughAmmo(listOfAmmo));
+        listOfAmmo.add(AmmoType.YELLOW);
+        listOfAmmo.add(AmmoType.BLUE);
+        //2b, 2r, 2y
+        assertFalse(player1.hasEnoughAmmo(listOfAmmo));
+        listOfAmmo.remove(AmmoType.RED);
+        assertFalse(player1.hasEnoughAmmo(listOfAmmo));
+        listOfAmmo.remove(AmmoType.YELLOW);
+        listOfAmmo.remove(AmmoType.BLUE);
+        //1b, 1r, 1y
+        assertTrue(player1.hasEnoughAmmo(listOfAmmo));
+        listOfAmmo.add(AmmoType.BLUE);
+        //2b, 1r, 1y
+        assertFalse(player1.hasEnoughAmmo(listOfAmmo));
+
+        //now the player get more ammo
+        player1.moveTo(ammoPoint1);
+        player1.grabAmmoCardFromThisSquare();
+        player1.moveTo(ammoPoint2);
+        player1.grabAmmoCardFromThisSquare();
+        player1.moveTo(ammoPoint3);
+        player1.grabAmmoCardFromThisSquare();
+
+        //reset the list to an empty list
+        listOfAmmo = new ArrayList<>();
+
+        for(int i=0; i < player1.getBlueAmmo(); i++){
+            listOfAmmo.add(AmmoType.BLUE);
+        }
+        for (int i=0; i < player1.getRedAmmo(); i++){
+            listOfAmmo.add(AmmoType.RED);
+        }
+        for(int i=0; i < player1.getYellowAmmo(); i++){
+            listOfAmmo.add(AmmoType.YELLOW);
+        }
+        //the player should have exactly
+        assertTrue(player1.hasEnoughAmmo(listOfAmmo));
+        listOfAmmo.add(AmmoType.YELLOW);
+        assertFalse(player1.hasEnoughAmmo(listOfAmmo));
+        listOfAmmo.remove(AmmoType.YELLOW);
+        listOfAmmo.remove(AmmoType.YELLOW);
+        assertTrue(player1.hasEnoughAmmo(listOfAmmo));
+
+        //reset the list again
+        listOfAmmo = new ArrayList<>();
+        //add 4 units of blue ammo (the player can never have more that 3 units for each color)
+        for(int i=0; i < 4; i++) {
+            listOfAmmo.add(AmmoType.RED);
+        }
+        assertFalse(player1.hasEnoughAmmo(listOfAmmo));
     }
 }

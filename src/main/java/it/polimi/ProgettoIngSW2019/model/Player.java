@@ -77,6 +77,24 @@ public class Player{
     }
 
     /**
+     * Increase by one the number of skulls of this player, that represent the number of times he/she has died.
+     * WARNING: this has to be done only after scoring the damage line of this player
+     */
+    //TODO: add to uml
+    public void increaseNumberOfSkulls(){
+        numberOfSkulls++;
+    }
+
+    /**
+     * Reset to zero the number of skulls on the player
+     */
+    //TODO: evaluate if it is used, if not, remove it
+    //TODO: add to uml
+    public void resetNumberOfSkullsToZero(){
+        numberOfSkulls = 0;
+    }
+
+    /**
      * Return the damage line of the player
      * @return the damage line of the player
      */
@@ -239,13 +257,40 @@ public class Player{
     }
 
     /**
+     * @deprecated
      * Get the ammo box
      * @return ammo box
      */
+    //TODO: remove it, unless someone tells me a good reason to keep it (but make sure nobody will never need it!!)
     public AmmoBox getAmmoBox() {
         return ammoBox;
     }
 
+    /**
+     * Get the quantity of blue ammo in the ammo box
+     * @return quantity of blue ammo in the ammo box
+     */
+    //TODO: add to uml
+    public int getBlueAmmo(){
+        return ammoBox.getBlueAmmo();
+    }
+    /**
+     * Get the quantity of red ammo in the ammo box
+     * @return quantity of red ammo in the ammo box
+     */
+    //TODO: add to uml
+    public int getRedAmmo(){
+        return ammoBox.getRedAmmo();
+    }
+
+    /**
+     * Get the quantity of yellow ammo in the ammo box
+     * @return quantity of yellow ammo in the ammo box
+     */
+    //TODO: add to uml
+    public int getYellowAmmo(){
+        return ammoBox.getYellowAmmo();
+    }
     /**
      * Add the specified ammo to the ammo box
      * @param list - ammo to add
@@ -264,6 +309,9 @@ public class Player{
     private void grabAmmoCardFromAmmoPoint(AmmoPoint ammoPoint){
 
         AmmoCard grabbedCard = ammoPoint.grabCard();
+        if(grabbedCard == null){
+            throw new NullPointerException("The player should not even try to grab an ammo card from an Ammo point without a card on it");
+        }
         addAmmo(grabbedCard.getAmmo());
 
         if(grabbedCard.hasPowerUp()){
@@ -287,9 +335,15 @@ public class Player{
         }
     }
 
+    /**
+     * Get a weapon from a spawnpoint, paying its cost
+     * @param cardToGet - weapon to buy
+     * @param cardToLeave - weapon to leave if the player already has one, it is null otherwise
+     */
     public void grabWeapon(WeaponCard cardToGet, WeaponCard cardToLeave){
         if(square instanceof SpawningPoint){
             loadedWeapons.add(cardToGet);
+            discardAmmo(cardToGet.getBuyCost());
             if(cardToLeave == null) {
                 ((SpawningPoint) square).removeWeaponFromSpawnPoint(cardToGet);
             }
@@ -298,7 +352,7 @@ public class Player{
             }
         }
         else{
-            throw new RuntimeException("Trying to grab a weapon from an a mmo point");
+            throw new RuntimeException("Trying to grab a weapon from an ammo point");
         }
     }
 
@@ -327,6 +381,11 @@ public class Player{
      * @return true if the player can spend that ammo, false otherwise
      */
     public boolean hasEnoughAmmo(List<AmmoType> ammoToSpend){
+        //if the ammoToSpend is zero, it can indicated as null or as an empty list
+        if (ammoToSpend == null || ammoToSpend.isEmpty()){
+            return true;
+        }
+        //otherwise:
         int blueToSpend = 0;
         int redToSpend = 0;
         int yellowToSpend = 0;
@@ -409,6 +468,14 @@ public class Player{
             }
         }
         return list;
+    }
+
+    /**
+     * Remove all damage from the damage line
+     */
+    //TODO: add to UML
+    public void emptyDamageLine(){
+        damageLine = new ArrayList<>();
     }
 
     /**

@@ -6,7 +6,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-//TODO: test this
 public class TestGameTable {
 
     private GameTable gameTable;
