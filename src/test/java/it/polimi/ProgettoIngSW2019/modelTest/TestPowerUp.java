@@ -1,4 +1,4 @@
-package java.it.polimi.ProgettoIngSW2019.modelTest;
+package it.polimi.ProgettoIngSW2019.modelTest;
 
 import it.polimi.ProgettoIngSW2019.model.PowerUp;
 import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;

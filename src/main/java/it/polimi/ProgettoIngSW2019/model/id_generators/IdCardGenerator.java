@@ -14,4 +14,6 @@ public class IdCardGenerator {
     public int generateId() {
         return id++;
     }
+
+
 }

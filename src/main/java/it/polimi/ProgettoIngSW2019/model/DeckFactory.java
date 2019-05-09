@@ -18,7 +18,7 @@ import java.util.List;
  * @author Priscilla Lo Bue
  */
 public class DeckFactory {
-    private List<Card> deck = new ArrayList<>();
+    private List<Card> deck;
     private IdCardGenerator idCardGenerator = new IdCardGenerator();
 
     private static final String TAGBACK_GRENADE = "TAGBACK GRENADE";
@@ -42,6 +42,7 @@ public class DeckFactory {
     public List<Card> setDeck(DeckType deckType){
         switch(deckType){
             case AMMO_CARD:
+                deck = new ArrayList<>();
                 //36 ammo cards: 12 with 3 ammo and 12 with 2 ammo and one powerUp
                 //18 ammo cards with 3 ammo
                 deck.add(new AmmoCard(idCardGenerator.generateId(), DeckType.AMMO_CARD, AmmoType.YELLOW, AmmoType.BLUE, AmmoType.BLUE));
@@ -89,7 +90,7 @@ public class DeckFactory {
 
 
             case POWERUP_CARD:
-
+                deck = new ArrayList<>();
                 //24 powerUps cards, 4 PowerUps, 4 color x2
                 //6 TagBack grenade
                 deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
@@ -126,7 +127,7 @@ public class DeckFactory {
 
 
             case WEAPON_CARD:
-
+                deck = new ArrayList<>();
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "LOCK RIFLE", "", Arrays.asList(AmmoType.BLUE, AmmoType.BLUE), "LockRifleEff.json"));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "ELECTROSCYTHE", "", Arrays.asList(AmmoType.BLUE), "ElectroSchyteEff.json"));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "MACHINE GUN", "", Arrays.asList(AmmoType.BLUE, AmmoType.RED), "MachineGunEff.json"));

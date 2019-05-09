@@ -42,6 +42,7 @@ public class PowerUp extends Card {
     }
 
 
+
     /**
      * get the name of the powerUp card
      * @return  name, a string
@@ -49,6 +50,7 @@ public class PowerUp extends Card {
     public String getName () {
         return name;
     }
+
 
 
     /**
@@ -60,6 +62,7 @@ public class PowerUp extends Card {
     }
 
 
+
     /**
      *Get the ammo color in the PowerUp card
      * @return      ammoType ammo color
@@ -67,6 +70,7 @@ public class PowerUp extends Card {
     public AmmoType getGainAmmoColor (){
         return gainAmmoColor;
     }
+
 
 
     /**
@@ -77,5 +81,11 @@ public class PowerUp extends Card {
         String msg;
         msg = "Name: " + getName() + "\nDescription: " + getDescription() + "\nAmmo: " + this.getGainAmmoColor();
         return msg;
+    }
+
+
+
+    public PowerUpEffect getPowerUpEffect() {
+        return powerUpEffect;
     }
 }

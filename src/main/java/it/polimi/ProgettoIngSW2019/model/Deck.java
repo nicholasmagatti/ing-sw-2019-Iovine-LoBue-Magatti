@@ -19,8 +19,10 @@ public class Deck {
      * method that creates the deck
      * @param deckType  type of the cards
      */
-    public Deck (DeckType deckType){
-        DeckFactory deckFactory = new DeckFactory();
+    public Deck (DeckType deckType, DeckFactory deckFactory){
+        if(deckFactory == null)
+            throw new NullPointerException("deckFactory must not be null");
+
         this.cards = deckFactory.setDeck(deckType);
         this.deckType = deckType;
     }
