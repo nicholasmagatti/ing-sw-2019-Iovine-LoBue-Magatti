@@ -142,7 +142,7 @@ public class PlayerChoiceState extends Observable<UserInputMessage> implements I
             System.out.println("Target nello square: " + i);
         }
 
-        if(targetPerSquare == "all"){
+        if(targetPerSquare.equals("all")){
             System.out.println("Verranno colpiti tutti i target nel quadrato");
             //TODO: costruire messaggio con gli id dei player da colpire
         }

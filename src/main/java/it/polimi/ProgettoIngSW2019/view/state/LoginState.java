@@ -4,6 +4,8 @@ import it.polimi.ProgettoIngSW2019.common.message.ConnectionMessage;
 import it.polimi.ProgettoIngSW2019.utilities.Observable;
 import it.polimi.ProgettoIngSW2019.utilities.Observer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class LoginState extends Observable<ConnectionMessage> implements IState, Observer<Boolean>{
@@ -26,7 +28,12 @@ public class LoginState extends Observable<ConnectionMessage> implements IState,
         System.out.println("\nChe piacere "+name+"!");
         System.out.println("Ora verrai indirizzato nella sala d'attesa, sai bisogna essere almeno in 3 per giocare");
 
-        connectionMsg = new ConnectionMessage(name);
+        try {
+            connectionMsg = new ConnectionMessage(name, InetAddress.getLocalHost().getHostAddress());
+        }catch(UnknownHostException e){
+            System.out.println("Error: unknown host");
+        }
+
         notify(connectionMsg);
 
         //TODO: recuperare se è il primo utente o meno
@@ -36,7 +43,7 @@ public class LoginState extends Observable<ConnectionMessage> implements IState,
             stateContext.startMenu();
         }
         else{
-            stateContext.setState(new SetupGameState());
+            stateContext.setState(new WaitState());
             stateContext.startMenu();
         }
 
