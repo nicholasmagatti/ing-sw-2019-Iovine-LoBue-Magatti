@@ -8,7 +8,7 @@ public class SpawnVirtualView extends Observable<SpawnMessage> implements IUserI
 
     @Override
     public void sendData(SpawnMessage msg) {
-
+        notify(msg);
     }
 
     @Override

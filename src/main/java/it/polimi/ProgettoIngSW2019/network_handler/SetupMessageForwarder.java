@@ -5,7 +5,7 @@ import it.polimi.ProgettoIngSW2019.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.virtual_view.ISetupVirtualView;
 
 public class SetupMessageForwarder implements Observer<SetupMessage> {
-    ISetupVirtualView setupVirtualView;
+    private ISetupVirtualView setupVirtualView;
 
     public SetupMessageForwarder(ISetupVirtualView setupVirtualView){
         this.setupVirtualView = setupVirtualView;
@@ -13,6 +13,6 @@ public class SetupMessageForwarder implements Observer<SetupMessage> {
 
     @Override
     public void update(SetupMessage message) {
-
+        setupVirtualView.sendData(message);
     }
 }

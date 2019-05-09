@@ -7,7 +7,7 @@ import it.polimi.ProgettoIngSW2019.virtual_view.IUserInputVirtualView;
 import java.rmi.RemoteException;
 
 public class ShootMsgForwarder extends InputMessageForwarder {
-    IUserInputMsgForClient shootMsgForClient;
+    private IUserInputMsgForClient shootMsgForClient;
 
     public ShootMsgForwarder(IUserInputVirtualView userInputVirtualView, IUserInputMsgForClient shootMsgForClient) {
         super(userInputVirtualView);

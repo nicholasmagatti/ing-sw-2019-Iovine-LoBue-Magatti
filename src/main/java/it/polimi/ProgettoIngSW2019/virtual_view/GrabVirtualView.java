@@ -8,7 +8,7 @@ public class GrabVirtualView extends Observable<GrabMessage> implements IUserInp
 
     @Override
     public void sendData(GrabMessage msg){
-
+        notify(msg);
     }
 
     @Override

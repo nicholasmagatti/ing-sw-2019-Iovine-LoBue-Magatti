@@ -25,6 +25,25 @@ public class SpawnController implements Observer<SpawnMessage> {
     }
 
 
+
+    public Player getUserPlayerById(int idUserPlayer){
+        Player userPlayer;
+        userPlayer = gameTable.getPlayers()[idUserPlayer];
+
+        return userPlayer;
+    }
+
+
+
+    public PowerUp getPowerUpusedById(int idPowerUp){
+        PowerUp powerUp;
+        powerUp = spawnPlayer.getPowerUps().get(idPowerUp);
+
+        return powerUp;
+    }
+
+
+
     /**
      * Check if it's the spawnPlayer turn
      * if not -> exception
@@ -48,6 +67,7 @@ public class SpawnController implements Observer<SpawnMessage> {
     }
 
 
+
     public void spawnDrawTwoCards() {
         //spawnPlayer pesca due powerUp all'inizio del gioco per lo spawn
         PowerUp powerUp = (PowerUp) gameTable.getPowerUpDeck().drawCard();
@@ -55,6 +75,8 @@ public class SpawnController implements Observer<SpawnMessage> {
         powerUp = (PowerUp) gameTable.getPowerUpDeck().drawCard();
         spawnPlayer.getPowerUps().add(powerUp);
     }
+
+
 
     public void spawnDrawCard() {
         //azzero i danni subiti dallo spawnPlayer
@@ -65,6 +87,7 @@ public class SpawnController implements Observer<SpawnMessage> {
         spawnPlayer.getPowerUps().add(powerUp);
         //il player deve scegliere la carta da scartare
     }
+
 
 
     public void spawnIntoSquare() {
@@ -85,8 +108,8 @@ public class SpawnController implements Observer<SpawnMessage> {
         //appena lo trovo esco dai cicli
         outLoops:
         {
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 3; j++) {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 4; j++) {
                     spawnPos = gameTable.getMap()[i][j];
                     if ((spawnPos.getIdRoom() == idRoom) && (spawnPos instanceof SpawningPoint))
                         break outLoops;

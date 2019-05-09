@@ -6,8 +6,8 @@ package it.polimi.ProgettoIngSW2019.model.enums;
  */
 public enum AmmoType {
     RED(1),
-    BLUE(2),
-    YELLOW(3);
+    BLUE(3),
+    YELLOW(4);
 
     private int intValue;
 

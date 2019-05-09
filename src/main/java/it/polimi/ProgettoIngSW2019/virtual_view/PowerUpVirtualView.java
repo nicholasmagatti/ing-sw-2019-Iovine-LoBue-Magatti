@@ -8,7 +8,7 @@ public class PowerUpVirtualView extends Observable<PowerUpMessage> implements IU
 
     @Override
     public void sendData(PowerUpMessage msg) {
-
+        notify(msg);
     }
 
     @Override

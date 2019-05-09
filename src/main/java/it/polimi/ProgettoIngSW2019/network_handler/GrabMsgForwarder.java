@@ -11,6 +11,6 @@ public class GrabMsgForwarder extends InputMessageForwarder {
 
     @Override
     public void update(UserInputMessage message) {
-
+        userInputVirtualView.sendData(message);
     }
 }

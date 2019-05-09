@@ -14,6 +14,6 @@ public class ConnectionMessageForwarder extends Observable<Boolean> implements O
 
     @Override
     public void update(ConnectionMessage message) {
-
+        connectionVirtualView.sendData(message);
     }
 }

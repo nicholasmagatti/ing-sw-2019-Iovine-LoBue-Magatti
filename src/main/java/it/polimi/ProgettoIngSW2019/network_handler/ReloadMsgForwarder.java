@@ -11,6 +11,6 @@ public class ReloadMsgForwarder extends InputMessageForwarder {
 
     @Override
     public void update(UserInputMessage message) {
-
+        userInputVirtualView.sendData(message);
     }
 }

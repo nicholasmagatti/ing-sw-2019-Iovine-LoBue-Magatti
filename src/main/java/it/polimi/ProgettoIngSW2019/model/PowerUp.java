@@ -88,4 +88,11 @@ public class PowerUp extends Card {
     public PowerUpEffect getPowerUpEffect() {
         return powerUpEffect;
     }
+
+
+
+    public void usePowerUpEffect(AmmoType ammoDiscard, Player playerTarget, Player playerOwner, Square position) {
+        powerUpEffect.activateEffect(ammoDiscard, playerTarget, playerOwner, position);
+    }
+
 }

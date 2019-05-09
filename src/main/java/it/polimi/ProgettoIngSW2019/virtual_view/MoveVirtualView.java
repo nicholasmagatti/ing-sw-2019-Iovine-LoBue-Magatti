@@ -8,7 +8,7 @@ public class MoveVirtualView extends Observable<MoveMessage> implements IUserInp
 
     @Override
     public void sendData(MoveMessage msg) {
-
+        notify(msg);
     }
 
     @Override

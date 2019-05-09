@@ -14,9 +14,9 @@ public class NewtonEff implements PowerUpEffect {
     /**
      * the effect of the card
      * @param ammoDiscard           ammo to be discarded to do the effect (null)
-     * @param playerTarget          player target of the powerUp effect (null)
-     * @param playerOwner           player who use the effect of the powerUp
-     * @param position              a square, the final position (null)
+     * @param playerTarget          player target of the powerUp effect
+     * @param playerOwner           player who use the effect of the powerUp (null)
+     * @param position              a square, the final position
      */
     @Override
     public void activateEffect(AmmoType ammoDiscard, Player playerTarget, Player playerOwner, Square position){

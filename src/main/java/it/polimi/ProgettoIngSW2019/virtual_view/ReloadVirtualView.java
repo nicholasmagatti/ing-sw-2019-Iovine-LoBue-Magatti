@@ -8,7 +8,7 @@ public class ReloadVirtualView extends Observable<ReloadMessage> implements IUse
 
     @Override
     public void sendData(ReloadMessage msg) {
-
+        notify(msg);
     }
 
     @Override
