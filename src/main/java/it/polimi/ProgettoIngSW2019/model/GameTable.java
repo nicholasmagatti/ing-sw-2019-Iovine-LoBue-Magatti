@@ -154,6 +154,32 @@ public class GameTable{
     }
 
     /**
+     * Add token on killshot track, after a player has been put down.
+     * This method should be called when the player still has the damage on his/her damage line.
+     * @param deadPlayer
+     * @param killer
+     */
+    public void addTokenOnKillshotTrack(Player deadPlayer, Player killer){
+
+        KillToken token;
+        final int killDmg = 11;
+        final int overkillDmg = 12;
+
+        if(deadPlayer.getDamageLine().size() == overkillDmg){
+            token = new KillToken(killer.getCharaName(), true);
+        }
+        else{
+            if(deadPlayer.getDamageLine().size() == killDmg){
+                token = new KillToken(killer.getCharaName(), false);
+            }
+            else {
+                throw new RuntimeException("You are trying to use the method addTokenOnKillshotTrack using a dead player that has a number of damage smaller or greater that the number of damage for kill or overkill.");
+            }
+        }
+        killshotTrack.add(token);
+    }
+
+    /**
      * Get list of character names in order of first hit on the killshot track
      * @return list of character names in order of first hit on the killshot track
      */

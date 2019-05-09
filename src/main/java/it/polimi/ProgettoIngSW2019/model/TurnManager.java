@@ -208,16 +208,34 @@ public class TurnManager{
      */
     //TODO: add to uml
     public void scoreDamageLineOfAllDeadPlayers(){
-        //TODO: if checkDeadPlayers().size() > 1 assign 1 extra point to the current player
-        //TODO: score the damage line of all the dead players
+
+        List<Player> deadPlayers = checkDeadPlayers();
+
+        if(deadPlayers.isEmpty()){
+            throw new RuntimeException("There is no dead player on the table. This method should not have been called.");
+        }
+
+        for(Player player : deadPlayers){
+            scoreDamageLineOf(player);
+        }
+        //assign 1 extra point for more than one kill in the same turn
+        if (deadPlayers.size() > 1){
+            currentPlayer.addPointsToScore(1);
+        }
     }
 
     /**
-     * At the end of the game, sore the damage line of all the players(that are not dead) on the game with damage on them
+     * At the end of the game, sore the damage line of all the players on the game with damage on them
      */
     //TODO: add to uml
     public void scoreDamageLineOfAllPlayersWithDamage(){
-        //TODO: score the damage line of all the players with some damage
+        Player[] players = gameTable.getPlayers();
+
+        for(Player player : players){
+            if(!player.getDamageLine().isEmpty()) {
+                scoreDamageLineOf(player);
+            }
+        }
     }
     /**
      * Assign points to players after the death of the specified player(the player to score), from his/her damage line;
