@@ -17,7 +17,8 @@ public class TestSpawningPoint {
     @Before
     public void setup(){
         weaponCardOnHand = new ArrayList<>();
-        weaponDeck = new Deck(DeckType.WEAPON_CARD);
+        DeckFactory d = new DeckFactory();
+        weaponDeck = new Deck(DeckType.WEAPON_CARD, d);
         spawn = new SpawningPoint(0, true,true,true,true);
         spawn.reset(weaponDeck);
         weaponCardOnHand.add((WeaponCard)weaponDeck.drawCard());

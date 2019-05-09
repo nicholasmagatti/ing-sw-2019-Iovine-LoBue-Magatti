@@ -3,6 +3,7 @@ package it.polimi.ProgettoIngSW2019.modelTest;
 import it.polimi.ProgettoIngSW2019.model.AmmoCard;
 import it.polimi.ProgettoIngSW2019.model.AmmoPoint;
 import it.polimi.ProgettoIngSW2019.model.Deck;
+import it.polimi.ProgettoIngSW2019.model.DeckFactory;
 import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +16,8 @@ public class TestAmmoPoint {
     @Before
     public void setup(){
         ammoPoint = new AmmoPoint(0, true,true,true,true);
-        Deck ammoDeck = new Deck(DeckType.AMMO_CARD);
+        DeckFactory d = new DeckFactory();
+        Deck ammoDeck = new Deck(DeckType.AMMO_CARD, d);
         ammoPoint.reset(ammoDeck);
     }
 

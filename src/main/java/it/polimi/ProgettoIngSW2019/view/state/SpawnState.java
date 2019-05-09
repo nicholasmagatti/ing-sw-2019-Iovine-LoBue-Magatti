@@ -6,7 +6,7 @@ import it.polimi.ProgettoIngSW2019.utilities.Observable;
 public class SpawnState extends Observable<UserInputMessage> implements IState{
 
     @Override
-    public void menu() {
+    public void menu(StateContext stateContext) {
 
     }
 

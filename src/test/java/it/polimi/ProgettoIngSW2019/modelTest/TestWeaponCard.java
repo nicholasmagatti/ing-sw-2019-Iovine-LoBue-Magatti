@@ -34,7 +34,7 @@ public class TestWeaponCard {
     @Before
     public void setUpMap(){
         map = new Square[3][4];
-        gt = new GameTable(1, 5);
+        gt = new GameTable(map, 5);
         map[0][0] = new SpawningPoint( 1, true,true,true,true);
         map[0][1] = new AmmoPoint(1, true,false,false,true);
         map[0][2] = new AmmoPoint(2, true,true,true,false);
@@ -55,19 +55,19 @@ public class TestWeaponCard {
 
         d = new DistanceDictionary(map);
 
-        map[0][0].setPlayerOnSquare(new Player(0, "P1", gt, true));
-        map[0][0].setPlayerOnSquare(new Player(12, "P13", gt, true));
-        map[0][1].setPlayerOnSquare(new Player(1, "P2", gt, true));
-        map[0][2].setPlayerOnSquare(new Player(2, "P3", gt, true));
-        map[0][3].setPlayerOnSquare(new Player(3, "P4", gt, true));
-        map[1][0].setPlayerOnSquare(new Player(4, "P5", gt, true));
-        map[1][1].setPlayerOnSquare(new Player(5, "P6", gt, true));
-        map[1][2].setPlayerOnSquare(new Player(6, "P7", gt, true));
-        map[1][3].setPlayerOnSquare(new Player(7, "P8", gt, true));
-        map[2][0].setPlayerOnSquare(new Player(8, "P9", gt, true));
-        map[2][1].setPlayerOnSquare(new Player(9, "P10", gt, true));
-        map[2][2].setPlayerOnSquare(new Player(10, "P11", gt, true));
-        map[2][3].setPlayerOnSquare(new Player(11, "P12", gt, true));
+        map[0][0].setPlayerOnSquare(new Player(0, "P1", gt));
+        map[0][0].setPlayerOnSquare(new Player(12, "P13", gt));
+        map[0][1].setPlayerOnSquare(new Player(1, "P2", gt));
+        map[0][2].setPlayerOnSquare(new Player(2, "P3", gt));
+        map[0][3].setPlayerOnSquare(new Player(3, "P4", gt));
+        map[1][0].setPlayerOnSquare(new Player(4, "P5", gt));
+        map[1][1].setPlayerOnSquare(new Player(5, "P6", gt));
+        map[1][2].setPlayerOnSquare(new Player(6, "P7", gt));
+        map[1][3].setPlayerOnSquare(new Player(7, "P8", gt));
+        map[2][0].setPlayerOnSquare(new Player(8, "P9", gt));
+        map[2][1].setPlayerOnSquare(new Player(9, "P10", gt));
+        map[2][2].setPlayerOnSquare(new Player(10, "P11", gt));
+        map[2][3].setPlayerOnSquare(new Player(11, "P12", gt));
     }
 
     @Test

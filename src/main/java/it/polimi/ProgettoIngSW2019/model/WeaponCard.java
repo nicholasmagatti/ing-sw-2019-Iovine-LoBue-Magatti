@@ -65,11 +65,22 @@ public class WeaponCard extends Card {
     }
 
     /**
+     * @return ammo need to buy the weapon
+     * @author Luca Iovine
+     */
+    public List<AmmoType> getBuyCost(){
+        List<AmmoType> buyCost = new ArrayList<>();
+        for(int i = 0; i < reloadCost.size() - 1; i++)
+            buyCost.add(reloadCost.get(i));
+
+        return buyCost;
+    }
+    /**
      * Every list of the list represent all the player in a certain square.
      *
      * @param square position from where you want to know the target visible for that specific weapon
      * @return all the target visible to be hitted by the weapon
-     * @suthor: Luca Iovine
+     * @author: Luca Iovine
      */
     public List<List<Player>> getTarget(Square square, DistanceDictionary distDictionary) {
         int idx = -1;
@@ -95,7 +106,7 @@ public class WeaponCard extends Card {
      * @param fromPlayer player who does the damage
      * @param targetMove list of the movement of tragetted players (1:1 with targetPlayer list)
      * @param userMove movement of the player who deals damage
-     * @suthor: Luca Iovine
+     * @author: Luca Iovine
      */
     public void useBaseEff(List<Player> targetPlayer, Player fromPlayer, List<Square> targetMove, Square userMove){
         for(Player p: targetPlayer)

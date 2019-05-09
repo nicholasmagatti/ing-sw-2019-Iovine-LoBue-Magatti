@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019.virtual_view;
 
+import it.polimi.ProgettoIngSW2019.common.message.IUserInputMsgForClient;
 import it.polimi.ProgettoIngSW2019.common.message.MoveMessage;
 import it.polimi.ProgettoIngSW2019.utilities.Observable;
 
@@ -11,7 +12,17 @@ public class MoveVirtualView extends Observable<MoveMessage> implements IUserInp
     }
 
     @Override
-    public void retriveData() {
+    public void setMessage(MoveMessage msg) {
+
+    }
+
+    @Override
+    public IUserInputMsgForClient getMessageForClient() {
+        return null;
+    }
+
+    @Override
+    public void setMessageForClient(IUserInputMsgForClient msg) {
 
     }
 }
