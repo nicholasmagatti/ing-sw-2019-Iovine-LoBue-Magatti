@@ -3,7 +3,7 @@ package it.polimi.ProgettoIngSW2019.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.common.enums.*;
 
 /**
  * Class that represents the player
@@ -309,7 +309,7 @@ public class Player{
      * if specified on the ammo card, get the player
      */
     public void grabAmmoCardFromThisSquare(){
-        if(square instanceof AmmoPoint) {
+        if(square.getSquareType() == SquareType.AMMO_POINT) {
             grabAmmoCardFromAmmoPoint((AmmoPoint)square);
         }
         else{
@@ -323,7 +323,7 @@ public class Player{
      * @param cardToLeave - weapon to leave if the player already has one, it is null otherwise
      */
     public void grabWeapon(WeaponCard cardToGet, WeaponCard cardToLeave){
-        if(square instanceof SpawningPoint){
+        if(square.getSquareType() == SquareType.SPAWNING_POINT){
             loadedWeapons.add(cardToGet);
             discardAmmo(cardToGet.getBuyCost());
             if(cardToLeave == null) {
@@ -514,81 +514,82 @@ public class Player{
     public Square getPosition() {
         return square;
     }
-}
-
-/**
- * Class used to manage the ammo box of a player and its content
- * @author Nicholas Magatti
- */
-class AmmoBox {
-    //number of the following attributes between 0 and 3
-    private int redAmmo = 1;
-    private int blueAmmo = 1;
-    private int yellowAmmo = 1;
 
     /**
-     * Get the number of red ammo units
-     * @return the number of red ammo units
+     * Class used to manage the ammo box of a player and its content
+     * @author Nicholas Magatti
      */
-    public int getRedAmmo() {
-        return redAmmo;
-    }
+    private class AmmoBox {
+        //number of the following attributes between 0 and 3
+        private int redAmmo = 1;
+        private int blueAmmo = 1;
+        private int yellowAmmo = 1;
 
-    /**
-     * Get the number of blue ammo units
-     * @return the number of blue ammo units
-     */
-    public int getBlueAmmo() {
-        return blueAmmo;
-    }
+        /**
+         * Get the number of red ammo units
+         * @return the number of red ammo units
+         */
+        public int getRedAmmo() {
+            return redAmmo;
+        }
 
-    /**
-     * Get the number of yellow ammo units
-     * @return the number of yellow ammo units
-     */
-    public int getYellowAmmo() {
-        return yellowAmmo;
-    }
+        /**
+         * Get the number of blue ammo units
+         * @return the number of blue ammo units
+         */
+        public int getBlueAmmo() {
+            return blueAmmo;
+        }
 
-    /**
-     * Remove a unit of ammo of a specific color from the ammo box
-     * @param ammoType
-     */
-    public void remove(AmmoType ammoType){
-        switch (ammoType){
-            case RED:
-                redAmmo--;
-                break;
-            case BLUE:
-                blueAmmo--;
-                break;
-            case YELLOW:
-                yellowAmmo--;
-                break;
+        /**
+         * Get the number of yellow ammo units
+         * @return the number of yellow ammo units
+         */
+        public int getYellowAmmo() {
+            return yellowAmmo;
+        }
+
+        /**
+         * Remove a unit of ammo of a specific color from the ammo box
+         * @param ammoType
+         */
+        public void remove(AmmoType ammoType){
+            switch (ammoType){
+                case RED:
+                    redAmmo--;
+                    break;
+                case BLUE:
+                    blueAmmo--;
+                    break;
+                case YELLOW:
+                    yellowAmmo--;
+                    break;
+            }
+        }
+
+        /**
+         * Add a unit of ammo of a specific color to the ammo box
+         * @param ammoType
+         */
+        public void addWhenPossible(AmmoType ammoType){
+            switch (ammoType){
+                case RED:
+                    if(redAmmo < 3){
+                        redAmmo++;
+                    }
+                    break;
+                case BLUE:
+                    if(blueAmmo < 3) {
+                        blueAmmo++;
+                    }
+                    break;
+                case YELLOW:
+                    if(yellowAmmo < 3) {
+                        yellowAmmo++;
+                    }
+                    break;
+            }
         }
     }
-
-    /**
-     * Add a unit of ammo of a specific color to the ammo box
-     * @param ammoType
-     */
-    public void addWhenPossible(AmmoType ammoType){
-        switch (ammoType){
-            case RED:
-                if(redAmmo < 3){
-                    redAmmo++;
-                }
-                break;
-            case BLUE:
-                if(blueAmmo < 3) {
-                    blueAmmo++;
-                }
-                break;
-            case YELLOW:
-                if(yellowAmmo < 3) {
-                    yellowAmmo++;
-                }
-                break;
-        }
-    }
 }
+

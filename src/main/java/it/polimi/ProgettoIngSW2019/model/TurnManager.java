@@ -22,6 +22,14 @@ public class TurnManager{
     }
 
     /**
+     * Return the game table
+     * @return the game table
+     */
+    public GameTable getGameTable() {
+        return gameTable;
+    }
+
+    /**
      * Set the next active player as the 'current player' to refer in this turn
      */
     public void changeCurrentPlayer(){
