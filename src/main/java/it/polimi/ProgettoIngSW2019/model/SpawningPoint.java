@@ -1,5 +1,7 @@
 package it.polimi.ProgettoIngSW2019.model;
 
+import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class SpawningPoint extends Square {
     public SpawningPoint(int idRoom, Boolean isBlockedAtNorth, Boolean isBlockedAtEast, Boolean isBlockedAtSouth, Boolean isBlockedAtWest) {
         super(idRoom, isBlockedAtNorth, isBlockedAtEast, isBlockedAtSouth, isBlockedAtWest);
         weaponCards = new ArrayList<>();
+        setSquareType(SquareType.SPAWNING_POINT);
     }
 
     /**
@@ -47,7 +50,6 @@ public class SpawningPoint extends Square {
     /**
      * At the end of the turn every weapon card missing on the table has to be replaced
      *
-     * @param deck weapon deck passed from GameTable
      * @Author: Luca Iovine
      */
     @Override

@@ -1,16 +1,16 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
+import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.model.GameTable;
 import it.polimi.ProgettoIngSW2019.model.Square;
 import it.polimi.ProgettoIngSW2019.model.TurnManager;
-import it.polimi.ProgettoIngSW2019.utilities.Observer;
+import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.model.Player;
-import it.polimi.ProgettoIngSW2019.common.message.MoveMessage;
 
 /**
  * @author Nicholas Magatti
  */
-public class MoveController implements Observer <MoveMessage> {
+public class MoveController implements Observer <Event> {
     private Player playerToMove;
     private Square newPos;
     //TODO: keep or delete?
@@ -25,7 +25,7 @@ public class MoveController implements Observer <MoveMessage> {
     }
 
 
-    public void update(MoveMessage moveMessage) {
+    public void update(Event moveMessage) {
 
     }
 

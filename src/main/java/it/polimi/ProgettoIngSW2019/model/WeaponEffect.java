@@ -2,8 +2,8 @@ package it.polimi.ProgettoIngSW2019.model;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import it.polimi.ProgettoIngSW2019.model.enums.AreaOfEffect;
-import it.polimi.ProgettoIngSW2019.model.enums.TargetPerSquare;
+import it.polimi.ProgettoIngSW2019.common.enums.AreaOfEffect;
+import it.polimi.ProgettoIngSW2019.common.enums.TargetPerSquare;
 
 import java.io.*;
 

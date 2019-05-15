@@ -2,7 +2,7 @@ package it.polimi.ProgettoIngSW2019.model.powerup_effects;
 
 import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.model.Square;
-import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.common.enums.*;
 
 
 /**

@@ -1,8 +1,7 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.common.enums.*;
 import it.polimi.ProgettoIngSW2019.model.powerup_effects.PowerUpEffect;
-import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
 
 /**
  * Class PowerUp: the card PowerUp you can draw

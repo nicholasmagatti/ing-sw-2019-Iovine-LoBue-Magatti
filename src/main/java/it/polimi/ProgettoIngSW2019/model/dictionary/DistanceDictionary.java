@@ -1,7 +1,7 @@
 package it.polimi.ProgettoIngSW2019.model.dictionary;
 
 import it.polimi.ProgettoIngSW2019.model.Square;
-import it.polimi.ProgettoIngSW2019.model.enums.AreaOfEffect;
+import it.polimi.ProgettoIngSW2019.common.enums.AreaOfEffect;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -2,7 +2,7 @@ package it.polimi.ProgettoIngSW2019.modelTest;
 
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
-import it.polimi.ProgettoIngSW2019.model.enums.AreaOfEffect;
+import it.polimi.ProgettoIngSW2019.common.enums.AreaOfEffect;
 
 import static org.junit.Assert.*;
 import org.junit.Before;

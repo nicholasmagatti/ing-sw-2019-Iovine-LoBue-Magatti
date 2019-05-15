@@ -1,5 +1,7 @@
 package it.polimi.ProgettoIngSW2019.model;
 
+import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
+
 /**
  * Class AmmoPoint extends Square
  *
@@ -20,6 +22,7 @@ public class AmmoPoint extends Square {
      */
     public AmmoPoint(int idRoom, Boolean isBlockedAtNorth, Boolean isBlockedAtEast, Boolean isBlockedAtSouth, Boolean isBlockedAtWest) {
         super(idRoom, isBlockedAtNorth, isBlockedAtEast, isBlockedAtSouth, isBlockedAtWest);
+        setSquareType(SquareType.AMMO_POINT);
     }
 
     /**
@@ -45,7 +48,6 @@ public class AmmoPoint extends Square {
     /**
      * At the end of the turn every ammo card missing on the table has to be replaced
      *
-     * @param deck ammo deck passed from GameTable
      * @Author: Luca Iovine
      */
     @Override

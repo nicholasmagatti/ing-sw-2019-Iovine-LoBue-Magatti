@@ -1,6 +1,6 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
+import it.polimi.ProgettoIngSW2019.common.enums.*;
 
 /**
  * Class abstract Card

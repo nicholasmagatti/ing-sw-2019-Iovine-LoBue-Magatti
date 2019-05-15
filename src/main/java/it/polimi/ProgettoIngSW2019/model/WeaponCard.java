@@ -1,7 +1,7 @@
 package it.polimi.ProgettoIngSW2019.model;
 
 import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
-import it.polimi.ProgettoIngSW2019.model.enums.*;
+import it.polimi.ProgettoIngSW2019.common.enums.*;
 
 import java.io.File;
 import java.util.ArrayList;

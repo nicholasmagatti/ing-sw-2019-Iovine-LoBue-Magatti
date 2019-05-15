@@ -1,8 +1,8 @@
 package it.polimi.ProgettoIngSW2019.modelTest;
 
 import it.polimi.ProgettoIngSW2019.model.AmmoCard;
-import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
-import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
+import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.common.enums.DeckType;
 import org.junit.Before;
 import org.junit.Test;
 

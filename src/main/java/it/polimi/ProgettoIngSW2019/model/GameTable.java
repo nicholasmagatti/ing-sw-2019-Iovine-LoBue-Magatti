@@ -3,8 +3,7 @@ package it.polimi.ProgettoIngSW2019.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
-import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
+import it.polimi.ProgettoIngSW2019.common.enums.*;
 
 /**
  * Class used to represent the game table and everything on it

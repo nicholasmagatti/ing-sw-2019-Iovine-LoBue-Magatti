@@ -2,12 +2,10 @@ package it.polimi.ProgettoIngSW2019.modelTest;
 
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
-import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
-import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
+import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.common.enums.DeckType;
 import org.junit.*;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

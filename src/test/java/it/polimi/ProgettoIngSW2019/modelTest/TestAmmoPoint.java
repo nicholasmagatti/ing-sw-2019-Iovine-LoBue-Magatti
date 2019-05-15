@@ -4,7 +4,7 @@ import it.polimi.ProgettoIngSW2019.model.AmmoCard;
 import it.polimi.ProgettoIngSW2019.model.AmmoPoint;
 import it.polimi.ProgettoIngSW2019.model.Deck;
 import it.polimi.ProgettoIngSW2019.model.DeckFactory;
-import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
+import it.polimi.ProgettoIngSW2019.common.enums.DeckType;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019.model;
 
+import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.custom_exception.NotPartOfBoardException;
 
 import java.util.ArrayList;
@@ -20,7 +21,8 @@ public abstract class Square {
     private Boolean isBlockedAtWest;
     private Boolean isBlockedAtEast;
     private Boolean isBlockedAtNorth;
-    private Boolean isBlockedAtSouth;
+    private boolean isBlockedAtSouth;
+    private SquareType squareType;
 
     /**
      * Constructor
@@ -172,6 +174,14 @@ public abstract class Square {
         }
 
         return cardinal;
+    }
+
+    public SquareType getSquareType() {
+        return squareType;
+    }
+
+    protected void setSquareType(SquareType squareType){
+        this.squareType = squareType;
     }
 
     /**

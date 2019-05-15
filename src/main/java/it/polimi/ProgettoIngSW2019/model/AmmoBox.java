@@ -1,6 +1,6 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.common.enums.*;
 
 /**
  * Class used manage the ammo box of a player and its content

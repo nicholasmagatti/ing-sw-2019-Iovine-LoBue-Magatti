@@ -1,7 +1,7 @@
 package it.polimi.ProgettoIngSW2019.modelTest;
 
 import it.polimi.ProgettoIngSW2019.model.*;
-import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
+import it.polimi.ProgettoIngSW2019.common.enums.DeckType;
 
 import java.util.ArrayList;
 import java.util.List;

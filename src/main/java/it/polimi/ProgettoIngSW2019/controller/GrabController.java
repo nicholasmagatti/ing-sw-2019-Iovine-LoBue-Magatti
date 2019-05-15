@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
-import it.polimi.ProgettoIngSW2019.common.message.GrabMessage;
+import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.utilities.*;
 import it.polimi.ProgettoIngSW2019.model.GameTable;
 import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.model.AmmoPoint;
@@ -8,14 +9,13 @@ import it.polimi.ProgettoIngSW2019.model.SpawningPoint;
 import it.polimi.ProgettoIngSW2019.model.WeaponCard;
 import it.polimi.ProgettoIngSW2019.model.Square;
 import it.polimi.ProgettoIngSW2019.model.TurnManager;
-import it.polimi.ProgettoIngSW2019.utilities.Observer;
 
 import java.util.List;
 
 /**
  * @author Nicholas Magatti
  */
-public class GrabController implements Observer<GrabMessage> {
+public class GrabController implements Observer<Event> {
     private Player playerWhoGrab;
     private Square squareToGrabFrom;
     //TODO: keep or delete?
@@ -31,7 +31,7 @@ public class GrabController implements Observer<GrabMessage> {
 
 
 
-    public void update(GrabMessage grabMessage) {
+    public void update(Event grabMessage) {
 
     }
 

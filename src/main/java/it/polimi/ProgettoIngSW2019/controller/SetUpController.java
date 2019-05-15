@@ -1,11 +1,11 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
-import it.polimi.ProgettoIngSW2019.utilities.Observer;
-import it.polimi.ProgettoIngSW2019.common.message.SetupMessage;
+import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 
-public class SetUpController implements Observer<SetupMessage> {
+public class SetUpController implements Observer<Event> {
 
-    public void update(SetupMessage setupMessage) {
+    public void update(Event setupMessage) {
 
     }
 

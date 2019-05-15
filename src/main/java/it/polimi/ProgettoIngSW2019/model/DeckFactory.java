@@ -1,7 +1,6 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import it.polimi.ProgettoIngSW2019.model.enums.DeckType;
-import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.common.enums.*;
 import it.polimi.ProgettoIngSW2019.model.id_generators.IdCardGenerator;
 import it.polimi.ProgettoIngSW2019.model.powerup_effects.NewtonEff;
 import it.polimi.ProgettoIngSW2019.model.powerup_effects.TagbackGrenadeEff;
