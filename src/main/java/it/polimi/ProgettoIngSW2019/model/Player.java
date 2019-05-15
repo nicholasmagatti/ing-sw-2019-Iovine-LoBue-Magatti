@@ -29,7 +29,6 @@ public class Player{
     private List<WeaponCard> loadedWeapons = new ArrayList<>();
     private List<WeaponCard> unloadedWeapons = new ArrayList<>();
     private List<PowerUp> powerUps = new ArrayList<>();
-    //TODO: delete startingPlayer from uml
     private AmmoBox ammoBox = new AmmoBox();
     private boolean active = true;
 
@@ -37,7 +36,6 @@ public class Player{
     /**
      * Constructor
      */
-    //TODO: update UML
     public Player(int idPlayer, String charaName, GameTable gameTable){
         this.idPlayer = idPlayer;
         this.charaName = charaName;
@@ -80,7 +78,6 @@ public class Player{
      * Increase by one the number of skulls of this player, that represent the number of times he/she has died.
      * WARNING: this has to be done only after scoring the damage line of this player
      */
-    //TODO: add to uml
     public void increaseNumberOfSkulls(){
         numberOfSkulls++;
     }
@@ -88,8 +85,6 @@ public class Player{
     /**
      * Reset to zero the number of skulls on the player
      */
-    //TODO: evaluate if it is used, if not, remove it
-    //TODO: add to uml
     public void resetNumberOfSkullsToZero(){
         numberOfSkulls = 0;
     }
@@ -257,20 +252,9 @@ public class Player{
     }
 
     /**
-     * @deprecated
-     * Get the ammo box
-     * @return ammo box
-     */
-    //TODO: remove it, unless someone tells me a good reason to keep it (but make sure nobody will never need it!!)
-    public AmmoBox getAmmoBox() {
-        return ammoBox;
-    }
-
-    /**
      * Get the quantity of blue ammo in the ammo box
      * @return quantity of blue ammo in the ammo box
      */
-    //TODO: add to uml
     public int getBlueAmmo(){
         return ammoBox.getBlueAmmo();
     }
@@ -278,7 +262,6 @@ public class Player{
      * Get the quantity of red ammo in the ammo box
      * @return quantity of red ammo in the ammo box
      */
-    //TODO: add to uml
     public int getRedAmmo(){
         return ammoBox.getRedAmmo();
     }
@@ -287,7 +270,6 @@ public class Player{
      * Get the quantity of yellow ammo in the ammo box
      * @return quantity of yellow ammo in the ammo box
      */
-    //TODO: add to uml
     public int getYellowAmmo(){
         return ammoBox.getYellowAmmo();
     }
@@ -473,7 +455,6 @@ public class Player{
     /**
      * Remove all damage from the damage line
      */
-    //TODO: add to UML
     public void emptyDamageLine(){
         damageLine = new ArrayList<>();
     }
@@ -526,12 +507,88 @@ public class Player{
         gameTable.increaseNumberOfActivePlayers();
     }
 
-    //TODO: add in UML
     /**
      * Return the square on which the player is
      * @return the square
      */
     public Square getPosition() {
         return square;
+    }
+}
+
+/**
+ * Class used to manage the ammo box of a player and its content
+ * @author Nicholas Magatti
+ */
+class AmmoBox {
+    //number of the following attributes between 0 and 3
+    private int redAmmo = 1;
+    private int blueAmmo = 1;
+    private int yellowAmmo = 1;
+
+    /**
+     * Get the number of red ammo units
+     * @return the number of red ammo units
+     */
+    public int getRedAmmo() {
+        return redAmmo;
+    }
+
+    /**
+     * Get the number of blue ammo units
+     * @return the number of blue ammo units
+     */
+    public int getBlueAmmo() {
+        return blueAmmo;
+    }
+
+    /**
+     * Get the number of yellow ammo units
+     * @return the number of yellow ammo units
+     */
+    public int getYellowAmmo() {
+        return yellowAmmo;
+    }
+
+    /**
+     * Remove a unit of ammo of a specific color from the ammo box
+     * @param ammoType
+     */
+    public void remove(AmmoType ammoType){
+        switch (ammoType){
+            case RED:
+                redAmmo--;
+                break;
+            case BLUE:
+                blueAmmo--;
+                break;
+            case YELLOW:
+                yellowAmmo--;
+                break;
+        }
+    }
+
+    /**
+     * Add a unit of ammo of a specific color to the ammo box
+     * @param ammoType
+     */
+    public void addWhenPossible(AmmoType ammoType){
+        switch (ammoType){
+            case RED:
+                if(redAmmo < 3){
+                    redAmmo++;
+                }
+                break;
+            case BLUE:
+                if(blueAmmo < 3) {
+                    blueAmmo++;
+                }
+                break;
+            case YELLOW:
+                if(yellowAmmo < 3) {
+                    yellowAmmo++;
+                }
+                break;
+        }
     }
 }

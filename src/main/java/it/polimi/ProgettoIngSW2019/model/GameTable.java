@@ -12,14 +12,12 @@ import it.polimi.ProgettoIngSW2019.common.enums.*;
 public class GameTable{
 
     private Player[] players;
-    //TODO: delete numberOfPlayers from uml
     private int activePlayers;
     //the decks are sill not shuffled: they will be shuffled in the constructor
     private Deck weaponDeck;
     private Deck powerUpDeck;
     private Deck ammoDeck;
     private List<PowerUp> powerUpDiscarded = new ArrayList<>();
-    //TODO: update on uml
     private List<AmmoCard> ammoDiscarded = new ArrayList<>();
     //[][] indicate row and column respectively ([row][column])
     private Square[][] map;
@@ -34,7 +32,6 @@ public class GameTable{
      * @param chosenMap - requested map
      * @param initialNumberOfSkulls - number of skulls requested
      */
-    //TODO: update on uml
     public GameTable(Square[][] chosenMap, int initialNumberOfSkulls){
         if(initialNumberOfSkulls < 5 || initialNumberOfSkulls > 8){
             throw new IllegalArgumentException("The number of skulls for the game is " + initialNumberOfSkulls +
@@ -66,7 +63,6 @@ public class GameTable{
      * Set the players for the game, before its begin
       * @param listOfNames - ordered list of names of the players to create
      */
-    //TODO: add to UML
     public void setPlayersBeforeStart(List<String> listOfNames) {
         int numberOfPlayers = listOfNames.size();
         activePlayers = numberOfPlayers;
@@ -104,7 +100,6 @@ public class GameTable{
      * Get the list of discarded powerups
      * @return list of discarded powerups
      */
-    //TODO: add to uml
     public List<PowerUp> getPowerUpDiscarded() {
         return powerUpDiscarded;
     }
@@ -113,7 +108,6 @@ public class GameTable{
      * Get the list of discarded ammo cards
      * @return list of discarded ammo cards
      */
-    //TODO: add to uml
     public List<AmmoCard> getAmmoDiscarded() {
         return ammoDiscarded;
     }
@@ -124,15 +118,6 @@ public class GameTable{
      */
     public Player[] getPlayers(){
         return players;
-    }
-
-    /**
-     * Get the number of the players on the board (inactive players included)
-     * @deprecated //TODO delete this but ONLY when I am sure that both my team mates removed it everywhere (in the code they haven't committed yet)
-     * @return number of the players on the board
-     */
-    public int getNumberOfPlayers() {
-        return players.length;
     }
 
     /**
@@ -182,7 +167,6 @@ public class GameTable{
      * Get list of character names in order of first hit on the killshot track
      * @return list of character names in order of first hit on the killshot track
      */
-    //TODO: add to uml
     public List<String> namesOnKillshotTrackInOrderOfFirstHit(){
         List<String> list = new ArrayList<>();
         String tmp;
@@ -201,7 +185,6 @@ public class GameTable{
      * @param player - player whose this tokens belongs to
      * @return
      */
-    //TODO: add to uml
     public int tokensOnKillshotTrackBelongingTo(Player player){
         int nrTokens = 0;
         for(KillToken element : killshotTrack){

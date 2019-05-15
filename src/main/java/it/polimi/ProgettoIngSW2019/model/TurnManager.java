@@ -11,7 +11,6 @@ public class TurnManager{
 
     private GameTable gameTable;
     private Player currentPlayer;
-    //TODO:add to uml
     private int actionsLeftForThisTurn;
 
     /**
@@ -39,13 +38,10 @@ public class TurnManager{
         currentPlayer = gameTable.getPlayers()[idNextPlayer];
     }
 
-    //TODO: delete method action() from uml
-
     /**
      * Set the number of actions available to this player on this turn
      * @param num - number of actions available to this player on this turn
      */
-    //TODO: add to uml
     public void setNrActionsForTurn(int num){
         actionsLeftForThisTurn = num;
     }
@@ -53,7 +49,6 @@ public class TurnManager{
     /**
      * Decrease the number of actions left to this player for the current turn
      */
-    //TODO: add to uml
     public void decreaseActionsLeft(){
         actionsLeftForThisTurn--;
     }
@@ -62,7 +57,6 @@ public class TurnManager{
      * Return the player whom this turn is
      * @return the player whom this turn is
      */
-    //TODO: add to uml
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
@@ -71,7 +65,6 @@ public class TurnManager{
      * Return the number of actions left to the current player for this turn
      * @return number of actions left to the current player for this turn
      */
-    //TODO: add to uml
     public int getActionsLeft(){
         return actionsLeftForThisTurn;
     }
@@ -194,7 +187,6 @@ public class TurnManager{
      * @param names - list of names
      * @return list of the respective players
      */
-    //TODO: add to uml
     private List<Player> listOfPlayersFromNames(List<String> names){
         List<Player> players = new ArrayList<>();
         for(String name : names){
@@ -206,7 +198,6 @@ public class TurnManager{
     /**
      * At the end of the turn, score the damage line of all the dead players
      */
-    //TODO: add to uml
     public void scoreDamageLineOfAllDeadPlayers(){
 
         List<Player> deadPlayers = checkDeadPlayers();
@@ -227,7 +218,6 @@ public class TurnManager{
     /**
      * At the end of the game, sore the damage line of all the players on the game with damage on them
      */
-    //TODO: add to uml
     public void scoreDamageLineOfAllPlayersWithDamage(){
         Player[] players = gameTable.getPlayers();
 
@@ -278,7 +268,6 @@ public class TurnManager{
      * Assign points to players from the killshot track at the end of the game
      */
     public void scoreKillshotTrack(){
-        //TODO
         //list of damages from players in order of who hit first:
         List<String> tmp = gameTable.namesOnKillshotTrackInOrderOfFirstHit();
         //convert list of names to list of players
