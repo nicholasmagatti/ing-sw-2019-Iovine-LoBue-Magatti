@@ -3,8 +3,8 @@ package it.polimi.ProgettoIngSW2019.model.powerup_effects;
 import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.model.Square;
 import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
-import it.polimi.ProgettoIngSW2019.model.enums.AmmoType;
-import it.polimi.ProgettoIngSW2019.model.enums.AreaOfEffect;
+import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.common.enums.AreaOfEffect;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @author Priscilla Lo Bue
  */
 public class TagbackGrenadeEff implements PowerUpEffect {
-    DistanceDictionary d;
+    private DistanceDictionary d;
 
     /**
      * the effect of the card

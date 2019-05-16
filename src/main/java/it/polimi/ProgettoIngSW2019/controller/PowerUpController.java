@@ -1,19 +1,28 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
+import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.model.*;
-import it.polimi.ProgettoIngSW2019.common.message.PowerUpMessage;
-import it.polimi.ProgettoIngSW2019.utilities.Observer;
+import it.polimi.ProgettoIngSW2019.model.powerup_effects.TagbackGrenadeEff;
+import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 
-public class PowerUpController implements Observer<PowerUpMessage> {
+import java.util.List;
+
+public class PowerUpController implements Observer<Event> {
     private PowerUp powerUpToUse;
     private Player userPlayer;
     private Player targetPlayer;
     private Square position;
-    private GameTable gameTable;
     private TurnManager turnManager;
+    private List<Player> targetList;
 
 
-    public void update(PowerUpMessage powerUpMessage) {
+    public PowerUpController(TurnManager turnManager) {
+        this.turnManager = turnManager;
+    }
+
+
+
+    public void update(Event event) {
 
     }
 
@@ -21,7 +30,7 @@ public class PowerUpController implements Observer<PowerUpMessage> {
 
     public Player getUserPlayerById(int idUserPlayer){
         Player userPlayer;
-        userPlayer = gameTable.getPlayers()[idUserPlayer];
+        userPlayer = turnManager.getGameTable().getPlayers()[idUserPlayer];
 
         return userPlayer;
     }
@@ -43,7 +52,7 @@ public class PowerUpController implements Observer<PowerUpMessage> {
         int column = coordintes[1];
 
         if(row != -1 && column != -1)
-            userSquareToMove = gameTable.getMap()[row][column];
+            userSquareToMove = turnManager.getGameTable().getMap()[row][column];
 
         return  userSquareToMove;
     }
@@ -74,37 +83,49 @@ public class PowerUpController implements Observer<PowerUpMessage> {
 
 
 
+    /*DONE*/
     public void useNewton() {
-        //TODO: controllare meglio quando posso usare la carta
-        if(userPlayer.getCharaName() == turnManager.getCurrentPlayer().getCharaName()) {
+        if(userPlayer.getCharaName().equals(turnManager.getCurrentPlayer().getCharaName())) {
             powerUpToUse.usePowerUpEffect(null, targetPlayer, null, position);
         }
+        else
+            throw new IllegalArgumentException("Player: " + userPlayer.getCharaName() + "\nId: " + userPlayer.getIdPlayer() + "\nit is not your turn");
     }
 
 
 
+    /*DONE*/
     public void useTeleporter() {
-        if(userPlayer.getCharaName() == turnManager.getCurrentPlayer().getCharaName()) {
+        if(userPlayer.getCharaName().equals(turnManager.getCurrentPlayer().getCharaName())) {
             powerUpToUse.usePowerUpEffect(null, null, userPlayer, position);
         }
+        else
+            throw new IllegalArgumentException("Player: " + userPlayer.getCharaName() + "\nId: " + userPlayer.getIdPlayer() + "\nit is not your turn");
     }
 
 
 
     public void useTargetingScope() {
-        if(userPlayer.getCharaName() == turnManager.getCurrentPlayer().getCharaName()) {
+        if(userPlayer.getCharaName().equals(turnManager.getCurrentPlayer().getCharaName())) {
             //TODO: controllare che ha appena fatto lo sparo
                 //TODO:SCEGLIERE TARGET
                     //TODO: attivare effetto
         }
+        else
+            throw new IllegalArgumentException("Player: " + userPlayer.getCharaName() + "\nId: " + userPlayer.getIdPlayer() + "\nit is not your turn");
     }
 
 
 
     public void useTagbackGrenade() {
-        if(targetPlayer.getCharaName() == turnManager.getCurrentPlayer().getCharaName()) {
-            //TODO: FARE CHECK SE PUò VEDERLO
+        if(targetPlayer.getCharaName().equals(turnManager.getCurrentPlayer().getCharaName())) {
+            if(((TagbackGrenadeEff)powerUpToUse.getPowerUpEffect()).canSeeTarget(userPlayer, targetPlayer))
                 powerUpToUse.usePowerUpEffect(null, targetPlayer, userPlayer, null);
+            else {
+                //TODO: mandare msg errore, perchè non può vedere il terget a cui fare il marchio
+            }
         }
+        else
+            throw new IllegalArgumentException("Player: " + targetPlayer.getCharaName() + "\nId: " + targetPlayer.getIdPlayer() + "\ndoesn't deal you damage");
     }
 }
