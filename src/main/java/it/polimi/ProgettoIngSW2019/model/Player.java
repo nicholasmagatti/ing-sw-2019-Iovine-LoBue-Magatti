@@ -334,7 +334,7 @@ public class Player{
             }
         }
         else{
-            throw new RuntimeException("Trying to grab a weapon from an ammo point");
+            throw new RuntimeException("Trying to grab a weapon from a square that is not a spawn point.");
         }
     }
 

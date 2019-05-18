@@ -55,7 +55,4 @@ public class TestTurnManager {
             assertFalse(deadPlayersFound.contains(player2));
             assertFalse(deadPlayersFound.contains(player4));
     }
-
-    //TODO: test distribution of points after scoring a player
-    //TODO: test distribution of points after scoring the killshot track
 }
