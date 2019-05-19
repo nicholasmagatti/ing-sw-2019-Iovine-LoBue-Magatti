@@ -8,11 +8,26 @@ import java.util.List;
  * ShootChoice class
  * @author Priscilla Lo Bue
  */
-public class ShootChoice {
+public class ShootChoice extends PlayerChoice{
     private int idWeaponUsed;
     private List<EnemyPlayerLM> enemyList;
     private boolean usePowerUp;
 
+
+    /**
+     * Constructor for view
+     * @param idPlayer          id player
+     * @param idWeaponUsed      id weapon used
+     */
+    public ShootChoice(int idPlayer, int idWeaponUsed) {
+        super(idPlayer);
+        if(idWeaponUsed < 0)
+            throw new IllegalArgumentException("The weapon id cannot be negative");
+        this.idWeaponUsed = idWeaponUsed;
+    }
+
+
+    //TODO: constructor for controller?
 
 
     /**

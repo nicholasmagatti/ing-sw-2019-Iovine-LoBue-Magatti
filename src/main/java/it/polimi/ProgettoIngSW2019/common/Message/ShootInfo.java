@@ -15,6 +15,11 @@ public class ShootInfo extends Info {
     private List<PowerUpLM> availablePowerUp;
 
 
+    public ShootInfo(int idPlayer) {
+        super(idPlayer);
+    }
+
+
     /**
      * get the available weapons to be used
      * @return  available weapons

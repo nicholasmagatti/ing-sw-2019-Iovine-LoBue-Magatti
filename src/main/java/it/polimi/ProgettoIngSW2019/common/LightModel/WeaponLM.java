@@ -15,6 +15,48 @@ public class WeaponLM {
 
 
     /**
+     * constructor with enemyVisible
+     * @param idWeapon      id weapon card
+     * @param name          name of the weapon
+     * @param description   description of the weapon
+     */
+    public WeaponLM(int idWeapon, String name, String description, List<String> enemyVisible) {
+        if(idWeapon < 0)
+            throw new IllegalArgumentException("The id cannot be negative");
+        this.idWeapon = idWeapon;
+
+        if(name == null)
+            throw new NullPointerException("Name of the weapon cannot be null");
+        this.name = name;
+
+        if(description == null)
+            throw new NullPointerException("Description of the weapon cannot be null");
+        this.description = description;
+
+        if(enemyVisible == null)
+            throw new NullPointerException("EnemyVisible of the weapon cannot be null");
+        this.enemyVisible = enemyVisible;
+    }
+
+
+
+    public WeaponLM(int idWeapon, String name, String description) {
+        if(idWeapon < 0)
+            throw new IllegalArgumentException("The id cannot be negative");
+        this.idWeapon = idWeapon;
+
+        if(name == null)
+            throw new NullPointerException("Name of the weapon cannot be null");
+        this.name = name;
+
+        if(description == null)
+            throw new NullPointerException("Description of the weapon cannot be null");
+        this.description = description;
+    }
+
+
+
+    /**
      * Get the id of the weapon to visualize
       * @return     int, the id
      */

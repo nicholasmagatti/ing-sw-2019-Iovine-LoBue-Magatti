@@ -3,10 +3,22 @@ package it.polimi.ProgettoIngSW2019.common.Message;
 /**
  * Info Class
  * used to request end send info of cards, players...
- * @author Prscilla Lo Bue
  */
 public abstract class Info {
-    int idPlayer;
+    private int idPlayer;
+
+
+
+    /**
+     * constructor
+     * @param idPlayer  id player
+     */
+    public Info(int idPlayer) {
+        if(idPlayer < 0)
+            throw new IllegalArgumentException("IdPlayer cannot be negative");
+        this.idPlayer = idPlayer;
+    }
+
 
 
     /**

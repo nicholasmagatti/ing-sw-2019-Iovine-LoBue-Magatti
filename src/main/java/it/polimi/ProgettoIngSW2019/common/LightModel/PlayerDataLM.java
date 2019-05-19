@@ -17,6 +17,37 @@ public class PlayerDataLM {
     private AmmoBoxLM ammoBox;
 
 
+
+    public PlayerDataLM(int idPlayer, String nickname,  AmmoBoxLM ammoBox) {
+        if(idPlayer < 0)
+            throw new IllegalArgumentException("IdPlayer cannot be negative");
+        this.idPlayer = idPlayer;
+
+        if(nickname == null)
+            throw new NullPointerException("Nickname of the player cannot be null");
+        this.nickname = nickname;
+    }
+
+
+
+    public PlayerDataLM(int idPlayer, String nickname, List<WeaponLM> loadedWeapons, List<WeaponLM> unloadedWeapons, List<PowerUpLM> powerUps, List<EnemyPlayerLM> enemyPlayers, AmmoBoxLM ammoBox) {
+        if(idPlayer < 0)
+            throw new IllegalArgumentException("IdPlayer cannot be negative");
+        this.idPlayer = idPlayer;
+
+        if(nickname == null)
+            throw new NullPointerException("Nickname of the player cannot be null");
+        this.nickname = nickname;
+
+        this.loadedWeapons = loadedWeapons;
+        this.unloadedWeapons = unloadedWeapons;
+        this.powerUps = powerUps;
+        this.ammoBox = ammoBox;
+        this.enemyPlayers = enemyPlayers;
+    }
+
+
+
     /**
      * get the Id of the user Player
      * @return int, id Player
