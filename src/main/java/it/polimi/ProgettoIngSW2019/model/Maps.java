@@ -7,13 +7,13 @@ package it.polimi.ProgettoIngSW2019.model;
 //TODO: add to uml
 public class Maps {
     //[][] indicate row and column respectively ([row][column])
-    private final int rows = 3;
-    private final int columns = 4;
+    private final int ROWS = 3;
+    private final int COLUMNS = 4;
 
-    private Square[][] map1 = new Square[rows][columns];
-    private Square[][] map2 = new Square[rows][columns];
-    private Square[][] map3 = new Square[rows][columns];
-    private Square[][] map4 = new Square[rows][columns];
+    private Square[][] map1 = new Square[ROWS][COLUMNS];
+    private Square[][] map2 = new Square[ROWS][COLUMNS];
+    private Square[][] map3 = new Square[ROWS][COLUMNS];
+    private Square[][] map4 = new Square[ROWS][COLUMNS];
 
     /**
      * Constructor that creates all the maps that will be shown to the first player,

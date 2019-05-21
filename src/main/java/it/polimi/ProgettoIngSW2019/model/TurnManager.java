@@ -35,16 +35,22 @@ public class TurnManager{
      * Set the next active player as the 'current player' to refer in this turn
      */
     public void changeCurrentPlayer(){
-        int idNextPlayer = currentPlayer.getIdPlayer() + 1;
+        int idNextPlayer = currentPlayer.getIdPlayer();
+
+        //first, go to the next player
         //check if the player is active, otherwise go to the next one and repeat
-        while(!gameTable.getPlayers()[idNextPlayer].isActive()){
+        do{
+            /*
+              check if the id player corresponds to the last one:
+              in that case, the next is the id 0 (otherwise id++)
+             */
             if(idNextPlayer < gameTable.getPlayers().length - 1) {
                 idNextPlayer++;
             }
             else{
                 idNextPlayer = 0;
             }
-        }
+        }while(!gameTable.getPlayers()[idNextPlayer].isActive());
         currentPlayer = gameTable.getPlayers()[idNextPlayer];
     }
 
@@ -90,8 +96,8 @@ public class TurnManager{
                 return player;
             }
         }
-        //if there is no player with such name, return null
-        throw new NullPointerException("There is no player with the name '" + charaName + "'.");
+        //if there is no player with such name:
+        throw new RuntimeException("There is no player with the name '" + charaName + "'.");
     }
 
     /**
@@ -102,8 +108,8 @@ public class TurnManager{
      */
     private int[] pointsToAssignScoringSomething(int numberOfSkulls){
         //succession of points to assign without considering the number of skulls
-        final int lengthOfSuccessionOfPoints = 5;
-        int[] successionOfPoints = new int[lengthOfSuccessionOfPoints];
+        final int LENGTH_SUCCESSION_OF_POINTS = 5;
+        int[] successionOfPoints = new int[LENGTH_SUCCESSION_OF_POINTS];
 
         successionOfPoints[0] = 8;
         successionOfPoints[1] = 6;
@@ -118,7 +124,7 @@ public class TurnManager{
         int[] pointsToAssign = new int[lengthOfPointsToAssign];
 
         for(int i=0, j = numberOfSkulls; i < lengthOfPointsToAssign; i++, j++){
-            if(j < lengthOfSuccessionOfPoints) {
+            if(j < LENGTH_SUCCESSION_OF_POINTS) {
                 pointsToAssign[i] = successionOfPoints[j];
             }
             else{
@@ -152,9 +158,10 @@ public class TurnManager{
     private List<Integer> indexesOfGreaterValue(List<Integer> list){
         List<Integer> positionsOfGreaterValue = new ArrayList<>();
         int max = max(list);
-        for(Integer elem : list){
-            if(elem.equals(max)) {
-                positionsOfGreaterValue.add(elem);
+
+        for(int i=0; i < list.size(); i++){
+            if(list.get(i).equals(max)) {
+                positionsOfGreaterValue.add(i);
             }
         }
         return positionsOfGreaterValue;
@@ -324,7 +331,12 @@ public class TurnManager{
         int idIndex;
         //now assign the points to the players
         for(int i=0; max(listOfDamagesFromPlayers) > 0; i++) {
+            //TODO: delete this prints
+            System.out.println("listOfDamagesFromPlayers :" + listOfDamagesFromPlayers);
+            System.out.println("indexesOfGreaterValue(listOfDamagesFromPlayers) = " + indexesOfGreaterValue(listOfDamagesFromPlayers));
             idIndex = IdOfThePlayerWhoHitFirstBetweenThese(indexesOfGreaterValue(listOfDamagesFromPlayers), playersInOrderOfFistHit);
+            //TODO: delete this
+            System.out.println("idIndex: " + idIndex);
             //assign points to this player
             allPlayers[idIndex].addPointsToScore(pointsToAssign[i]);
             //set it to 0

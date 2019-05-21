@@ -40,6 +40,12 @@ public class Player{
         this.idPlayer = idPlayer;
         this.charaName = charaName;
         this.gameTable = gameTable;
+        if(charaName == null) {
+            throw new NullPointerException();
+        }
+        if(charaName == ""){
+            throw new RuntimeException("The name of a player cannot be an empty string.");
+        }
     }
 
     /**
@@ -183,14 +189,14 @@ public class Player{
         }
         //marks that will be converted into damage
         int marksJustRemoved = removeMyMarksOnTargetPlayerAndReturnNumber(targetPlayer);
-        final int totDamageToKill = 11;
-        final int totDamageToOverkill = 12;
+        final int TOT_DAMAGE_TO_KILL = 11;
+        final int TOT_DAMAGE_TO_OVERKILL = 12;
         int totDamageOnTarget = targetPlayer.getDamageLine().size();
 
-        for(int i=0; i < (nrDamage + marksJustRemoved) && totDamageOnTarget < totDamageToOverkill; i++, totDamageOnTarget++) {
+        for(int i=0; i < (nrDamage + marksJustRemoved) && totDamageOnTarget < TOT_DAMAGE_TO_OVERKILL; i++, totDamageOnTarget++) {
             targetPlayer.getDamageLine().add(charaName);
         }
-        if(totDamageOnTarget >= totDamageToKill){
+        if(totDamageOnTarget >= TOT_DAMAGE_TO_KILL){
             targetPlayer.putPlayerDown();
         }
     }
