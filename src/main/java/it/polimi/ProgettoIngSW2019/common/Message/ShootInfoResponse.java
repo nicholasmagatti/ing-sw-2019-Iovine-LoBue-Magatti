@@ -10,12 +10,12 @@ import java.util.List;
  * message with shoot ifo request and response
  * @author Priscilla Lo Bue
  */
-public class ShootInfo extends Info {
+public class ShootInfoResponse extends Info {
     private List<WeaponLM> availableWeapons;
     private List<PowerUpLM> availablePowerUp;
 
 
-    public ShootInfo(int idPlayer) {
+    public ShootInfoResponse(int idPlayer) {
         super(idPlayer);
     }
 

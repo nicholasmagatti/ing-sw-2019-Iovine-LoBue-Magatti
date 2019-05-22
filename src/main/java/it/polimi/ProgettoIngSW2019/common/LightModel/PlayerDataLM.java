@@ -10,15 +10,32 @@ import java.util.List;
 public class PlayerDataLM {
     private int idPlayer;
     private String nickname;
-    private List<WeaponLM> loadedWeapons;
     private List<WeaponLM> unloadedWeapons;
-    private List<EnemyPlayerLM> enemyPlayers;
-    private List<PowerUpLM> powerUps;
-    private AmmoBoxLM ammoBox;
+    private int nRedAmmo;
+    private int nBlueAmmo;
+    private int nYellowAmmo;
+    private int nSkulls;
+    private boolean active;
+    private boolean playerDown;
+    private List<String> damageLine;
+    private List<String> markLine;
 
 
-
-    public PlayerDataLM(int idPlayer, String nickname,  AmmoBoxLM ammoBox) {
+    /**
+     * Constructor
+     * @param idPlayer              id player
+     * @param nickname              name player
+     * @param unloadedWeapons       list of unloaded weapons
+     * @param nRedAmmo              number red ammo
+     * @param nBlueAmmo             number blue ammo
+     * @param nYellowAmmo           number yellow ammo
+     * @param nSkulls               number of skulls
+     * @param active                player is/not active
+     * @param playerDown            player is/not down
+     * @param damageLine            list of player name who hits owner player
+     * @param markLine              list of player name who marks owner player
+     */
+    public PlayerDataLM(int idPlayer, String nickname, List<WeaponLM> unloadedWeapons, int nRedAmmo, int nBlueAmmo, int nYellowAmmo, int nSkulls, boolean active, boolean playerDown, List<String> damageLine, List<String> markLine) {
         if(idPlayer < 0)
             throw new IllegalArgumentException("IdPlayer cannot be negative");
         this.idPlayer = idPlayer;
@@ -26,24 +43,16 @@ public class PlayerDataLM {
         if(nickname == null)
             throw new NullPointerException("Nickname of the player cannot be null");
         this.nickname = nickname;
-    }
 
-
-
-    public PlayerDataLM(int idPlayer, String nickname, List<WeaponLM> loadedWeapons, List<WeaponLM> unloadedWeapons, List<PowerUpLM> powerUps, List<EnemyPlayerLM> enemyPlayers, AmmoBoxLM ammoBox) {
-        if(idPlayer < 0)
-            throw new IllegalArgumentException("IdPlayer cannot be negative");
-        this.idPlayer = idPlayer;
-
-        if(nickname == null)
-            throw new NullPointerException("Nickname of the player cannot be null");
-        this.nickname = nickname;
-
-        this.loadedWeapons = loadedWeapons;
         this.unloadedWeapons = unloadedWeapons;
-        this.powerUps = powerUps;
-        this.ammoBox = ammoBox;
-        this.enemyPlayers = enemyPlayers;
+        this.nRedAmmo = nRedAmmo;
+        this.nBlueAmmo = nBlueAmmo;
+        this.nYellowAmmo = nYellowAmmo;
+        this.nSkulls = nSkulls;
+        this.active = active;
+        this.playerDown = playerDown;
+        this.damageLine = damageLine;
+        this.markLine = markLine;
     }
 
 
@@ -67,15 +76,6 @@ public class PlayerDataLM {
 
 
     /**
-     * get the user loaded Weapons
-     * @return List<Weapons> loaded weapons
-     */
-    public List<WeaponLM> getLoadedWeapons() {
-        return loadedWeapons;
-    }
-
-
-    /**
      * get the user unloaded Weapons
      * @return  user unloaded weapons
      */
@@ -85,29 +85,73 @@ public class PlayerDataLM {
 
 
     /**
-     * get the user powerUps
-     * @return  list of powerUps
+     * get number of red ammo
+     * @return  number of red ammo
      */
-    public List<PowerUpLM> getPowerUps() {
-        return powerUps;
+    public int getnRedAmmo() {
+        return nRedAmmo;
     }
 
 
     /**
-     * get the user ammoBox
-     * @return  ammobox
+     * get number of blue ammo
+     * @return  number of blue ammo
      */
-    public AmmoBoxLM getAmmoBox() {
-        return ammoBox;
+    public int getnBlueAmmo() {
+        return nBlueAmmo;
     }
 
 
     /**
-     * get a list of enemy user Players
-     * @return  enemy Players
+     * get number of yellow ammo
+     * @return  number of yellow ammo
      */
-    public List<EnemyPlayerLM> getEnemyPlayer() {
-        return enemyPlayers;
+    public int getnYellowAmmo() {
+        return nYellowAmmo;
     }
 
+
+    /**
+     * get number of skulls
+     * @return number of skulls
+     */
+    public int getnSkulls() {
+        return nSkulls;
+    }
+
+
+    /**
+     * get the list of players who hits
+     * @return  list of name players
+     */
+    public List<String> getDamageLine() {
+        return damageLine;
+    }
+
+
+    /**
+     * get the list of players who marks
+     * @return  list of name players
+     */
+    public List<String> getMarkLine() {
+        return markLine;
+    }
+
+
+    /**
+     * get if the player is active or not
+     * @return      is active or not
+     */
+    public boolean getActive () {
+        return active;
+    }
+
+
+    /**
+     * get if the player is dead or not
+     * @return  is dead or not
+     */
+    public boolean getDown() {
+        return playerDown;
+    }
 }

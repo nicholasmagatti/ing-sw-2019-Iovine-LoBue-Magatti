@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
 import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.model.TurnManager;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
@@ -14,6 +15,7 @@ public abstract class Controller implements Observer<Event> {
     private IdConverter idConverter;
     private TurnManager turnManager;
     private VirtualView virtualView;
+    private CreateJson createJson;
 
 
     /**
@@ -21,10 +23,11 @@ public abstract class Controller implements Observer<Event> {
      * @param turnManager   access to TurnManger model
      * @param idConverter   acess to IdConverter
      */
-    public Controller(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView) {
+    public Controller(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson) {
         this.turnManager = turnManager;
         this.idConverter = idConverter;
         this.virtualView = virtualView;
+        this.createJson = createJson;
     }
 
 
@@ -52,5 +55,20 @@ public abstract class Controller implements Observer<Event> {
      */
     public VirtualView getVirtualView() {
         return virtualView;
+    }
+
+
+    /**
+     * get createJson
+     * @return  createJson
+     */
+    public CreateJson getCreateJson() {
+        return createJson;
+    }
+
+
+    public void sendInfo(EventType eventType, String msgJson) {
+        Event event = new Event(eventType, msgJson);
+        virtualView.sendMessage(event);
     }
 }

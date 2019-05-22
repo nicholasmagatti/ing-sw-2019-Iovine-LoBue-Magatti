@@ -4,27 +4,15 @@ package it.polimi.ProgettoIngSW2019.common.Message;
 import java.util.List;
 
 /**
- * EndTurnInfo class
+ * ScorePlayersInfoResponse class
  * the information of the players who hits the dead player
  */
-public class EndTurnInfo extends Info {
+public class ScorePlayersInfoResponse extends Info {
     private String deadNamePlayer;
     private String killerNamePlayer;
     private String firstBloodNamePlayer;
-    private boolean doubleKill;
     private List<ScoreInfo> playersWhoHit;
-    //messages score
-
-
-    /**
-     * Constructor
-     * message from view
-     * message from controller if there aren't dead players
-     * @param idPlayer  idPlayer end turn (who kills)
-     */
-    public EndTurnInfo(int idPlayer) {
-        super(idPlayer);
-    }
+    private int nSkullsDeadPlayer;
 
 
     /**
@@ -34,9 +22,8 @@ public class EndTurnInfo extends Info {
      * @param deadNamePlayer            name of the player dead
      * @param killerNamePlayer          name of the killer
      * @param firstBloodNamePlayer      name of the player who did first blood
-     * @param doubleKill                boolean if the killer did more of 1 kill
      */
-    public EndTurnInfo(int idPlayer, String deadNamePlayer, String killerNamePlayer, String firstBloodNamePlayer, boolean doubleKill, List<ScoreInfo> playersWhoHit) {
+    public ScorePlayersInfoResponse(int idPlayer, String deadNamePlayer, String killerNamePlayer, String firstBloodNamePlayer, List<ScoreInfo> playersWhoHit, int nSkullsDeadPlayer) {
         super(idPlayer);
 
         if(deadNamePlayer == null)
@@ -51,7 +38,32 @@ public class EndTurnInfo extends Info {
         this.deadNamePlayer = deadNamePlayer;
         this.killerNamePlayer = killerNamePlayer;
         this.firstBloodNamePlayer = firstBloodNamePlayer;
-        this.doubleKill = doubleKill;
         this.playersWhoHit = playersWhoHit;
+        this.nSkullsDeadPlayer = nSkullsDeadPlayer;
+    }
+
+
+    public String getDeadNamePlayer() {
+        return deadNamePlayer;
+    }
+
+
+    public int getnSkullsDeadPlayer() {
+        return nSkullsDeadPlayer;
+    }
+
+
+    public String getFirstBloodNamePlayer() {
+        return firstBloodNamePlayer;
+    }
+
+
+    public String getKillerNamePlayer() {
+        return killerNamePlayer;
+    }
+
+
+    public List<ScoreInfo> getPlayersWhoHit() {
+        return playersWhoHit;
     }
 }

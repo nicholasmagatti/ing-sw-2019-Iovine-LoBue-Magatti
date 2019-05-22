@@ -6,7 +6,7 @@ import java.util.List;
  * Move info class
  * message with the request and response move info
  */
-public class MoveInfo extends Info {
+public class MoveInfoResponse extends Info {
     private List<Integer[]> availablePosition;
 
 
@@ -15,7 +15,7 @@ public class MoveInfo extends Info {
      * @param idPlayer              id Player
      * @param availablePosition     position you can move
      */
-    public MoveInfo(int idPlayer, List<Integer[]> availablePosition) {
+    public MoveInfoResponse(int idPlayer, List<Integer[]> availablePosition) {
         super(idPlayer);
         this.availablePosition = availablePosition;
     }

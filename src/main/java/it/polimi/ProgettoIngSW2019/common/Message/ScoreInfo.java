@@ -21,4 +21,22 @@ public class ScoreInfo {
         this.namePlayerWhoHit = namePlayerWhoHit;
         this.nPoints = nPoints;
     }
+
+
+    /**
+     * get the number of points the player did
+     * @return  get number of points
+     */
+    public int getnPoints() {
+        return nPoints;
+    }
+
+
+    /**
+     * get name of the player who hit the dead player
+     * @return  get name player
+     */
+    public String getNamePlayerWhoHit() {
+        return namePlayerWhoHit;
+    }
 }

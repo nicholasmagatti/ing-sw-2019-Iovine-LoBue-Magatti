@@ -10,6 +10,31 @@ public class PowerUpLM {
 
 
     /**
+     * Constructor
+     * @param idPowerUp         id powerUp
+     * @param name              name powerUp
+     * @param description       deacription powerUp
+     * @param gainAmmoColor     ammo powerUp
+     */
+    public PowerUpLM(int idPowerUp, String name, String description, AmmoType gainAmmoColor) {
+        if(idPowerUp < 0)
+            throw new IllegalArgumentException("The id cannot be negative");
+
+        if(name == null)
+            throw new NullPointerException("Name of the weapon cannot be null");
+
+        if(description == null)
+            throw new NullPointerException("Description of the weapon cannot be null");
+
+        this.idPowerUp = idPowerUp;
+        this.name = name;
+        this.description = description;
+        this.gainAmmoColor = gainAmmoColor;
+    }
+
+
+
+    /**
      * Get the id of the PowerUp to visualize
      * @return     int, the id
      */

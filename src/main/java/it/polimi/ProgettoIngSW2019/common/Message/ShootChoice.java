@@ -1,7 +1,5 @@
 package it.polimi.ProgettoIngSW2019.common.Message;
 
-import it.polimi.ProgettoIngSW2019.common.LightModel.EnemyPlayerLM;
-
 import java.util.List;
 
 /**
@@ -10,7 +8,7 @@ import java.util.List;
  */
 public class ShootChoice extends PlayerChoice{
     private int idWeaponUsed;
-    private List<EnemyPlayerLM> enemyList;
+    //private List<EnemyPlayerLM> enemyList;
     private boolean usePowerUp;
 
 
@@ -36,17 +34,6 @@ public class ShootChoice extends PlayerChoice{
      */
     public int getIdWeaponUsed() {
         return idWeaponUsed;
-    }
-
-
-
-
-    /**
-     * get the enemy list
-     * @return  enemy list
-     */
-    public List<EnemyPlayerLM> getEnemyList() {
-        return enemyList;
     }
 
 

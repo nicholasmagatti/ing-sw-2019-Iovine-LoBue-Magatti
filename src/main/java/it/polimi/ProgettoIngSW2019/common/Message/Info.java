@@ -4,7 +4,7 @@ package it.polimi.ProgettoIngSW2019.common.Message;
  * Info Class
  * used to request end send info of cards, players...
  */
-public abstract class Info {
+public class Info {
     private int idPlayer;
 
 
