@@ -134,8 +134,17 @@ public class GameTable{
      *         false otherwise
      */
     public boolean isKillshotTrackFull(){
-        return killshotTrack.size() == numberOfSkullsForTheGame;
+        return killshotTrack.size() >= numberOfSkullsForTheGame;
     }
+
+    /**
+     * Get the initial number of skulls chosen for this game
+     * @return initial number of skulls chosen for this game
+     */
+    public int initialNumberOfSkulls() {
+        return numberOfSkullsForTheGame;
+    }
+
 
     /**
      * Add token on killshot track, after a player has been put down.
@@ -146,14 +155,14 @@ public class GameTable{
     public void addTokenOnKillshotTrack(Player deadPlayer, Player killer){
 
         KillToken token;
-        final int killDmg = 11;
-        final int overkillDmg = 12;
+        final int DAMAGE_TO_KILL = 11;
+        final int DAMAGE_TO_OVERKILL = 12;
 
-        if(deadPlayer.getDamageLine().size() == overkillDmg){
+        if(deadPlayer.getDamageLine().size() == DAMAGE_TO_OVERKILL){
             token = new KillToken(killer.getCharaName(), true);
         }
         else{
-            if(deadPlayer.getDamageLine().size() == killDmg){
+            if(deadPlayer.getDamageLine().size() == DAMAGE_TO_KILL){
                 token = new KillToken(killer.getCharaName(), false);
             }
             else {
@@ -219,14 +228,14 @@ public class GameTable{
     /**
      * Increase (of one) the number of active players
      */
-    public void increaseNumberOfActivePlayers(){
+    void increaseNumberOfActivePlayers(){
         activePlayers++;
     }
 
     /**
      * Decrease (of one) the number of active players
      */
-    public void decreaseNumberOfActivePlayers(){
+    void decreaseNumberOfActivePlayers(){
         activePlayers--;
     }
 

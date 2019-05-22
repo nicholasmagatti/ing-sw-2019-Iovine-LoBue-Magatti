@@ -195,4 +195,30 @@ public class TestPlayer {
         }
         assertFalse(player1.hasEnoughAmmo(listOfAmmo));
     }
+
+    @Test
+    public void tryToSetWrongName(){
+
+        try{
+            new Player(0, null, gameTable);
+        }
+        catch (RuntimeException e){
+            System.out.println(e);
+        }
+
+        try{
+            new Player(0, "", gameTable);
+        }
+        catch (RuntimeException e){
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void testIncreasingOfScore(){
+        assertEquals(0, player1.getScore());
+        player1.addPointsToScore(1);
+        player1.addPointsToScore(6);
+        assertEquals(7, player1.getScore());
+    }
 }
