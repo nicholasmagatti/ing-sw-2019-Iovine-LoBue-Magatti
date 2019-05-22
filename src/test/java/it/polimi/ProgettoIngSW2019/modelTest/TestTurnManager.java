@@ -22,7 +22,8 @@ public class TestTurnManager {
     private GameTable gameTable;
     private Player player1, player2, player3, player4;
     private final int DAMAGE_TO_KILL = 11;
-    int[] pointsAssigned;
+    private int[] pointsExpected;
+    private int[] pointsActuallyAssigned;
 
     @Before
     public void setUp(){
@@ -41,7 +42,7 @@ public class TestTurnManager {
         player3 = gameTable.getPlayers()[2];
         player4 = gameTable.getPlayers()[3];
 
-        pointsAssigned = new int[gameTable.getPlayers().length];
+        pointsExpected = new int[gameTable.getPlayers().length];
     }
 
     @Test
@@ -202,13 +203,13 @@ public class TestTurnManager {
      *
      * Test cases for scoreDamageLineOf:
      * 1) 3,3,5
-     * 2) 4,4,4
+     * 2) 4,6,1
      * 3) 4,6,1
      */
 
 
     @Test
-    public void testScoreDamageLine(){
+    public void testScoreDamageLineZeroSkulls(){
         assertEquals(0, player1.getScore());
         assertEquals(0, player2.getScore());
         assertEquals(0, player3.getScore());
@@ -236,34 +237,136 @@ public class TestTurnManager {
 
         //at the end (without extra points) they should have:
         //p2: 8, p1: 6, p3: 4
-        pointsAssigned[0] = 6;
-        pointsAssigned[1] = 8;
-        pointsAssigned[2] = 4;
-        pointsAssigned[3] = 0;
+        pointsExpected[0] = 6;
+        pointsExpected[1] = 8;
+        pointsExpected[2] = 4;
+        pointsExpected[3] = 0;
         //assign the "non-extra" points
-        int [] pointsActuallyAssigned = turnManager.scoreDamageLineOf(player4);
-        for(int i=0; i < pointsAssigned.length; i++){
-            //TODO: delete this line
-            System.out.println("Points of the player1: " + player1.getScore());
-            assertEquals(pointsAssigned[i], pointsActuallyAssigned[i]);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player4);
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
         }
         //now condiering also extra points (+1 for player1 for first blood)
-        pointsAssigned[0] += 1;
+        pointsExpected[0] += 1;
         for(int i=0; i < gameTable.getPlayers().length; i++){
-            //TODO: uncomment it
-            /*
-            assertEquals(pointsAssigned, gameTable.getPlayers()[i].getScore());
-            */
+            assertEquals(pointsExpected[i], gameTable.getPlayers()[i].getScore());
+        }
+    }
+
+    //TODO: assign score when some players did not damaged the player to score
+    @Test
+    public void scoreDmLineWithSomeEnemiesMissing(){
+        player1.dealDamage(11, player2);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player2);
+        pointsExpected[0] = 8;
+        pointsExpected[1] = 0;
+        pointsExpected[2] = 0;
+        pointsExpected[3] = 0;
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+
+        player2.dealDamage(5, player1);
+        player3.dealDamage(6, player1);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[0] = 0;
+        pointsExpected[1] = 6;
+        pointsExpected[2] = 8;
+        pointsExpected[3] = 0;
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+    }
+
+    //damages: p2: 6, p3: 1, p4: 4
+    @Test
+    public void testScoreDmLineWithSkulls(){
+        player4.dealDamage(4, player1);
+        player2.dealDamage(3, player1);
+        player2.dealDamage(1, player1);
+        player3.dealDamage(1, player1);
+        player2.dealDamage(2, player1);
+
+        //0 skulls
+        //assign points( without extra points)
+        //we expect 0 to p1, 8 to p2, , 6 to p4, 4 to p3
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[0] = 0;
+        pointsExpected[1] = 8;
+        pointsExpected[3] = 6;
+        pointsExpected[2] = 4;
+
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+
+        //1 skull
+        player1.increaseNumberOfSkulls();
+        //assign points( without extra points)
+        //we expect 0 to p1, 6 to p2, , 4 to p4, 2 to p3
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[1] = 6;
+        pointsExpected[3] = 4;
+        pointsExpected[2] = 2;
+
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+
+        //2 skulls
+        player1.increaseNumberOfSkulls();
+
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[1] = 4;
+        pointsExpected[3] = 2;
+        pointsExpected[2] = 1;
+
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+
+        //3 skulls
+        player1.increaseNumberOfSkulls();
+
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[1] = 2;
+        pointsExpected[3] = 1;
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+
+        //4 skulls
+        player1.increaseNumberOfSkulls();
+
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[1] = 1;
+
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+
+        //a lot of skulls: everyone get 1 point
+        for(int i=0; i < 10; i++){
+            player1.increaseNumberOfSkulls();
+        }
+
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
         }
 
     }
 
-    //TODO: test score player with skulls on the player (but not too many)
-
-    //TODO: test score player with a lot of skulls (it should give 1 point to everyone)
-
-    //TODO: finish testScoreDamageLine
-    //TODO: scoreKillshotTrack
+    @Test
+    public void testScoreKillshotTrack(){
+        //TODO
+    }
 
     @Test
     public void checkDeadPlayersCorrectly(){

@@ -129,7 +129,7 @@ public class TurnManager{
             }
             else{
                 //assign the last element of successionOfPoints
-                pointsToAssign[i] = successionOfPoints[lengthOfPointsToAssign-1];
+                pointsToAssign[i] = successionOfPoints[LENGTH_SUCCESSION_OF_POINTS-1];
             }
         }
         return pointsToAssign;
@@ -331,12 +331,7 @@ public class TurnManager{
         int idIndex;
         //now assign the points to the players
         for(int i=0; max(listOfDamagesFromPlayers) > 0; i++) {
-            //TODO: delete this prints
-            System.out.println("listOfDamagesFromPlayers :" + listOfDamagesFromPlayers);
-            System.out.println("indexesOfGreaterValue(listOfDamagesFromPlayers) = " + indexesOfGreaterValue(listOfDamagesFromPlayers));
             idIndex = IdOfThePlayerWhoHitFirstBetweenThese(indexesOfGreaterValue(listOfDamagesFromPlayers), playersInOrderOfFistHit);
-            //TODO: delete this
-            System.out.println("idIndex: " + idIndex);
             //assign points to this player
             allPlayers[idIndex].addPointsToScore(pointsToAssign[i]);
             //set it to 0
