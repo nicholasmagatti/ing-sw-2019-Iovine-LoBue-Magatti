@@ -5,6 +5,10 @@ import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
 
 import java.util.Scanner;
 
+/**
+ * State in which the first user is when he/she is choosing the map to use and the number of skulls for the game
+ * @author Nicholas Magatti
+ */
 public class SetupGameState extends Observable<Event> implements IState {
     @Override
     public void menu(StateContext stateContext) {
@@ -13,20 +17,26 @@ public class SetupGameState extends Observable<Event> implements IState {
         int skullChoice;
         boolean checkAnswer = false;
 
+        //TODO: rewrite messages in English
+
         System.out.println("###########################################\n");
         System.out.println("Ma che piacevole sorpresa, quindi tu saresti il primo giocatore a connettersi.");
         System.out.println("Per te ho un compito importante, mi dovrai dire con che mappa vorrai giocare e con quali regole");
-        System.out.println("Quale mappa di gioco sceglie tra le 4 disponibili: ");
+        System.out.println("Which map do you choose?");
 
         //TODO: in futuro farà notify con un messaggio di tipo "RequestMap" per fargli vedere le mappe prima di scegliere
+        //TODO: do this with a for loop instead(so that it is scalable if the number of maps changes)
         System.out.println("1 - Mappa A");
         System.out.println("2 - Mappa B");
         System.out.println("3 - Mappa C");
-        System.out.println("4 - Mappa D\n");
+        System.out.println("4 - Mappa D");
+
+        System.out.println("Which map do you choose?");
 
         while(!checkAnswer) {
             System.out.print("Scegli [1 - 4] per selezionare la mappa: ");
             mapChoice = scanner.nextInt();
+            //TODO: write maps.size() instead of 4
             if(mapChoice >= 1 && mapChoice <= 4)
                 checkAnswer = true;
             else
@@ -35,23 +45,22 @@ public class SetupGameState extends Observable<Event> implements IState {
 
         checkAnswer = false;
 
-        System.out.println("Perfetto! Ora dovrai dirmi le regole con cui preferisci giocare: ");
-        System.out.println("1. Usare 5 teschi. La partita dura un po' di meno.");
-        System.out.println("2. Usare 8 teschi. La partita dura un po' di più.");
+        System.out.println("Great! How many skulls do you want to use for this game? Choose a number between 5 and 8.");
+        System.out.println("Remember: more skulls mean longer game.");
         while(!checkAnswer) {
-            System.out.print("Scegli [1 - 2] per selezionare le regole: ");
+            System.out.println("Number of skulls: ");
             skullChoice = scanner.nextInt();
-            if(skullChoice >= 1 && skullChoice <= 2)
+            if(skullChoice >= 5 && skullChoice <= 8)
                 checkAnswer = true;
             else
-                System.out.println("La scelta fatta non è ammissibile. Ritenta, sarai più fortunato.\n");
+                System.out.println("Wrong input. Please: choose a number between 5 and 8.");
         }
 
-        System.out.println("Impostiamo il gioco secondo tuo desiderio ...");
+        System.out.println("Setting the game...");
         //TODO
 
-        System.out.println("Il tavolo di gioco è pronto!");
-        System.out.println("Ora ti lascio in attesa degli altri giocatori");
+        System.out.println("Waiting for the other players...");
+        System.out.println("We are almost ready!");
 
         stateContext.setState(new WaitState());
         stateContext.startMenu();

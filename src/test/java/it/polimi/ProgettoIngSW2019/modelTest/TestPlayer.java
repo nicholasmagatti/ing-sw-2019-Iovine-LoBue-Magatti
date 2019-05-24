@@ -16,13 +16,13 @@ import static org.junit.Assert.*;
 public class TestPlayer {
 
     private GameTable gameTable;
-    private Maps maps = new Maps();
+    private Square[][][] maps = new Maps().getMaps();
     private Player player1, player2, player3, player4;
     private AmmoPoint ammoPoint1, ammoPoint2, ammoPoint3;
 
     @Before
     public void setUp(){
-        gameTable = new GameTable(maps.getMap4(),5);
+        gameTable = new GameTable(maps[3],5);
         player1 = new Player(0, "Nome1", gameTable);
         player2 = new Player(1, "Nome2", gameTable);
         player3 = new Player(2, "Nome3", gameTable);

@@ -2,11 +2,14 @@ package it.polimi.ProgettoIngSW2019.view;
 
 import java.util.Scanner;
 
+/**
+ * @author Nicholas Magatti
+ */
 public class IdleState implements IState {
-    Scanner scanner;
-    String yesnoChoice;
-    int infoChoice;
-    boolean exit = false;
+    private Scanner scanner;
+    private String yesnoChoice;
+    private int infoChoice;
+    private boolean exit = false;
 
     @Override
     public void menu(StateContext stateContext) {

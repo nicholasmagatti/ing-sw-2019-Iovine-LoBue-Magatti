@@ -1,15 +1,12 @@
 package it.polimi.ProgettoIngSW2019.modelTest;
 
-import it.polimi.ProgettoIngSW2019.model.GameTable;
-import it.polimi.ProgettoIngSW2019.model.Maps;
-import it.polimi.ProgettoIngSW2019.model.Player;
-import it.polimi.ProgettoIngSW2019.model.TurnManager;
+import it.polimi.ProgettoIngSW2019.model.*;
+
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,13 +19,14 @@ public class TestTurnManager {
     private GameTable gameTable;
     private Player player1, player2, player3, player4;
     private final int DAMAGE_TO_KILL = 11;
+    private final int DAMAGE_TO_OVERKILL = 12;
     private int[] pointsExpected;
     private int[] pointsActuallyAssigned;
 
     @Before
     public void setUp(){
-        Maps maps = new Maps();
-        gameTable = new GameTable(maps.getMap4(),5);
+        Square[][][] maps = new Maps().getMaps();
+        gameTable = new GameTable(maps[3],5);
         List<String> names = new ArrayList<>();
         names.add("Nome1");
         names.add("Nome2");
@@ -363,10 +361,87 @@ public class TestTurnManager {
 
     }
 
+    //TODO: uncomment and finish testing
+    /*
     @Test
     public void testScoreKillshotTrack(){
-        //TODO
+
+        //TOKENS
+        //p1: 2, p2: 6, p3: 5, p4: 2
+
+        player3.dealDamage(DAMAGE_TO_KILL, player1);
+        gameTable.addTokenOnKillshotTrack(player1, player3);
+        player1.emptyDamageLine();
+
+        assertEquals(1, gameTable.getKillshotTrack().size());
+        assertFalse(gameTable.getKillshotTrack().get(0).isOverkill());
+
+        player1.dealDamage(DAMAGE_TO_OVERKILL, player4);
+        gameTable.addTokenOnKillshotTrack(player4, player1);
+        player4.emptyDamageLine();
+
+        assertEquals(2, gameTable.getKillshotTrack().size());
+        assertTrue(gameTable.getKillshotTrack().get(1).isOverkill());
+
+        player2.dealDamage(DAMAGE_TO_OVERKILL, player4);
+        gameTable.addTokenOnKillshotTrack(player4, player2);
+        player4.emptyDamageLine();
+
+        assertEquals(3, gameTable.getKillshotTrack().size());
+        assertTrue(gameTable.getKillshotTrack().get(2).isOverkill());
+
+        player4.dealDamage(DAMAGE_TO_OVERKILL, player1);
+        gameTable.addTokenOnKillshotTrack(player1, player4);
+        player4.emptyDamageLine();
+
+        assertEquals(4, gameTable.getKillshotTrack().size());
+        assertTrue(gameTable.getKillshotTrack().get(3).isOverkill());
+
+        for(int i=0; i < 4; i++){
+            player3.dealDamage(DAMAGE_TO_KILL, player1);
+            gameTable.addTokenOnKillshotTrack(player1, player3);
+            player1.emptyDamageLine();
+
+            //TODO: delete print
+            System.out.println("i=" + i);
+            assertEquals(5+i, gameTable.getKillshotTrack().size());
+            assertFalse(gameTable.getKillshotTrack().get(4+i).isOverkill());
+        }
+
+        assertEquals(8, gameTable.getKillshotTrack().size());
+        assertTrue(!gameTable.getKillshotTrack().get(7).isOverkill());
+
+        for(int i=0; i < 2; i++){
+            player2.dealDamage(DAMAGE_TO_KILL, player4);
+            gameTable.addTokenOnKillshotTrack(player4, player2);
+            player4.emptyDamageLine();
+        }
+
+        assertEquals(10, gameTable.getKillshotTrack().size());
+        assertTrue(!gameTable.getKillshotTrack().get(9).isOverkill());
+
+        player2.dealDamage(DAMAGE_TO_OVERKILL, player4);
+        gameTable.addTokenOnKillshotTrack(player4, player2);
+        player4.emptyDamageLine();
+
+        assertEquals(11, gameTable.getKillshotTrack().size());
+        assertTrue(gameTable.getKillshotTrack().get(10).isOverkill());
+
+        //POINTS assigned: 8 to p2, 6 to p3, 4 to p1, 2 to p4
+
+        pointsActuallyAssigned = turnManager.scoreKillshotTrack();
+
+        pointsExpected[1] = 8;
+        pointsExpected[2] = 6;
+        pointsExpected[0] = 4;
+        pointsExpected[3] = 2;
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+
     }
+    */
 
     @Test
     public void checkDeadPlayersCorrectly(){

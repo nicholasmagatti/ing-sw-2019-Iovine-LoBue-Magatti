@@ -3,6 +3,7 @@ package it.polimi.ProgettoIngSW2019.modelTest;
 import it.polimi.ProgettoIngSW2019.model.GameTable;
 import it.polimi.ProgettoIngSW2019.model.Maps;
 import it.polimi.ProgettoIngSW2019.model.Player;
+import it.polimi.ProgettoIngSW2019.model.Square;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,15 +16,15 @@ import static org.junit.Assert.*;
 public class TestGameTable {
 
     private GameTable gameTable;
-    private Maps maps = new Maps();
-    final int NR_SKULLS = 8;
-    Player carlo, giulia, alessia, ermes;
+    private Square[][][] maps = new Maps().getMaps();
+    private final int NR_SKULLS = 8;
+    private Player carlo, giulia, alessia, ermes;
 
 
     @Before
     public void setUp(){
 
-        gameTable = new GameTable(maps.getMap3(), NR_SKULLS);
+        gameTable = new GameTable(maps[2], NR_SKULLS);
 
         List<String> names = new ArrayList<>();
         names.add("Carlo");
@@ -40,17 +41,26 @@ public class TestGameTable {
 
     @Test
     public void setGameTableCorrectly(){
+        /*
         gameTable = new GameTable(maps.getMap1(), 7);
         gameTable = new GameTable(maps.getMap2(), 8);
         gameTable = new GameTable(maps.getMap3(), 5);
         gameTable = new GameTable(maps.getMap4(), 6);
+        */
+        gameTable = new GameTable(maps[0], 7);
+        gameTable = new GameTable(maps[1], 8);
+        gameTable = new GameTable(maps[2], 5);
+        gameTable = new GameTable(maps[3], 6);
+
+        assertEquals(4, maps.length);
+
     }
 
     @Test
     public void setGameTableIncorrectly(){
 
         try {
-            gameTable = new GameTable(maps.getMap1(), 2);
+            gameTable = new GameTable(maps[0], 2);
             fail();
         }
         catch (IllegalArgumentException e){
@@ -58,7 +68,7 @@ public class TestGameTable {
         }
 
         try {
-            gameTable = new GameTable(maps.getMap3(), 9);
+            gameTable = new GameTable(maps[2], 9);
             fail();
         }
         catch (IllegalArgumentException e){

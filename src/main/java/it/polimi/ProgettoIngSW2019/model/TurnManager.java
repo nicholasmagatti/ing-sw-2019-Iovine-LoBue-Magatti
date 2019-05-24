@@ -320,7 +320,23 @@ public class TurnManager{
      */
     private int[] assignPoints
             (List<Integer> listOfDamagesFromPlayers, int[] pointsToAssign, List<Player> playersInOrderOfFistHit, Player[] allPlayers){
-
+        //TODO: remove prints
+        System.out.println("listOfDamagesFromPlayers: ");
+        for(int e : listOfDamagesFromPlayers){
+            System.out.println(e);
+        }
+        System.out.println("pointsToAssign: ");
+        for (int e: pointsToAssign){
+            System.out.println(e);
+        }
+        System.out.println("playersInOrderOfFirstHit: ");
+        for (Player p : playersInOrderOfFistHit){
+            System.out.println(p.getCharaName());
+        }
+        System.out.println("allPlayers: ");
+        for(Player p : allPlayers){
+            System.out.println(p.getCharaName());
+        }
         //array to return
         int[] pointsAssignedInOrderOfId = new int[allPlayers.length];
         //at first, every cell is set to zero
@@ -333,6 +349,8 @@ public class TurnManager{
         for(int i=0; max(listOfDamagesFromPlayers) > 0; i++) {
             idIndex = IdOfThePlayerWhoHitFirstBetweenThese(indexesOfGreaterValue(listOfDamagesFromPlayers), playersInOrderOfFistHit);
             //assign points to this player
+            //TODO: remove print
+            System.out.println("idIndex: " + idIndex);
             allPlayers[idIndex].addPointsToScore(pointsToAssign[i]);
             //set it to 0
             listOfDamagesFromPlayers.set(idIndex, 0);
