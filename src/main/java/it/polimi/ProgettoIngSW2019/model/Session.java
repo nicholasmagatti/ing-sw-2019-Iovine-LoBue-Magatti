@@ -1,36 +1,40 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * Class Session
+ *
+ * @author: Luca Iovine
+ */
 public class Session {
-    private List<String> client;
-    private List<Player> playerConnected;
-    private GameTable gt;
-    private int idPlayer;
+    private String username;
+    private String sessionKey;
 
-    public Session(GameTable gt){
-        playerConnected = new ArrayList<>();
-        client = new ArrayList<>();
-        this.gt = gt;
-        idPlayer = 0;
+    /**
+     * Constructor
+     * Assign the param to class attribute
+     *
+     * @param username string value for username
+     * @param sessionKey string value for the session key
+     * @author: Luca Iovine
+     */
+    public Session(String username, String sessionKey){
+        this.username = username;
+        this.sessionKey = sessionKey;
     }
 
-    public void registerClient(String ip) {
-        if(!client.contains(ip))
-            client.add(ip);
-        else {
-            //TODO: vuol dire che l'utente è già connesso e bisogna rimetterlo in partita
-        }
+    /**
+     * @return the username
+     * @author: Luca Iovine
+     */
+    public String getUsername() {
+        return username;
     }
 
-    public void createPlayer(String username){
-        Player p = new Player(idPlayer, username, gt);
-        playerConnected.add(p);
-        idPlayerGenerator();
-    }
-
-    public void idPlayerGenerator(){
-        idPlayer++;
+    /**
+     * @return the session key
+     * @author: Luca Iovine
+     */
+    public String getSessionKey() {
+        return sessionKey;
     }
 }

@@ -176,10 +176,20 @@ public abstract class Square {
         return cardinal;
     }
 
+    /**
+     * @return the square type
+     * @author: Luca Iovine
+     */
     public SquareType getSquareType() {
         return squareType;
     }
 
+    /**
+     * Set the type of the square.
+     *
+     * @param squareType enum that represent the square type
+     * @author: Luca Iovine
+     */
     protected void setSquareType(SquareType squareType){
         this.squareType = squareType;
     }
