@@ -1,7 +1,7 @@
 package it.polimi.ProgettoIngSW2019.model;
 
 /**
- * Maps that manages all the possible maps that can be chosen for the game
+ * Class that manages all the possible maps that can be chosen for the game
  * @author Nicholas Magatti
  */
 public class Maps {
@@ -88,7 +88,7 @@ public class Maps {
     }
 
     /**
-     * Get an array of all the possible maps of the game. To access to a spedific map, use getMap()[i], where
+     * Get an array of all the possible maps of the game. To access to a specific map, use getMaps()[i], where
      * i is the index
      * @return array of all the maps
      */

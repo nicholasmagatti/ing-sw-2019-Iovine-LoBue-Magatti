@@ -6,12 +6,16 @@ import it.polimi.ProgettoIngSW2019.common.utilities.*;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * @author Nicholas Magatti
+ */
 public class ReloadState extends Observable<Event> implements IState {
-    Scanner scanner;
-    String yesnoChoice;
-    List<Integer> idUnloadedWeapon;
-    int weaponChoice;
-    boolean exit = false;
+    //TODO: remove scanner
+    private Scanner scanner;
+    private String yesnoChoice;
+    private List<Integer> idUnloadedWeapon;
+    private int weaponChoice;
+    private boolean exit = false;
 
     @Override
     public void menu(StateContext stateContext) {

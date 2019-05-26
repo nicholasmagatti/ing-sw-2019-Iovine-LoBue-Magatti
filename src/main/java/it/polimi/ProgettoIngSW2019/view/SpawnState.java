@@ -6,7 +6,11 @@ import it.polimi.ProgettoIngSW2019.common.utilities.*;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * @author Nicholas Magatti
+ */
 public class SpawnState extends Observable<Event> implements IState{
+    //TODO: remove scanner
     Scanner scanner;
     List<Integer> idPowerUp;
     String yesnoChoice;

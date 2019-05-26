@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 //TODO: decide if I want to keep this or not (this could be easily be done by some of the other state classes)
 public class PowerUpState extends Observable<Event> implements IState {
+    //TODO: remove scanner
     List<Integer> idPowerUp;
     Scanner scanner;
     String yesnoChoice;

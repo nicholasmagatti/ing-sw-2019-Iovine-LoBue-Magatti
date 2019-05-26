@@ -6,6 +6,7 @@ import java.util.Scanner;
  * @author Nicholas Magatti
  */
 public class IdleState implements IState {
+    //TODO: remove scanner
     private Scanner scanner;
     private String yesnoChoice;
     private int infoChoice;

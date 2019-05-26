@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class SetupGameState extends Observable<Event> implements IState {
     @Override
     public void menu(StateContext stateContext) {
+        //TODO: remove scanner
         Scanner scanner = new Scanner(System.in);
         int mapChoice;
         int skullChoice;

@@ -321,6 +321,7 @@ public class TurnManager{
     private int[] assignPoints
             (List<Integer> listOfDamagesFromPlayers, int[] pointsToAssign, List<Player> playersInOrderOfFistHit, Player[] allPlayers){
         //TODO: remove prints
+
         System.out.println("listOfDamagesFromPlayers: ");
         for(int e : listOfDamagesFromPlayers){
             System.out.println(e);

@@ -6,7 +6,13 @@ import it.polimi.ProgettoIngSW2019.common.utilities.*;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * @author Nicholas Magatti
+ */
 public class PlayerChoiceState extends Observable<Event> implements IState {
+
+    InputScanner inputScanner = new InputScanner();
+    //TODO: remove scanner
     Scanner scanner;
     int nrOfAction;
     int actionChoice;
@@ -28,6 +34,31 @@ public class PlayerChoiceState extends Observable<Event> implements IState {
     //Variable to handle infoItem statement
     int infoChoice;
 
+    /*
+    NOTES ABOUT HOW INPUTSCANNER WORKS:
+    boolean gotAcceptableResult = null;
+    while(gotAcceptableResult == null){
+        inputScanner.read();
+        if(inputScanner.isTimeExpired()) {
+            gotAcceptableResult = false;
+        }
+        else{
+            name = inputScanner.getInputValue();
+            if (the input is acceptable):
+                gotAcceptableResult = true;
+        }
+    }
+    inputScanner.close();
+    if(gotAcceptableResult){
+        //TODO
+    }
+    else{
+        //TODO
+    }
+     */
+
+
+    //TODO: remove this (the controller tells me the number of actions left)
     public PlayerChoiceState(){
         nrOfAction = 2;
     }
@@ -36,6 +67,7 @@ public class PlayerChoiceState extends Observable<Event> implements IState {
     public void menu(StateContext stateContext) {
         scanner = new Scanner(System.in);
 
+
         while(nrOfAction != 0) {
             System.out.println("Hai ancora a disposzione " + nrOfAction + " azioni.");
             System.out.println("Che cosa vuoi fare: ");
@@ -43,6 +75,8 @@ public class PlayerChoiceState extends Observable<Event> implements IState {
             System.out.println("2 - Raccogli per terra");
             System.out.println("3 - Spara");
             System.out.println("4 - Menu informazioni oggetti\n");
+
+
 
             while (!checkAnswer) {
                 System.out.print("Scegli [1 - 3] la mossa che vuoi fare: ");
