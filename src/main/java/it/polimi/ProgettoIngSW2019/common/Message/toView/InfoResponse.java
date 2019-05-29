@@ -1,10 +1,6 @@
-package it.polimi.ProgettoIngSW2019.common.Message;
+package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
-/**
- * Info Class
- * used to request end send info of cards, players...
- */
-public class Info {
+public class InfoResponse {
     private int idPlayer;
 
 
@@ -13,7 +9,7 @@ public class Info {
      * constructor
      * @param idPlayer  id player
      */
-    public Info(int idPlayer) {
+    public InfoResponse(int idPlayer) {
         if(idPlayer < 0)
             throw new IllegalArgumentException("IdPlayer cannot be negative");
         this.idPlayer = idPlayer;

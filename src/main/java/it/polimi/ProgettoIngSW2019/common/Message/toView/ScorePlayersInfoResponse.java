@@ -1,4 +1,4 @@
-package it.polimi.ProgettoIngSW2019.common.Message;
+package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.List;
  * ScorePlayersInfoResponse class
  * the information of the players who hits the dead player
  */
-public class ScorePlayersInfoResponse extends Info {
+public class ScorePlayersInfoResponse extends InfoResponse {
     private String deadNamePlayer;
     private String killerNamePlayer;
     private String firstBloodNamePlayer;

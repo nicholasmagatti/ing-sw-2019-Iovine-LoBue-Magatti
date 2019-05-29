@@ -1,4 +1,4 @@
-package it.polimi.ProgettoIngSW2019.common.Message;
+package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 /**
  * ScoreInfo class

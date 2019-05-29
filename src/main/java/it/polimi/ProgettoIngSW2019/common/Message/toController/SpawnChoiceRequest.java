@@ -1,11 +1,11 @@
-package it.polimi.ProgettoIngSW2019.common.Message;
+package it.polimi.ProgettoIngSW2019.common.Message.toController;
 
 /**
- * SpawnChoice class
+ * SpawnChoiceRequest class
  * message from view to controller with the powerUp to discard for spawn
  * @author Priscilla Lo Bue
  */
-public class SpawnChoice extends Info {
+public class SpawnChoiceRequest extends PlayerChoiceRequest {
     private int idPowerUpToDiscard;
 
 
@@ -14,7 +14,7 @@ public class SpawnChoice extends Info {
      * @param idPlayer              id player
      * @param idPowerUpToDiscard    id powerUp to discard
      */
-    public SpawnChoice(int idPlayer, int idPowerUpToDiscard) {
+    public SpawnChoiceRequest(int idPlayer, int idPowerUpToDiscard) {
         super(idPlayer);
         if(idPowerUpToDiscard < 0)
             throw new IllegalArgumentException("The id of the powerUp cannot be negative");

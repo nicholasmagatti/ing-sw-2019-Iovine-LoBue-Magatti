@@ -1,4 +1,6 @@
-package it.polimi.ProgettoIngSW2019.common.Message;
+package it.polimi.ProgettoIngSW2019.common.Message.toView;
+
+import it.polimi.ProgettoIngSW2019.common.Message.toView.InfoResponse;
 
 import java.util.List;
 
@@ -6,7 +8,7 @@ import java.util.List;
  * Move info class
  * message with the request and response move info
  */
-public class MoveInfoResponse extends Info {
+public class MoveInfoResponse extends InfoResponse {
     private List<Integer[]> availablePosition;
 
 
