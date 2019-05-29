@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019.modelTest;
 
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.model.GameTable;
 import it.polimi.ProgettoIngSW2019.model.Maps;
 import it.polimi.ProgettoIngSW2019.model.Player;
@@ -86,14 +87,13 @@ public class TestGameTable {
     public void addTokenOnKillshotTrackCorrectly(){
         final int K1 = 5;
         final int K2 = NR_SKULLS - K1;
-        final int DAMAGE_TO_KILL = 11;
         assertFalse(gameTable.isKillshotTrackFull());
-        ermes.dealDamage(DAMAGE_TO_KILL, carlo);
+        ermes.dealDamage(GeneralInfo.DAMAGE_TO_KILL, carlo);
         for(int i=0; i < K1; i++) {
             gameTable.addTokenOnKillshotTrack(carlo, ermes);
         }
         assertEquals(K1, gameTable.getKillshotTrack().size());
-        carlo.dealDamage(DAMAGE_TO_KILL, giulia);
+        carlo.dealDamage(GeneralInfo.DAMAGE_TO_KILL, giulia);
         for(int i=0; i < K2; i++){
             gameTable.addTokenOnKillshotTrack(giulia, carlo);
         }

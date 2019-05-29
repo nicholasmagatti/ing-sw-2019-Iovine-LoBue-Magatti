@@ -4,6 +4,7 @@ package it.polimi.ProgettoIngSW2019.model;
 import java.util.ArrayList;
 import java.util.List;
 import it.polimi.ProgettoIngSW2019.common.enums.*;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 
 /**
  * Class that represents the player
@@ -24,7 +25,7 @@ public class Player{
     //been killed, but after the score updates
     private int numberOfSkulls = 0;
     private boolean playerDown = false;
-    private Square square;
+    private Square square = null;
     private int score = 0;
     private List<WeaponCard> loadedWeapons = new ArrayList<>();
     private List<WeaponCard> unloadedWeapons = new ArrayList<>();
@@ -43,7 +44,7 @@ public class Player{
         if(charaName == null) {
             throw new NullPointerException();
         }
-        if(charaName == ""){
+        if(charaName.equals("")){
             throw new RuntimeException("The name of a player cannot be an empty string.");
         }
     }
@@ -189,14 +190,13 @@ public class Player{
         }
         //marks that will be converted into damage
         int marksJustRemoved = removeMyMarksOnTargetPlayerAndReturnNumber(targetPlayer);
-        final int TOT_DAMAGE_TO_KILL = 11;
-        final int TOT_DAMAGE_TO_OVERKILL = 12;
+
         int totDamageOnTarget = targetPlayer.getDamageLine().size();
 
-        for(int i=0; i < (nrDamage + marksJustRemoved) && totDamageOnTarget < TOT_DAMAGE_TO_OVERKILL; i++, totDamageOnTarget++) {
+        for(int i=0; i < (nrDamage + marksJustRemoved) && totDamageOnTarget < GeneralInfo.DAMAGE_TO_OVERKILL; i++, totDamageOnTarget++) {
             targetPlayer.getDamageLine().add(charaName);
         }
-        if(totDamageOnTarget >= TOT_DAMAGE_TO_KILL){
+        if(totDamageOnTarget >= GeneralInfo.DAMAGE_TO_KILL){
             targetPlayer.putPlayerDown();
         }
     }
