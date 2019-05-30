@@ -13,16 +13,17 @@ public class WhatISee {
     private int id;
     private String nickname;
 
-    private List<PlayerDataLM> players;
+    private PlayerDataLM[] players;
     private MyLoadedWeaponsLM myLoadedWeapons;
     private MyPowerUpLM myPowerUps;
-    //TODO: attribute for the map
+    private MapLM map;
     //TODO: attribute for the killshot track
 
 
-    public WhatISee(int id, String nickname){
+    public WhatISee(int id, String nickname, int numberOfPlayers){
         this.id = id;
         this.nickname = nickname;
+        players = new PlayerDataLM[numberOfPlayers];
     }
 
 

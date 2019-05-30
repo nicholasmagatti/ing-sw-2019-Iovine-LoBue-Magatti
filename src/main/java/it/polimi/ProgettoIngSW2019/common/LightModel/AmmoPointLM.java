@@ -13,12 +13,14 @@ public class AmmoPointLM extends SquareLM {
 
     /**
      * Constructor
-     * @param players - players on the square
+     * @param players - list of ids of the players on the square
      * @param ammoCard - ammo card on the ammo point if there is one, null otherwise
      */
-    public AmmoPointLM(List<PlayerDataLM> players, AmmoCardLM ammoCard){
+    public AmmoPointLM(List<Integer> players, AmmoCardLM ammoCard,
+                       boolean blockedAtNorth, boolean blockedAtEast, boolean blockedAtSouth, boolean blockedAtWest){
 
-        super(players, SquareType.AMMO_POINT);
+        super(players, SquareType.AMMO_POINT,
+                blockedAtNorth, blockedAtEast, blockedAtSouth, blockedAtWest);
         this.ammoCard = ammoCard;
     }
 
