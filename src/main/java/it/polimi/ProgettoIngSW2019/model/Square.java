@@ -18,9 +18,9 @@ public abstract class Square {
     private Square eastSquare;
     private Square northSquare;
     private Square southSquare;
-    private Boolean isBlockedAtWest;
-    private Boolean isBlockedAtEast;
-    private Boolean isBlockedAtNorth;
+    private boolean isBlockedAtWest;
+    private boolean isBlockedAtEast;
+    private boolean isBlockedAtNorth;
     private boolean isBlockedAtSouth;
     private SquareType squareType;
 
@@ -34,7 +34,7 @@ public abstract class Square {
      * @param isBlockedAtSouth identify if there is a wall at its down
      * @author: Luca Iovine
      */
-    Square(int idRoom, Boolean isBlockedAtNorth, Boolean isBlockedAtEast, Boolean isBlockedAtSouth, Boolean isBlockedAtWest){
+    Square(int idRoom, boolean isBlockedAtNorth, boolean isBlockedAtEast, boolean isBlockedAtSouth, boolean isBlockedAtWest){
         this.idRoom = idRoom;
         this.isBlockedAtEast = isBlockedAtEast;
         this.isBlockedAtWest = isBlockedAtWest;
@@ -95,7 +95,7 @@ public abstract class Square {
      * @return if there is a wall at right direction
      * @author: Luca Iovine
      */
-    public Boolean getIsBlockedAtEast() {
+    public boolean getIsBlockedAtEast() {
         return isBlockedAtEast;
     }
     /**
@@ -104,7 +104,7 @@ public abstract class Square {
      * @return if there is a wall at up direction
      * @author: Luca Iovine
      */
-    public Boolean getIsBlockedAtNorth() {
+    public boolean getIsBlockedAtNorth() {
         return isBlockedAtNorth;
     }
     /**
@@ -113,7 +113,7 @@ public abstract class Square {
      * @return if there is a wall at left direction
      * @author: Luca Iovine
      */
-    public Boolean getIsBlockedAtWest() {
+    public boolean getIsBlockedAtWest() {
         return isBlockedAtWest;
     }
     /**
@@ -122,7 +122,7 @@ public abstract class Square {
      * @return if there is a wall at down direction
      * @author: Luca Iovine
      */
-    public Boolean getIsBlockedAtSouth() {
+    public boolean getIsBlockedAtSouth() {
         return isBlockedAtSouth;
     }
 
@@ -291,7 +291,7 @@ public abstract class Square {
             }
         }
         if(axis[0] == -1 && axis[1] == -1)
-            throw new NotPartOfBoardException();
+            throw new NotPartOfBoardException("Not part of the board");
 
         return axis;
     }

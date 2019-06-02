@@ -1,16 +1,26 @@
 package it.polimi.ProgettoIngSW2019.common.utilities;
 
+import it.polimi.ProgettoIngSW2019.common.Event;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class InputScanner {
+public class InputScanner extends Observable<Event>{
     private String input = "";
-    private boolean timeExpired = false;
-    private Thread inputThread = new Thread(new UserInputRunnable());
-    InputStreamReader isr = new InputStreamReader(System.in);
-    BufferedReader br = new BufferedReader(isr);
+    private boolean timeExpired;
+    private boolean keepTimerAlive;
+    private Thread inputThread;
+    InputStreamReader isr;
+    BufferedReader br;
 
+    public InputScanner(){
+        timeExpired = false;
+        keepTimerAlive = false;
+        inputThread = new Thread(new UserInputRunnable());
+        isr = new InputStreamReader(System.in);
+        br = new BufferedReader(isr);
+    }
     /**
      * Class UserInputRunnable
      *
@@ -36,6 +46,7 @@ public class InputScanner {
      */
     private void requestInput(){
         try{
+            System.out.print("Fai la tua scelta: ");
             while(!br.ready())
                 Thread.sleep(200);
             input = br.readLine();
@@ -53,6 +64,10 @@ public class InputScanner {
      */
     public void read(){
         try {
+            if(!keepTimerAlive){
+                //TODO: notify di far partire il timer
+                keepTimerAlive = true;
+            }
             inputThread.start();
             inputThread.join();
         }catch(InterruptedException e){
@@ -67,7 +82,9 @@ public class InputScanner {
      */
     public void close(){
         try{
-            inputThread.interrupt();
+            keepTimerAlive = false;
+            if(inputThread.isAlive())
+                inputThread.interrupt();
         }catch(Exception e){
             e.printStackTrace();
         }
