@@ -1,16 +1,16 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 import it.polimi.ProgettoIngSW2019.common.LightModel.WeaponLM;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.InfoResponse;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Reload info class
  * @author Priscilla Lo Bue
  */
-public class ReloadInfoResponse extends InfoResponse {
+public class WeaponsCanReloadResponse extends InfoResponse {
     private List<WeaponLM> weaponsCanReload;
+    private List<PayAmmoList> listPaymentReload;
 
 
     /**
@@ -18,9 +18,10 @@ public class ReloadInfoResponse extends InfoResponse {
      * @param idPlayer              id player that wants to reload a weapon
      * @param weaponsCanReload      list of weapon the player can reload
      */
-    public ReloadInfoResponse(int idPlayer, List<WeaponLM> weaponsCanReload) {
+    public WeaponsCanReloadResponse(int idPlayer, List<WeaponLM> weaponsCanReload, List<PayAmmoList> listPaymentReload) {
         super(idPlayer);
-        this.weaponsCanReload = weaponsCanReload;
+        this.weaponsCanReload = new ArrayList<>(weaponsCanReload);
+        this.listPaymentReload = listPaymentReload;
     }
 
 
@@ -30,5 +31,10 @@ public class ReloadInfoResponse extends InfoResponse {
      */
     public List<WeaponLM> getWeaponsCanReload() {
         return weaponsCanReload;
+    }
+
+
+    public List<PayAmmoList> getListPaymentReload() {
+        return listPaymentReload;
     }
 }

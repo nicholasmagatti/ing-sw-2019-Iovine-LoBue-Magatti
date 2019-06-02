@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019.common.LightModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,15 +45,15 @@ public class PlayerDataLM {
             throw new NullPointerException("Nickname of the player cannot be null");
         this.nickname = nickname;
 
-        this.unloadedWeapons = unloadedWeapons;
+        this.unloadedWeapons = new ArrayList<>(unloadedWeapons);
         this.nRedAmmo = nRedAmmo;
         this.nBlueAmmo = nBlueAmmo;
         this.nYellowAmmo = nYellowAmmo;
         this.nSkulls = nSkulls;
         this.active = active;
         this.playerDown = playerDown;
-        this.damageLine = damageLine;
-        this.markLine = markLine;
+        this.damageLine = new ArrayList<>(damageLine);
+        this.markLine = new ArrayList<>(markLine);
     }
 
 

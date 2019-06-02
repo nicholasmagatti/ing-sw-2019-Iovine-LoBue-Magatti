@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019.common.LightModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public class MyLoadedWeaponsLM {
      * @param loadedWeapons     loaded weapons
      */
     public MyLoadedWeaponsLM(List<WeaponLM> loadedWeapons) {
-        this.loadedWeapons = loadedWeapons;
+        this.loadedWeapons = new ArrayList<>(loadedWeapons);
     }
 
 

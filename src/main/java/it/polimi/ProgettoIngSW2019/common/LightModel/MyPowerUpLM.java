@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019.common.LightModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ public class MyPowerUpLM {
 
 
     public MyPowerUpLM(List<PowerUpLM> powerUps) {
-        this.powerUps = powerUps;
+        this.powerUps = new ArrayList<>(powerUps);
     }
 
 

@@ -86,7 +86,7 @@ public class EndTurnController extends Controller implements Observer<Event> {
             //send the if double kill to all players
             doubleKill = getTurnManager().assignDoubleKillPoint();
             msgDoubleKill = new Gson().toJson(new DoubleKillInfo(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), doubleKill));
-            sendInfo(EventType.DOUBLE_KILL, msgDoubleKill, getIdPlayersCreateList().addAllIdPlayers());
+            //sendInfo(EventType.DOUBLE_KILL, msgDoubleKill, getIdPlayersCreateList().addAllIdPlayers());
 
 
             for(Player player: deadPlayers) {
