@@ -1,6 +1,7 @@
-package it.polimi.ProgettoIngSW2019.common.Message;
+package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 import it.polimi.ProgettoIngSW2019.common.LightModel.WeaponLM;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.InfoResponse;
 
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * Reload info class
  * @author Priscilla Lo Bue
  */
-public class ReloadInfoResponse extends Info {
+public class ReloadInfoResponse extends InfoResponse {
     private List<WeaponLM> weaponsCanReload;
 
 

@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019.modelTest;
 
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.model.*;
 
 import static org.junit.Assert.*;
@@ -18,8 +19,6 @@ public class TestTurnManager {
     private TurnManager turnManager;
     private GameTable gameTable;
     private Player player1, player2, player3, player4;
-    private final int DAMAGE_TO_KILL = 11;
-    private final int DAMAGE_TO_OVERKILL = 12;
     private int[] pointsExpected;
     private int[] pointsActuallyAssigned;
 
@@ -154,7 +153,7 @@ public class TestTurnManager {
 
         player2.dealDamage(1, player4);
         player1.dealDamage(3, player4);
-        player3.dealDamage(DAMAGE_TO_KILL - 1 - 3, player4);
+        player3.dealDamage(GeneralInfo.DAMAGE_TO_KILL - 1 - 3, player4);
 
         scoreBefore = player2.getScore();
         assertSame(player2, turnManager.assignFirstBlood(player4));
@@ -170,7 +169,7 @@ public class TestTurnManager {
 
         assertSame(player2, turnManager.getCurrentPlayer());
 
-        player2.dealDamage(DAMAGE_TO_KILL, player1);
+        player2.dealDamage(GeneralInfo.DAMAGE_TO_KILL, player1);
 
         scoreBefore = player2.getScore();
         assertFalse(turnManager.assignDoubleKillPoint());
@@ -180,7 +179,7 @@ public class TestTurnManager {
         assertEquals(scoreBefore, scoreAfter);
 
         ////////////////////////////////////////////
-        player2.dealDamage(DAMAGE_TO_KILL, player3);
+        player2.dealDamage(GeneralInfo.DAMAGE_TO_KILL, player3);
 
         assertTrue(turnManager.assignDoubleKillPoint());
         scoreAfter = player2.getScore();
@@ -188,7 +187,7 @@ public class TestTurnManager {
         assertEquals(scoreBefore + 1, scoreAfter);
 
         ////////////////////////////////////////////
-        player2.dealDamage(DAMAGE_TO_KILL, player4);
+        player2.dealDamage(GeneralInfo.DAMAGE_TO_KILL, player4);
 
         scoreBefore = player2.getScore();
         assertTrue(turnManager.assignDoubleKillPoint());
@@ -448,8 +447,8 @@ public class TestTurnManager {
             //at first, no dead players
             assertEquals(0, turnManager.checkDeadPlayers().size());
 
-            player2.dealDamage(DAMAGE_TO_KILL, player1);
-            player2.dealDamage(DAMAGE_TO_KILL, player3);
+            player2.dealDamage(GeneralInfo.DAMAGE_TO_KILL, player1);
+            player2.dealDamage(GeneralInfo.DAMAGE_TO_KILL, player3);
 
             List<Player> deadPlayersFound = turnManager.checkDeadPlayers();
 

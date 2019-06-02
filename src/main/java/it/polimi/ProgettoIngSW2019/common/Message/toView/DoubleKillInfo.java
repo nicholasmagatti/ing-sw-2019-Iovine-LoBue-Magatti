@@ -1,11 +1,13 @@
-package it.polimi.ProgettoIngSW2019.common.Message;
+package it.polimi.ProgettoIngSW2019.common.Message.toView;
+
+import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
 
 /**
  * DoubleKill info class
  * message if the player does more than one kill
  * @author Priscilla Lo Bue
  */
-public class DoubleKillInfo extends Info {
+public class DoubleKillInfo extends InfoRequest {
     private String nameKiller;
     private boolean doubleKill;
 

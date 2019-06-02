@@ -1,9 +1,9 @@
-package it.polimi.ProgettoIngSW2019.common.Message;
+package it.polimi.ProgettoIngSW2019.common.Message.toController;
 
 /**
  * @author Priscilla Lo Bue
  */
-public class ReloadChoice extends PlayerChoice {
+public class ReloadChoiceRequest extends PlayerChoiceRequest {
     private int idWeaponToReload;
 
 
@@ -12,7 +12,7 @@ public class ReloadChoice extends PlayerChoice {
      * @param idPlayer          id Player
      * @param idWeaponToReload  id Weapon to reload
      */
-    public ReloadChoice(int idPlayer, int idWeaponToReload) {
+    public ReloadChoiceRequest(int idPlayer, int idWeaponToReload) {
         super(idPlayer);
 
         if(idWeaponToReload < 0)

@@ -1,12 +1,10 @@
-package it.polimi.ProgettoIngSW2019.common.Message;
-
-import java.util.List;
+package it.polimi.ProgettoIngSW2019.common.Message.toController;
 
 /**
- * ShootChoice class
+ * ShootChoiceRequest class
  * @author Priscilla Lo Bue
  */
-public class ShootChoice extends PlayerChoice{
+public class ShootChoiceRequest extends PlayerChoiceRequest {
     private int idWeaponUsed;
     //private List<EnemyPlayerLM> enemyList;
     private boolean usePowerUp;
@@ -17,7 +15,7 @@ public class ShootChoice extends PlayerChoice{
      * @param idPlayer          id player
      * @param idWeaponUsed      id weapon used
      */
-    public ShootChoice(int idPlayer, int idWeaponUsed) {
+    public ShootChoiceRequest(int idPlayer, int idWeaponUsed) {
         super(idPlayer);
         if(idWeaponUsed < 0)
             throw new IllegalArgumentException("The weapon id cannot be negative");

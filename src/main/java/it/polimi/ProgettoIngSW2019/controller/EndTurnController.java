@@ -2,10 +2,10 @@ package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
-import it.polimi.ProgettoIngSW2019.common.Message.DoubleKillInfo;
-import it.polimi.ProgettoIngSW2019.common.Message.Info;
-import it.polimi.ProgettoIngSW2019.common.Message.ScorePlayersInfoResponse;
-import it.polimi.ProgettoIngSW2019.common.Message.ScoreInfo;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.DoubleKillInfo;
+import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.ScorePlayersInfoResponse;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.ScoreInfo;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
@@ -38,8 +38,8 @@ public class EndTurnController extends Controller implements Observer<Event> {
      * @param virtualView   virtualView
      * @param createJson    createJson
      */
-    public EndTurnController(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson) {
-        super(turnManager, idConverter, virtualView, createJson);
+    public EndTurnController(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson, IdPlayersCreateList idPlayersCreateList) {
+        super(turnManager, idConverter, virtualView, createJson, idPlayersCreateList);
         weaponDeck = turnManager.getGameTable().getWeaponDeck();
         ammoDeck = turnManager.getGameTable().getAmmoDeck();
     }
@@ -62,16 +62,15 @@ public class EndTurnController extends Controller implements Observer<Event> {
      */
     public void endTurn(String messageJson) {
         List<ScorePlayersInfoResponse> scorePlayersInfoResponses;
-        Event event;
         boolean doubleKill;
         String msgDoubleKill;
 
-        Info info = new Gson().fromJson(messageJson, Info.class);
+        InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
 
-        if(info.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer())
-            throw new IllegalAttributeException("It is not Player: " + info.getIdPlayer() + " turn");
+        if(infoRequest.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer())
+            throw new IllegalAttributeException("It is not Player: " + infoRequest.getIdPlayer() + " turn");
 
-        ownerPlayer = getIdConverter().getPlayerById(info.getIdPlayer());
+        ownerPlayer = getIdConverter().getPlayerById(infoRequest.getIdPlayer());
         List<Player> deadPlayers = getTurnManager().checkDeadPlayers();
 
         if(deadPlayers != null) {
@@ -80,15 +79,14 @@ public class EndTurnController extends Controller implements Observer<Event> {
             if(scorePlayersInfoResponses == null)
                 throw new NullPointerException("scorePlayersList cannot be null");
 
-            //TODO: inviare a tutti i client
+            //send the scores infoRequest to all players
             String scorePlayersListJson = new Gson().toJson(scorePlayersInfoResponses);
-            event = new Event(EventType.SCORE_DEAD_PLAYERS, scorePlayersListJson);
-            //getVirtualView().sendMessage(event);
+            sendInfo(EventType.SCORE_DEAD_PLAYERS, scorePlayersListJson, getIdPlayersCreateList().addAllIdPlayers());
 
+            //send the if double kill to all players
             doubleKill = getTurnManager().assignDoubleKillPoint();
             msgDoubleKill = new Gson().toJson(new DoubleKillInfo(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), doubleKill));
-            event = new Event(EventType.DOUBLE_KILL, msgDoubleKill);
-            //getVirtualView().sendMessage(event);
+            sendInfo(EventType.DOUBLE_KILL, msgDoubleKill, getIdPlayersCreateList().addAllIdPlayers());
 
 
             for(Player player: deadPlayers) {
@@ -97,12 +95,13 @@ public class EndTurnController extends Controller implements Observer<Event> {
         }
         else {
             //if there are not dead players
-            String endTurnInfoJson = new Gson().toJson(new Info(ownerPlayer.getIdPlayer()));
-            sendInfo(EventType.RESPONSE_REQUEST_ENDTURN_INFO, endTurnInfoJson);
+            String endTurnInfoJson = new Gson().toJson(new InfoRequest(ownerPlayer.getIdPlayer()));
+            sendInfo(EventType.RESPONSE_REQUEST_ENDTURN_INFO, endTurnInfoJson, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
         }
 
         resetMap();
         //TODO: RESTITUIRE NUOVA MAPPA
+        //TODO: cambiare turno giocatore
     }
 
 

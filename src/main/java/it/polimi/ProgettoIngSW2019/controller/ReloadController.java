@@ -2,12 +2,10 @@ package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
-import it.polimi.ProgettoIngSW2019.common.LightModel.MyLoadedWeaponsLM;
-import it.polimi.ProgettoIngSW2019.common.LightModel.PlayerDataLM;
 import it.polimi.ProgettoIngSW2019.common.LightModel.WeaponLM;
-import it.polimi.ProgettoIngSW2019.common.Message.Info;
-import it.polimi.ProgettoIngSW2019.common.Message.ReloadChoice;
-import it.polimi.ProgettoIngSW2019.common.Message.ReloadInfoResponse;
+import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
+import it.polimi.ProgettoIngSW2019.common.Message.toController.ReloadChoiceRequest;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.ReloadInfoResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.custom_exception.IllegalAttributeException;
@@ -40,8 +38,8 @@ public class ReloadController extends Controller implements Observer<Event> {
      * @param idConverter   idConverter
      * @param virtualView   virtualView
      */
-    public ReloadController(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson) {
-        super(turnManager, idConverter, virtualView, createJson);
+    public ReloadController(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson, IdPlayersCreateList idPlayersCreateList) {
+        super(turnManager, idConverter, virtualView, createJson, idPlayersCreateList);
     }
 
 
@@ -53,7 +51,7 @@ public class ReloadController extends Controller implements Observer<Event> {
      * @param event     event sent
      */
     public void update(Event event) {
-        if(event.getCommand().equals(EventType.REQUEST_RELOAD_INFO)) {
+        if(event.getCommand().equals(EventType.REQUEST_WEAPONS_CAN_RELOAD)) {
             reloadInfo(event.getMessageInJsonFormat());
         }
 
@@ -69,27 +67,27 @@ public class ReloadController extends Controller implements Observer<Event> {
      * @param messageJson   message json from view
      */
     public void reloadInfo(String messageJson) {
-        //estrapolo il messaggio json in classe con i relativi dati
-        Info info = new Gson().fromJson(messageJson, Info.class);
+        //extract the json message in class with his data
+        InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
 
-        //verifico che sia il turno del Player che ha richiesto il reload
-        if(info.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer())
-            throw new  IllegalAttributeException("It is not Player: " + info.getIdPlayer() + " turn");
+        //is the turn of the player who wants to reload?
+        if(infoRequest.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer())
+            throw new  IllegalAttributeException("It is not Player: " + infoRequest.getIdPlayer() + " turn");
 
-        //estraggo il player dal model con idPlayer che mi è stato mandato dalla view
-        ownerPlayer = getIdConverter().getPlayerById(info.getIdPlayer());
+        //extract player from the model with the idPlayer sent from the view
+        ownerPlayer = getIdConverter().getPlayerById(infoRequest.getIdPlayer());
 
-        //setto la lista delle weapons che posso caricare in base agli ammo che ho
+        //set weapons list can be reloaded based by the number of the ammo of the player
         setListWeaponsCanReload();
 
         if(weaponsCanReload != null) {
             List<WeaponLM> weaponsCanReloadLM = getCreateJson().createWeaponsListLM(weaponsCanReload);
             String reloadInfoString = new Gson().toJson(new ReloadInfoResponse(ownerPlayer.getIdPlayer(), weaponsCanReloadLM));
-            sendInfo(EventType.RESPONSE_REQUEST_RELOAD_INFO, reloadInfoString);
+            sendInfo(EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD, reloadInfoString, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
         }
         else {
             String reloadInfoString = new Gson().toJson(new ReloadInfoResponse(ownerPlayer.getIdPlayer(), null));
-            sendInfo(EventType.RESPONSE_REQUEST_RELOAD_INFO, reloadInfoString);
+            sendInfo(EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD, reloadInfoString, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
         }
     }
 
@@ -99,12 +97,10 @@ public class ReloadController extends Controller implements Observer<Event> {
      * creates the list with the weapons can be reloaded
      */
     public void setListWeaponsCanReload() {
-        //cerco tutte le armi scariche che posso ricaricare, in base agli ammo che ho
+
        for(WeaponCard weaponCard:ownerPlayer.getUnloadedWeapons()) {
-           //lista ammo di ricarica dell'arma
            reloadCost = weaponCard.getreloadCost();
 
-           //se Player ha abbastanza Ammo aggiunge l'arma nella lista delle armi che il Player può ricaricare
            if(ownerPlayer.hasEnoughAmmo(reloadCost))
                weaponsCanReload.add(weaponCard);
        }
@@ -118,7 +114,7 @@ public class ReloadController extends Controller implements Observer<Event> {
      * @param messageJson   message json from the event generated by view
      */
     public void reloadWeapon(String messageJson) {
-        ReloadChoice reloadChoice = new Gson().fromJson(messageJson, ReloadChoice.class);
+        ReloadChoiceRequest reloadChoice = new Gson().fromJson(messageJson, ReloadChoiceRequest.class);
 
         if(reloadChoice.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer())
             throw new  IllegalAttributeException("It is not Player: " + reloadChoice.getIdPlayer() + " turn");
@@ -138,10 +134,10 @@ public class ReloadController extends Controller implements Observer<Event> {
 
         //mando al player le nuove weapons cariche
         String loadedWeaponsLMJson = getCreateJson().createMyLoadedWeaponsListLMJson(ownerPlayer);
-        sendInfo(EventType.RESPONSE_REQUEST_RELOAD, loadedWeaponsLMJson);
+        sendInfo(EventType.RESPONSE_REQUEST_RELOAD, loadedWeaponsLMJson, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
 
 
         String playerLMJson = getCreateJson().createPlayerLMJson(ownerPlayer);
-        //TODO: notificare a tutti i player playerLMJson
+        sendInfo(EventType.UPDATE_PLAYER_INFO, playerLMJson, getIdPlayersCreateList().addAllIdPlayers());
     }
 }

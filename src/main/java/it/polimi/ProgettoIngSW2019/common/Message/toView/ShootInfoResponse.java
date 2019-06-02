@@ -1,7 +1,8 @@
-package it.polimi.ProgettoIngSW2019.common.Message;
+package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
 import it.polimi.ProgettoIngSW2019.common.LightModel.WeaponLM;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.InfoResponse;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * message with shoot ifo request and response
  * @author Priscilla Lo Bue
  */
-public class ShootInfoResponse extends Info {
+public class ShootInfoResponse extends InfoResponse {
     private List<WeaponLM> availableWeapons;
     private List<PowerUpLM> availablePowerUp;
 

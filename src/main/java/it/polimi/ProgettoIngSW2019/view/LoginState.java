@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.view;
 
 import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
 
 import java.net.InetAddress;
@@ -10,15 +11,12 @@ import java.util.Scanner;
 /**
  * @author Nicholas Magatti
  */
-public class LoginState extends Observable<Event> implements IState{
+public class LoginState extends Observable<Event> implements Observer<Event>, IState{
 
-    /*
-    TODO: if possible, create the object of imputScanner only once in a calss in the View, and pass it
-            to the current state with the constructor of the state
-    */
     private InputScanner inputScanner = new InputScanner();
     private String name;
     private boolean firstUser;
+
 
 
     @Override
@@ -27,27 +25,26 @@ public class LoginState extends Observable<Event> implements IState{
         System.out.println("###########################################");
         System.out.println("##       Welcome on adrenalina!        ##");
         System.out.println("###########################################\n");
-        System.out.print("Choose the name for your character!");
+        System.out.print("Choose te name for your character!");
         System.out.println("Name: ");
 
-        inputScanner.read();
-        if(inputScanner.isTimeExpired()) {
-            inputScanner.close();
-            //TODO
-        }else{
-            name = inputScanner.getInputValue();
-            //TODO: check if the input is acceptable:
-            //TODO: if yes, do what you have to do
-            //TODO: if no
-        }
 
-        //TODO: check if this name is acceptable
-        /*if (name already chose by someone else)
-                write this name has already been chosen by someone else
-          if (name is not acceptable, like empty string or all spaces)
-                write that the name is not acceptable
-          if( everything is all right):
-         */
+        boolean gotAcceptableResult = false;
+        while(!inputScanner.isTimeExpired() && !gotAcceptableResult){
+            inputScanner.read();
+            if(!inputScanner.isTimeExpired()){
+                inputScanner.getInputValue();
+                //TODO: what do I do here?
+            }
+        }
+        inputScanner.close();
+
+        if(gotAcceptableResult){
+            //TODO
+        }
+        else{
+            //TODO
+        }
 
         System.out.println("Che piacere "+name+"!");
         System.out.println("Ora verrai indirizzato nella sala d'attesa, sai bisogna essere almeno in 3 per giocare");
@@ -61,5 +58,12 @@ public class LoginState extends Observable<Event> implements IState{
             stateContext.startMenu();
         }
 
+    }
+
+    @Override
+    public void update(Event message){
+        if(message.getCommand() == EventType.INPUT_TIME_EXPIRED){
+            inputScanner.close();
+        }
     }
 }

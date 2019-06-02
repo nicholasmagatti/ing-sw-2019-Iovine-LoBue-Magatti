@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019.modelTest;
 
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import org.junit.Before;
@@ -86,15 +87,15 @@ public class TestPlayer {
     }
 
     /**
-     * Verify the player is put down in the two cases of overkill(12 damages) and kill(standard kill: 11 damages)
+     * Verify the player is put down in the two cases of overkill and kill(standard kill)
      */
     @Test
     public void verifyPlayerPutDownAfterDamage(){
         //overkill
-        player1.dealDamage(12, player2);
+        player1.dealDamage(GeneralInfo.DAMAGE_TO_OVERKILL, player2);
         assertTrue(player2.isPlayerDown());
         //kill (but no overkill)
-        player1.dealDamage(11, player3);
+        player1.dealDamage(GeneralInfo.DAMAGE_TO_KILL, player3);
         assertTrue(player3.isPlayerDown());
         //this time the damaged player should be still alive
         player1.dealDamage(6, player4);

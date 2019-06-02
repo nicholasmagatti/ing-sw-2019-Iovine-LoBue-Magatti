@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.ProgettoIngSW2019.common.enums.*;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 
 /**
  * Class used to represent the game table and everything on it
@@ -22,7 +23,7 @@ public class GameTable{
     //[][] indicate row and column respectively ([row][column])
     private Square[][] map;
     private List<KillToken> killshotTrack = new ArrayList<>();
-    private int numberOfSkullsForTheGame; //between 5 and 8, chosen by the first user
+    private int numberOfSkullsForTheGame; //chosen by the first user
     private boolean frenzyMode = false;
 
     /**
@@ -33,9 +34,9 @@ public class GameTable{
      * @param initialNumberOfSkulls - number of skulls requested
      */
     public GameTable(Square[][] chosenMap, int initialNumberOfSkulls){
-        if(initialNumberOfSkulls < 5 || initialNumberOfSkulls > 8){
+        if(initialNumberOfSkulls < GeneralInfo.MIN_SKULLS || initialNumberOfSkulls > GeneralInfo.MAX_SKULLS){
             throw new IllegalArgumentException("The number of skulls for the game is " + initialNumberOfSkulls +
-                    " but should be between 5 and 8.");
+                    " but should be between" + GeneralInfo.MIN_SKULLS + " and " + GeneralInfo.MAX_SKULLS + ".");
         }
         numberOfSkullsForTheGame = initialNumberOfSkulls;
 
@@ -50,8 +51,8 @@ public class GameTable{
 
         map = chosenMap;
         //set dependencies for every square of the map
-        for(int i=0; i < 3; i++){
-            for(int j=0; j < 4; j++){
+        for(int i = 0; i < GeneralInfo.ROWS_MAP; i++){
+            for(int j=0; j < GeneralInfo.COLUMNS_MAP; j++){
                 if(map[i][j] != null){
                     map[i][j].setDependency(map);
                 }

@@ -1,16 +1,16 @@
 package it.polimi.ProgettoIngSW2019.model;
 
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+
 /**
  * Class that manages all the possible maps that can be chosen for the game
  * @author Nicholas Magatti
  */
 public class Maps {
     //[][] indicate row and column respectively ([row][column])
-    private final int ROWS = 3;
-    private final int COLUMNS = 4;
     private final int NUMBER_OF_MAPS = 4;
 
-    private Square[][][] maps = new Square[NUMBER_OF_MAPS][ROWS][COLUMNS];
+    private Square[][][] maps = new Square[NUMBER_OF_MAPS][GeneralInfo.ROWS_MAP][GeneralInfo.COLUMNS_MAP];
 
     /**
      * Constructor that creates all the maps that will be shown to the first player,

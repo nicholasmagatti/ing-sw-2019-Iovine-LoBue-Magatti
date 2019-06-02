@@ -2,6 +2,9 @@ package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.LightModel.*;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageEnemyPowerUp;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageMyPowerUp;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.SpawnChoiceResponse;
 import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.model.PowerUp;
 import it.polimi.ProgettoIngSW2019.model.TurnManager;
@@ -21,7 +24,7 @@ public class CreateJson {
     public CreateJson(TurnManager turnManager) {
         this.turnManager = turnManager;
     }
-
+    //TODO: serve turnManager?
 
 
     /**
@@ -101,20 +104,9 @@ public class CreateJson {
     public String createPlayerLMJson(Player player) {
         List<WeaponLM> unloadedWeaponsListLM = createWeaponsListLM(player.getUnloadedWeapons());
         PlayerDataLM playerDataLM = new PlayerDataLM(player.getIdPlayer(), player.getCharaName(), unloadedWeaponsListLM, player.getRedAmmo(), player.getBlueAmmo(), player.getYellowAmmo(), player.getNumberOfSkulls(), player.isActive(), player.isPlayerDown(), player.getDamageLine(), player.getMarkLine());
-        return new Gson().toJson(player);
+        return new Gson().toJson(playerDataLM);
     }
 
-
-
-    /**
-     * Creates MyLoadedWeaponsLM from the list of cards
-     * @param player    player
-     * @return          loadedWeapons converted in MyLoadedWeaponsLM
-     */
-    public MyLoadedWeaponsLM createMyLoadedWeaponsListLM(Player player) {
-        List<WeaponLM> loadedWeaponsListLM = createWeaponsListLM(player.getLoadedWeapons());
-        return new MyLoadedWeaponsLM(loadedWeaponsListLM);
-    }
 
 
     /**
@@ -193,4 +185,33 @@ public class CreateJson {
         return new Gson().toJson(myPowerUpLM);
     }
 
+
+
+    //TODO: FORSE DA CANCELLARE
+    public String createSpawnChoiceResponseJson(Player player, int[] positions) {
+        int x = positions[0];
+        int y = positions[1];
+        SpawnChoiceResponse spawnChoiceResponse = new SpawnChoiceResponse(player.getIdPlayer(), x, y);
+        return new Gson().toJson(spawnChoiceResponse);
+    }
+
+
+
+    public String createMessageMyPowerUpJson(Player player, List<PowerUp> powerUps) {
+        List<String> namePowerUps = new ArrayList<>();
+
+        for(PowerUp p: powerUps) {
+            namePowerUps.add(p.getName());
+        }
+
+        MessageMyPowerUp messageMyPowerUpInfo = new MessageMyPowerUp(player.getIdPlayer(), player.getCharaName(), namePowerUps);
+        return new Gson().toJson(messageMyPowerUpInfo);
+    }
+
+
+
+    public String createMessageEnemyPowerUp(Player player, int nCards) {
+        MessageEnemyPowerUp messageEnemyPowerUp = new MessageEnemyPowerUp(player.getIdPlayer(), player.getCharaName(), nCards);
+        return new Gson().toJson(messageEnemyPowerUp);
+    }
 }
