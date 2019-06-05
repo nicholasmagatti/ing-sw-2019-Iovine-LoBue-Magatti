@@ -5,7 +5,11 @@ import it.polimi.ProgettoIngSW2019.common.utilities.*;
 
 import java.util.List;
 import java.util.Scanner;
-//TODO: decide if I want to keep this or not (this could be easily be done by some of the other state classes)
+
+/**
+ * @deprecated
+ * //TODO: decide if I want to keep this or not (this could be easily be done by some of the other state classes)
+ */
 public class PowerUpState extends Observable<Event> implements IState {
     //TODO: remove scanner
     List<Integer> idPowerUp;
@@ -13,7 +17,7 @@ public class PowerUpState extends Observable<Event> implements IState {
     String yesnoChoice;
 
     @Override
-    public void menu(StateContext stateContext) {
+    public void menu(StateManager stateManager) {
         scanner = new Scanner(System.in);
 
         System.out.println("Hai delle power up che possono essere attivate.");

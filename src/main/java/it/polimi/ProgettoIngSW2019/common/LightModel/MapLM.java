@@ -6,7 +6,7 @@ import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
  * @author Nicholas Magatti
  */
 public class MapLM {
-
+    //[][] stands for [row][column]
     private SquareLM[][] map;
 
     /**

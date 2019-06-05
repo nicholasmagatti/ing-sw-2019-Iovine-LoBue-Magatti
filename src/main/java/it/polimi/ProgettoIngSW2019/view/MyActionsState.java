@@ -9,8 +9,9 @@ import java.util.Scanner;
 /**
  * @author Nicholas Magatti
  */
-public class PlayerChoiceState extends Observable<Event> implements IState {
+public class MyActionsState extends Observable<Event> implements IState {
 
+    private ReloadState reloadState;
     InputScanner inputScanner = new InputScanner();
     //TODO: remove scanner
     Scanner scanner;
@@ -34,6 +35,7 @@ public class PlayerChoiceState extends Observable<Event> implements IState {
     //Variable to handle infoItem statement
     int infoChoice;
 
+    //I'm NOT SURE if it's updated with the latest version of inputScanner
     /*
     NOTES ABOUT HOW INPUTSCANNER WORKS:
     boolean gotAcceptableResult = null;
@@ -59,12 +61,12 @@ public class PlayerChoiceState extends Observable<Event> implements IState {
 
 
     //TODO: remove this (the controller tells me the number of actions left)
-    public PlayerChoiceState(){
+    public MyActionsState(){
         nrOfAction = 2;
     }
 
     @Override
-    public void menu(StateContext stateContext) {
+    public void menu(StateManager stateManager) {
         scanner = new Scanner(System.in);
 
 
@@ -107,8 +109,7 @@ public class PlayerChoiceState extends Observable<Event> implements IState {
             nrOfAction--;
         }
 
-        stateContext.setState(new ReloadState());
-        stateContext.startMenu();
+        stateManager.triggerNextState(reloadState);
     }
 
     private void move(){

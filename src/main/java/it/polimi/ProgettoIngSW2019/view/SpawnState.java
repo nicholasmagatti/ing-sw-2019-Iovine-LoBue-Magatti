@@ -10,6 +10,8 @@ import java.util.Scanner;
  * @author Nicholas Magatti
  */
 public class SpawnState extends Observable<Event> implements IState{
+    EnemyTurnState enemyTurnState;
+    MyActionsState myActionsState;
     //TODO: remove scanner
     Scanner scanner;
     List<Integer> idPowerUp;
@@ -17,7 +19,7 @@ public class SpawnState extends Observable<Event> implements IState{
     int powerupChoice;
 
     @Override
-    public void menu(StateContext stateContext) {
+    public void menu(StateManager stateManager) {
         System.out.println("Questi sono i power up che hai in mano.");
         for(Integer id: idPowerUp){
             //TODO: mostrare il nome carta
@@ -39,6 +41,10 @@ public class SpawnState extends Observable<Event> implements IState{
             System.out.println(id);
         }
         powerupChoice = scanner.nextInt();
+
+        //TODO: if else
+        stateManager.triggerNextState(myActionsState);
+        stateManager.triggerNextState(enemyTurnState);
     }
 
     private void showPowerUpInfo(int idPowerUp){

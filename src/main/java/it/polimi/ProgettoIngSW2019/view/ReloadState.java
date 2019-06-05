@@ -10,6 +10,8 @@ import java.util.Scanner;
  * @author Nicholas Magatti
  */
 public class ReloadState extends Observable<Event> implements IState {
+    StateManager stateManager;
+    SpawnState spawnState;
     //TODO: remove scanner
     private Scanner scanner;
     private String yesnoChoice;
@@ -18,7 +20,7 @@ public class ReloadState extends Observable<Event> implements IState {
     private boolean exit = false;
 
     @Override
-    public void menu(StateContext stateContext) {
+    public void menu(StateManager stateManager) {
         scanner = new Scanner(System.in);
 
         System.out.println("Sei arrivato alla fine del turno.");
@@ -48,6 +50,8 @@ public class ReloadState extends Observable<Event> implements IState {
             else
                 exit = true;
         }
+
+        stateManager.triggerNextState(spawnState);
     }
 
     private void showReloadCost(){

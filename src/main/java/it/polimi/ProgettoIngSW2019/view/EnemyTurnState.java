@@ -5,15 +5,16 @@ import java.util.Scanner;
 /**
  * @author Nicholas Magatti
  */
-public class IdleState implements IState {
+public class EnemyTurnState implements IState {
     //TODO: remove scanner
     private Scanner scanner;
     private String yesnoChoice;
     private int infoChoice;
     private boolean exit = false;
+    private MyActionsState myActionsState;
 
     @Override
-    public void menu(StateContext stateContext) {
+    public void menu(StateManager stateManager) {
         while(!exit) {
             System.out.print("Mentre sei in attesa, vuoi vedere le info di qualcosa (y/n)? ");
             if (yesnoChoice.equalsIgnoreCase("y")) {
@@ -42,8 +43,7 @@ public class IdleState implements IState {
                 }
             }
         }
-        stateContext.setState(new PlayerChoiceState());
-        stateContext.startMenu();
+        stateManager.triggerNextState(myActionsState);
     }
 
     public void showWeapon(){

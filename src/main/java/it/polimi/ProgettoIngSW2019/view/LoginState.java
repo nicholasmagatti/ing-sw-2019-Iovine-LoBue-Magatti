@@ -4,10 +4,6 @@ import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Scanner;
-
 /**
  * @author Nicholas Magatti
  */
@@ -20,7 +16,7 @@ public class LoginState extends Observable<Event> implements Observer<Event>, IS
 
 
     @Override
-    public void menu(StateContext stateContext){
+    public void menu(StateManager stateManager){
 
         System.out.println("###########################################");
         System.out.println("##       Welcome on adrenalina!        ##");
@@ -28,7 +24,7 @@ public class LoginState extends Observable<Event> implements Observer<Event>, IS
         System.out.print("Choose te name for your character!");
         System.out.println("Name: ");
 
-
+        //TODO: REMEMBER update does inputScanner.close() if time expires
         boolean gotAcceptableResult = false;
         while(!inputScanner.isTimeExpired() && !gotAcceptableResult){
             inputScanner.read();
@@ -50,16 +46,14 @@ public class LoginState extends Observable<Event> implements Observer<Event>, IS
         System.out.println("Ora verrai indirizzato nella sala d'attesa, sai bisogna essere almeno in 3 per giocare");
 
         if(firstUser){
-            stateContext.setState(new SetupGameState());
-            stateContext.startMenu();
+            stateManager.triggerNextState(new SetupGameState());
         }
         else{
-            stateContext.setState(new WaitState());
-            stateContext.startMenu();
+            stateManager.triggerNextState(new WaitState());
         }
 
     }
-
+    //TODO: evaluate: delete or keep?
     @Override
     public void update(Event message){
         if(message.getCommand() == EventType.INPUT_TIME_EXPIRED){

@@ -6,8 +6,17 @@ package it.polimi.ProgettoIngSW2019.view;
  */
 public class WaitState implements IState {
 
-    @Override
-    public void menu(StateContext stateContext) {
+    EnemyTurnState enemyTurnState;
+    MyActionsState myActionsState;
+    StateManager stateManager;
 
+    //TODO: create (with new etc) all the states that will be used during the game (playerchoice, powerupstate etc)
+
+    @Override
+    public void menu(StateManager stateManager) {
+
+        //TODO if else
+        stateManager.triggerNextState(enemyTurnState);
+        stateManager.triggerNextState(myActionsState);
     }
 }

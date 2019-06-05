@@ -32,6 +32,8 @@ public class Player{
     private List<PowerUp> powerUps = new ArrayList<>();
     private AmmoBox ammoBox = new AmmoBox();
     private boolean active = true;
+    //-1 means nobody hit this player on this turn
+    private int idPlayerDamageDealer = -1;
 
 
     /**
@@ -364,7 +366,8 @@ public class Player{
     }
 
     /**
-     * Check if the player can spend the required quantity of ammo
+     * Check if the player can spend the required quantity of ammo, also considering
+     * the possibility to discard powerups using them as ammo to pay part of all of the cost
      * @param ammoToSpend - the specified quantity of ammo
      * @return true if the player can spend that ammo, false otherwise
      */
@@ -390,9 +393,29 @@ public class Player{
                     break;
             }
         }
-        if(ammoBox.getBlueAmmo() >= blueToSpend &&
-                ammoBox.getRedAmmo() >= redToSpend &&
-                ammoBox.getYellowAmmo() >= yellowToSpend){
+
+        int availableBlu, availableRed, availableYellow;
+        //consider ammo in ammobox
+        availableBlu = ammoBox.getBlueAmmo();
+        availableRed = ammoBox.getRedAmmo();
+        availableYellow = ammoBox.getYellowAmmo();
+        //also consider poerups (that can be used as ammo)
+        for(PowerUp powerUp : powerUps){
+            AmmoType ammoType = powerUp.getGainAmmoColor();
+            if(ammoType == AmmoType.BLUE){
+                availableBlu++;
+            }
+            if(ammoType == AmmoType.RED){
+                availableRed++;
+            }
+            if(ammoType == AmmoType.YELLOW){
+                availableYellow++;
+            }
+        }
+        //check if the player has enough ammo to pay the requested cost
+        if(availableBlu >= blueToSpend &&
+                availableRed >= redToSpend &&
+                availableYellow >= yellowToSpend){
             return true;
         }
         else{
@@ -459,13 +482,6 @@ public class Player{
     }
 
     /**
-     * Remove all damage from the damage line
-     */
-    public void emptyDamageLine(){
-        damageLine = new ArrayList<>();
-    }
-
-    /**
      * Get powerups on the player's hand
      * @return powerups of the player
      */
@@ -519,6 +535,23 @@ public class Player{
      */
     public Square getPosition() {
         return square;
+    }
+
+    /**
+     * If a player damaged this player on this turn, return his/her id, return -1 otherwise
+     * @return the id of the player damaged this player on this turn(if that happened), -1 otherwise
+     */
+    public int getIdPlayerDamageDealer(){
+        return idPlayerDamageDealer;
+    }
+
+    /**
+     * Set the id of the player who damaged this player on this turn.
+     * If nobody damaged this player on this turn, set -1.
+     * @param idPlayerDamageDealer
+     */
+    public void setIdPlayerDamageDealer(int idPlayerDamageDealer) {
+        this.idPlayerDamageDealer = idPlayerDamageDealer;
     }
 
     /**

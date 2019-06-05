@@ -17,7 +17,7 @@ public class WhatISee {
     private MyLoadedWeaponsLM myLoadedWeapons;
     private MyPowerUpLM myPowerUps;
     private MapLM map;
-    //TODO: attribute for the killshot track
+    private KillshotTrackLM killshotTrack;
 
 
     public WhatISee(int id, String nickname, int numberOfPlayers){

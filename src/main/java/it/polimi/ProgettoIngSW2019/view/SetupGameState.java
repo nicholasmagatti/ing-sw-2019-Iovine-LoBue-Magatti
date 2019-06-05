@@ -11,7 +11,7 @@ import java.util.Scanner;
  */
 public class SetupGameState extends Observable<Event> implements IState {
     @Override
-    public void menu(StateContext stateContext) {
+    public void menu(StateManager stateManager) {
         //TODO: remove scanner
         Scanner scanner = new Scanner(System.in);
         int mapChoice;
@@ -63,7 +63,6 @@ public class SetupGameState extends Observable<Event> implements IState {
         System.out.println("Waiting for the other players...");
         System.out.println("We are almost ready!");
 
-        stateContext.setState(new WaitState());
-        stateContext.startMenu();
+        stateManager.triggerNextState(new WaitState());
     }
 }

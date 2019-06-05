@@ -127,7 +127,10 @@ public class TestPlayer {
             System.out.println(e);
         }
     }
-
+    /*TODO: sometimes it doesn't work so make it work always(possibly adding specific ammo
+            even if there is the chance it is not possible with the way Player is protected
+             from the possibility of wrong accesses may make it impossible
+     */
     @Test
     public void testHasEnoughAmmoAtStart(){
 
@@ -222,4 +225,5 @@ public class TestPlayer {
         player1.addPointsToScore(6);
         assertEquals(7, player1.getScore());
     }
+
 }
