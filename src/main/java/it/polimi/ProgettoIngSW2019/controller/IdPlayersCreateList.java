@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IdPlayersCreateList {
-    private List<Integer> idPlayers = new ArrayList<>();
+    private static List<Integer> idPlayers = new ArrayList<>();
     private TurnManager turnManager;
 
 
@@ -17,6 +17,7 @@ public class IdPlayersCreateList {
 
 
     public List<Integer> addAllIdPlayers() {
+        idPlayers.clear();
         Player[] playersList = turnManager.getGameTable().getPlayers();
 
         for(Player player: playersList) {
@@ -28,12 +29,14 @@ public class IdPlayersCreateList {
 
 
     public List<Integer> addOneIdPlayers(Player player) {
+        idPlayers.clear();
         idPlayers.add(player.getIdPlayer());
         return idPlayers;
     }
 
 
     public List<Integer> addAllExceptPlayer(Player player) {
+        idPlayers.clear();
         Player[] playersList = turnManager.getGameTable().getPlayers();
 
         for(Player p: playersList) {

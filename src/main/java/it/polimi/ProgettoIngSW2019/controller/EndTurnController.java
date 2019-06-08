@@ -2,13 +2,13 @@ package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.DoubleKillInfo;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.ScorePlayersInfoResponse;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.ScoreInfo;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.InfoResponse;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.Message;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageScorePlayer;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.ScorePlayerWhoHit;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
-import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.custom_exception.IllegalAttributeException;
 import it.polimi.ProgettoIngSW2019.model.Deck;
 import it.polimi.ProgettoIngSW2019.model.Player;
@@ -20,26 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * EndTurnController class
+ * EndTurnController1 class
  * score dead players
  * reset map
  */
-public class EndTurnController extends Controller implements Observer<Event> {
+public class EndTurnController extends Controller {
     private Deck weaponDeck;
     private Deck ammoDeck;
     private Player ownerPlayer;
-
+    private List<MessageScorePlayer> messageScorePlayerList = new ArrayList<>();
 
 
     /**
      * Constructor
-     * @param turnManager   turnManager
-     * @param idConverter   idConverter
-     * @param virtualView   virtualView
-     * @param createJson    createJson
+     *
+     * @param turnManager turnManager
+     * @param virtualView virtualView
      */
-    public EndTurnController(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson, IdPlayersCreateList idPlayersCreateList) {
-        super(turnManager, idConverter, virtualView, createJson, idPlayersCreateList);
+    public EndTurnController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, IdPlayersCreateList idPlayersCreateList) {
+        super(turnManager, virtualView, idConverter, createJson, idPlayersCreateList);
         weaponDeck = turnManager.getGameTable().getWeaponDeck();
         ammoDeck = turnManager.getGameTable().getAmmoDeck();
     }
@@ -49,97 +48,117 @@ public class EndTurnController extends Controller implements Observer<Event> {
      * receive the message from the view
      * check type event
      * do actions based by type event
+     *
      * @param event event sent
      */
     public void update(Event event) {
-        if(event.getCommand().equals(EventType.REQUEST_ENDTURN_INFO))
-            endTurn(event.getMessageInJsonFormat());
+        if (event.getCommand().equals(EventType.REQUEST_ENDTURN_INFO)) {
+            checkInfoFromView(event.getMessageInJsonFormat());
+        }
     }
 
 
-    /**
-     * @param messageJson json message
-     */
-    public void endTurn(String messageJson) {
-        List<ScorePlayersInfoResponse> scorePlayersInfoResponses;
-        boolean doubleKill;
-        String msgDoubleKill;
-
+    public void checkInfoFromView(String messageJson) {
         InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
 
-        if(infoRequest.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer())
-            throw new IllegalAttributeException("It is not Player: " + infoRequest.getIdPlayer() + " turn");
+        ownerPlayer = convertPlayer(infoRequest.getIdPlayer());
 
-        ownerPlayer = getIdConverter().getPlayerById(infoRequest.getIdPlayer());
+        if(ownerPlayer != null) {
+            if(checkCurrentPlayer(ownerPlayer)) {
+                if(checkNoActionLeft(ownerPlayer)) {
+                    checkScore();
+                    resetMap();
+                    sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMLMJson(), getIdPlayersCreateList().addAllIdPlayers());
+                    sendInfo(EventType.UPDATE_KILLSHOTTRACK, getCreateJson().createKillShotTrackLMJson(), getIdPlayersCreateList().addAllIdPlayers());
+                    getTurnManager().changeCurrentPlayer();
+                }
+            }
+        }
+    }
+
+
+
+    public void checkScore() {
         List<Player> deadPlayers = getTurnManager().checkDeadPlayers();
 
-        if(deadPlayers != null) {
-            scorePlayersInfoResponses = scoreDeadPlayers(deadPlayers);
+        if(deadPlayers == null)
+            throw new IllegalAttributeException("something wrong, deadPlayer cannot be null");
 
-            if(scorePlayersInfoResponses == null)
+        if(!deadPlayers.isEmpty()) {
+            boolean doubleKill;
+            doubleKill = getTurnManager().assignDoubleKillPoint();
+
+            if(doubleKill) {
+                String msgDoubleKill = new Gson().toJson(new Message(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName()));
+                sendInfo(EventType.MSG_DOUBLEKILL, msgDoubleKill, getIdPlayersCreateList().addAllIdPlayers());
+            }
+
+
+            for(Player deadPlayer: deadPlayers) {
+                String lastHitName = deadPlayer.getDamageLine().get(11);
+                Player player = getTurnManager().getPlayerFromCharaName(lastHitName);
+                if(player.getIdPlayer() != ownerPlayer.getIdPlayer())
+                    throw new IllegalAttributeException("Something wrong with the killer");
+            }
+
+            scoreDeadPlayers(deadPlayers);
+
+            if(messageScorePlayerList == null)
                 throw new NullPointerException("scorePlayersList cannot be null");
 
             //send the scores infoRequest to all players
-            String scorePlayersListJson = new Gson().toJson(scorePlayersInfoResponses);
-            sendInfo(EventType.SCORE_DEAD_PLAYERS, scorePlayersListJson, getIdPlayersCreateList().addAllIdPlayers());
-
-            //send the if double kill to all players
-            doubleKill = getTurnManager().assignDoubleKillPoint();
-            msgDoubleKill = new Gson().toJson(new DoubleKillInfo(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), doubleKill));
-            //sendInfo(EventType.DOUBLE_KILL, msgDoubleKill, getIdPlayersCreateList().addAllIdPlayers());
-
-
-            for(Player player: deadPlayers) {
-                //TODO: passo in spawn state tutti i player morti
-            }
+            String messageScorePlayerListJson = new Gson().toJson(messageScorePlayerList);
+            sendInfo(EventType.SCORE_DEAD_PLAYERS, messageScorePlayerListJson, getIdPlayersCreateList().addAllIdPlayers());
         }
-        else {
-            //if there are not dead players
-            String endTurnInfoJson = new Gson().toJson(new InfoRequest(ownerPlayer.getIdPlayer()));
-            sendInfo(EventType.RESPONSE_REQUEST_ENDTURN_INFO, endTurnInfoJson, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
-        }
-
-        resetMap();
-        //TODO: RESTITUIRE NUOVA MAPPA
-        //TODO: cambiare turno giocatore
     }
 
 
 
 
-    public List<ScorePlayersInfoResponse> scoreDeadPlayers(List<Player> deadPlayers) {
-        List<ScorePlayersInfoResponse> scorePlayersList = new ArrayList<>();
+    public void scoreDeadPlayers(List<Player> deadPlayers) {
+        if(deadPlayers == null)
+            throw new NullPointerException("Something wrong, deadPlayers cannot be null");
+
+        if(deadPlayers.isEmpty())
+            throw new IllegalArgumentException("Something wrong deadPlayers cannot be empty");
+
         String deadNamePlayer;
         String killerNamePlayer = ownerPlayer.getCharaName();
         String firstBloodNamePlayer;
         int[] scorePlayers;
-        List<ScoreInfo> scorePlayersWhoHits = new ArrayList<>();
+        List<ScorePlayerWhoHit> scorePlayersWhoHits = new ArrayList<>();
         int nSkullsDeadPlayer;
 
-        for (Player player : deadPlayers) {
-            deadNamePlayer = player.getCharaName();
-            firstBloodNamePlayer = getTurnManager().assignFirstBlood(player).getCharaName();
+        for (Player deadPlayer : deadPlayers) {
+            deadNamePlayer = deadPlayer.getCharaName();
+            firstBloodNamePlayer = getTurnManager().assignFirstBlood(deadPlayer).getCharaName();
 
             //mi viene restituito una lista di interi
             //gli interi sono i punti che ricevono i player dallo score della damage line del player morto
             //gli indici corrisponsono agli id dei player
-            scorePlayers = getTurnManager().scoreDamageLineOf(player);
+            scorePlayers = getTurnManager().scoreDamageLineOf(deadPlayer);
 
             for (int i = 0; i < scorePlayers.length; i++) {
                 if(scorePlayers[i] > 0) {
                     String namePlayer = getIdConverter().getPlayerById(i).getCharaName();
-                    scorePlayersWhoHits.add(new ScoreInfo(namePlayer, scorePlayers[i]));
+                    scorePlayersWhoHits.add(new ScorePlayerWhoHit(namePlayer, scorePlayers[i]));
                 }
             }
 
-            player.increaseNumberOfSkulls();
-            nSkullsDeadPlayer = player.getNumberOfSkulls();
+            deadPlayer.increaseNumberOfSkulls();
+            nSkullsDeadPlayer = deadPlayer.getNumberOfSkulls();
 
-            getTurnManager().getGameTable().addTokenOnKillshotTrack(player, ownerPlayer);
-            scorePlayersList.add(new ScorePlayersInfoResponse(ownerPlayer.getIdPlayer(), deadNamePlayer, killerNamePlayer, firstBloodNamePlayer, scorePlayersWhoHits, nSkullsDeadPlayer));
+            getTurnManager().getGameTable().addTokenOnKillshotTrack(deadPlayer, ownerPlayer);
+            messageScorePlayerList.add(new MessageScorePlayer(ownerPlayer.getIdPlayer(), deadNamePlayer, killerNamePlayer, firstBloodNamePlayer, scorePlayersWhoHits, nSkullsDeadPlayer));
+
+            //msg to dead player to go to spawn state
+            String msgPlayerInSpawnState = new Gson().toJson(new InfoResponse(deadPlayer.getIdPlayer()));
+            sendInfo(EventType.PLAYER_IN_SPAWN_STATE, msgPlayerInSpawnState, getIdPlayersCreateList().addOneIdPlayers(deadPlayer));
         }
-        return scorePlayersList;
     }
+
+
+
 
 
     /**

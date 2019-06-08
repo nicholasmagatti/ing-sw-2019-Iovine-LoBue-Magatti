@@ -10,8 +10,6 @@ import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageMyWeaponReloaded
 import it.polimi.ProgettoIngSW2019.common.Message.toView.PayAmmoList;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponsCanReloadResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
-import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
-import it.polimi.ProgettoIngSW2019.custom_exception.IllegalAttributeException;
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
@@ -27,22 +25,22 @@ import java.util.List;
  * reload method
  * @author Priscilla Lo Bue
  */
-public class ReloadController extends Controller implements Observer<Event> {
+public class ReloadController extends Controller {
+    private PayAmmoController payAmmoController;
     private WeaponCard weaponToReload;
     private Player ownerPlayer;
     private List<WeaponCard> weaponsCanReload = new ArrayList<>();
-    private List<AmmoType> reloadCost = new ArrayList<>();
 
 
 
     /**
      * constructor
      * @param turnManager   turnManager
-     * @param idConverter   idConverter
      * @param virtualView   virtualView
      */
-    public ReloadController(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson, IdPlayersCreateList idPlayersCreateList) {
-        super(turnManager, idConverter, virtualView, createJson, idPlayersCreateList);
+    public ReloadController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, IdPlayersCreateList idPlayersCreateList, PayAmmoController payAmmoController) {
+        super(turnManager, virtualView, idConverter, createJson, idPlayersCreateList);
+        this.payAmmoController = payAmmoController;
     }
 
 
@@ -55,11 +53,11 @@ public class ReloadController extends Controller implements Observer<Event> {
      */
     public void update(Event event) {
         if(event.getCommand().equals(EventType.REQUEST_WEAPONS_CAN_RELOAD)) {
-            fromView(event.getMessageInJsonFormat());
+            checkInfoFromView(event.getMessageInJsonFormat());
         }
 
         if(event.getCommand().equals(EventType.REQUEST_RELOAD)) {
-            reloadWeapon(event.getMessageInJsonFormat());
+            checkReloadFromView(event.getMessageInJsonFormat());
         }
     }
 
@@ -68,21 +66,18 @@ public class ReloadController extends Controller implements Observer<Event> {
      * extract the info from the message to generate the player
      * @param messageJson   message from view
      */
-    public void fromView(String messageJson) {
+    public void checkInfoFromView(String messageJson) {
         //extract the json message in class with his data
         InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
 
-        //is the turn of the player who wants to reload?
-        if(infoRequest.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer())
-            throw new  IllegalAttributeException("It is not Player: " + infoRequest.getIdPlayer() + " turn");
+        ownerPlayer = convertPlayer(infoRequest.getIdPlayer());
 
-        if(getTurnManager().getActionsLeft() != 0)
-            throw new IllegalAttributeException("It is not the time for the player to reload");
-
-        //extract player from the model with the idPlayer sent from the view
-        ownerPlayer = getIdConverter().getPlayerById(infoRequest.getIdPlayer());
-
-        reloadInfo();
+        if(ownerPlayer != null) {
+            if(checkCurrentPlayer(ownerPlayer)) {
+                if(checkNoActionLeft(ownerPlayer))
+                    reloadInfo();
+            }
+        }
     }
 
 
@@ -95,16 +90,20 @@ public class ReloadController extends Controller implements Observer<Event> {
 
         if(!weaponsCanReload.isEmpty()) {
             List<WeaponLM> weaponsCanReloadLM = getCreateJson().createWeaponsListLM(weaponsCanReload);
-            //TODO: USO PAYAMMOCONTROLLER
-            /*
-            String reloadInfoString = new Gson().toJson(new WeaponsCanReloadResponse(ownerPlayer.getIdPlayer(), weaponsCanReloadLM));
+            List<PayAmmoList> payAmmoLists = new ArrayList<>();
+
+            for(WeaponCard weaponCard: weaponsCanReload) {
+                List<AmmoType> ammoCost = weaponCard.getreloadCost();
+                payAmmoLists.add(payAmmoController.ammoToPay(ownerPlayer, weaponCard, ammoCost));
+            }
+
+            String reloadInfoString = new Gson().toJson(new WeaponsCanReloadResponse(ownerPlayer.getIdPlayer(), weaponsCanReloadLM, payAmmoLists));
             sendInfo(EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD, reloadInfoString, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
-             */
         }
         else {
-            List<WeaponLM> weaponsCanReloadLM = new ArrayList<>();
-            List<PayAmmoList> payAmmoLists = new ArrayList<>();
-            String reloadInfoString = new Gson().toJson(new WeaponsCanReloadResponse(ownerPlayer.getIdPlayer(), weaponsCanReloadLM, payAmmoLists));
+            List<WeaponLM> weaponsCanReloadLMEmpty = new ArrayList<>();
+            List<PayAmmoList> payAmmoListsEmpty = new ArrayList<>();
+            String reloadInfoString = new Gson().toJson(new WeaponsCanReloadResponse(ownerPlayer.getIdPlayer(), weaponsCanReloadLMEmpty, payAmmoListsEmpty));
             sendInfo(EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD, reloadInfoString, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
         }
     }
@@ -115,52 +114,84 @@ public class ReloadController extends Controller implements Observer<Event> {
      * creates the list with the weapons can be reloaded
      */
     private void setListWeaponsCanReload() {
+        //remove all the elements
+        if(!weaponsCanReload.isEmpty())
+            weaponsCanReload.clear();
+
         if(!ownerPlayer.getUnloadedWeapons().isEmpty()) {
-
             for (WeaponCard weaponCard : ownerPlayer.getUnloadedWeapons()) {
-                reloadCost = weaponCard.getreloadCost();
-
-                if (ownerPlayer.hasEnoughAmmo(reloadCost))
+                if (ownerPlayer.hasEnoughAmmo(weaponCard.getreloadCost()))
                     weaponsCanReload.add(weaponCard);
             }
         }
     }
 
 
-
     /**
-     * open the message and reload the weapon received
-     * send the new player with the attributes modified to the view
-     * @param messageJson   message json from the event generated by view
+     * check if reload info from view are correct
+     * @param messageJson       json message
      */
-    private void reloadWeapon(String messageJson) {
+    public void checkReloadFromView(String messageJson) {
         ReloadChoiceRequest reloadChoice = new Gson().fromJson(messageJson, ReloadChoiceRequest.class);
 
-        if(reloadChoice.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer())
-            throw new  IllegalAttributeException("It is not Player: " + reloadChoice.getIdPlayer() + " turn");
+        if(ownerPlayer.getIdPlayer() == reloadChoice.getIdPlayer()) {
+            weaponToReload = convertWeapon(ownerPlayer, reloadChoice.getIdWeaponToReload(), true);
 
-        if(getTurnManager().getActionsLeft() != 0)
-            throw new IllegalAttributeException("It is not the time for the player to reload");
+            if (weaponToReload != null) {
+                if (checkContainsWeapon(ownerPlayer, weaponToReload, true)) {
+                    if (checkHasEnoughAmmo(ownerPlayer, weaponToReload.getreloadCost())) {
 
-        ownerPlayer = getIdConverter().getPlayerById(reloadChoice.getIdPlayer());
-        weaponToReload = getIdConverter().getUnloadedWeaponById(ownerPlayer.getIdPlayer(), reloadChoice.getIdWeaponToReload());
+                        int[] ammoToPay = reloadChoice.getAmmoToDiscard();
+                        List<Integer> powerUpToDiscard = reloadChoice.getIdPowerUpToDiscard();
+                        List<PowerUp> powerUps = new ArrayList<>();
 
-        if(weaponToReload == null)
-            throw new IllegalAttributeException("WeaponToReload cannot be null");
+                        if(powerUpToDiscard == null)
+                            throw new NullPointerException("powerUpToDiscard cannot be null");
 
-        if(!ownerPlayer.getUnloadedWeapons().contains(weaponToReload))
-            throw new IllegalAttributeException("The player: " + ownerPlayer.getCharaName() + " with id: " + ownerPlayer.getIdPlayer() + " doesn't have that powerUp");
+                        if(!powerUpToDiscard.isEmpty()) {
+                            for (int i: powerUpToDiscard) {
+                                PowerUp powerUp = convertPowerUp(ownerPlayer, i);
 
+                                if(powerUp == null)
+                                    return;
+                                else
+                                    powerUps.add(powerUp);
+                            }
+                        }
 
-        reloadCost = weaponToReload.getreloadCost();
+                        if(payAmmoController.checkAmmoToPayFromView(weaponToReload.getreloadCost(), powerUps, ammoToPay))
+                            reloadWeapon(ammoToPay, powerUps);
+                        else {
+                            String messageError ="ERROR: hai sbagliato input di pagamento.";
+                            sendInfo(EventType.ERROR, messageError, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-        //TODO:crea problemi
-        //another check if the player can pay the reload cost
-        if(ownerPlayer.hasEnoughAmmo(reloadCost))
-            ownerPlayer.reload(weaponToReload);
-        else
-            throw new IllegalAttributeException("The player: " + ownerPlayer.getCharaName() + "with id: " + ownerPlayer.getIdPlayer() + "cannot pay the reload cost");
+    /**
+     * reload
+     * discard powerUp
+     * send powerUp discarded
+     * send the new player with the attributes modified to the view
+     */
+    private void reloadWeapon(int[] ammoToPayInt, List<PowerUp> powerUpsToDiscard) {
 
+        if(powerUpsToDiscard == null)
+            throw new NullPointerException("powerUpToDiscard list cannot be null");
+
+        List<AmmoType> ammoToPay = convertAmmoToPay(ammoToPayInt);
+
+        ownerPlayer.pay(ammoToPay, powerUpsToDiscard);
+
+        if(!powerUpsToDiscard.isEmpty()) {
+            String messagePowerUpDiscarded = getCreateJson().createPowerUpsListLMJson(powerUpsToDiscard);
+            sendInfo(EventType.MSG_POWERUPS_DISCARDED_AS_AMMO, messagePowerUpDiscarded, getIdPlayersCreateList().addAllIdPlayers());
+            String myPowerUpsJson = getCreateJson().createMyPowerUpsListLMJson(ownerPlayer);
+            sendInfo(EventType.UPDATE_MY_POWERUPS, myPowerUpsJson, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
+        }
 
         //send message to all enemy players with reload info
         String messageEnemyWeaponReloadedJson = createMessageEnemyWeaponReloadedJson();
@@ -191,5 +222,39 @@ public class ReloadController extends Controller implements Observer<Event> {
     public String createMessageMyWeaponReloaded() {
         MessageMyWeaponReloaded message = new MessageMyWeaponReloaded(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), weaponToReload.getIdCard(), weaponToReload.getName(), getCreateJson().createPlayerLM(ownerPlayer), getCreateJson().createMyLoadedWeaponsListLM(ownerPlayer));
         return new Gson().toJson(message);
+    }
+
+
+    /**
+     * converts ammo to pay int to list ammoType
+     * @param ammoToPayInt
+     * @return
+     */
+    public List<AmmoType> convertAmmoToPay(int[] ammoToPayInt) {
+        List<AmmoType> ammoToPay = new ArrayList<>();
+
+        for(int i = 0; i < ammoToPayInt.length; i++) {
+
+            if(ammoToPayInt[i] > 0) {
+                if(AmmoType.intFromAmmoType(AmmoType.RED) == i) {
+                    for (int nRed = 0; nRed < ammoToPayInt[i]; nRed++) {
+                        ammoToPay.add(AmmoType.RED);
+                    }
+                }
+
+                if(AmmoType.intFromAmmoType(AmmoType.BLUE) == i) {
+                    for (int nBlue = 0; nBlue < ammoToPayInt[i]; nBlue++) {
+                        ammoToPay.add(AmmoType.BLUE);
+                    }
+                }
+
+                if(AmmoType.intFromAmmoType(AmmoType.YELLOW) == i) {
+                    for (int nYellow = 0; nYellow < ammoToPayInt[i]; nYellow++) {
+                        ammoToPay.add(AmmoType.YELLOW);
+                    }
+                }
+            }
+        }
+        return ammoToPay;
     }
 }

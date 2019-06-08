@@ -4,14 +4,14 @@ package it.polimi.ProgettoIngSW2019.common.Message.toView;
 import java.util.List;
 
 /**
- * ScorePlayersInfoResponse class
+ * MessageScorePlayer class
  * the information of the players who hits the dead player
  */
-public class ScorePlayersInfoResponse extends InfoResponse {
+public class MessageScorePlayer extends InfoResponse {
     private String deadNamePlayer;
     private String killerNamePlayer;
     private String firstBloodNamePlayer;
-    private List<ScoreInfo> playersWhoHit;
+    private List<ScorePlayerWhoHit> playersWhoHit;
     private int nSkullsDeadPlayer;
 
 
@@ -23,7 +23,7 @@ public class ScorePlayersInfoResponse extends InfoResponse {
      * @param killerNamePlayer          name of the killer
      * @param firstBloodNamePlayer      name of the player who did first blood
      */
-    public ScorePlayersInfoResponse(int idPlayer, String deadNamePlayer, String killerNamePlayer, String firstBloodNamePlayer, List<ScoreInfo> playersWhoHit, int nSkullsDeadPlayer) {
+    public MessageScorePlayer(int idPlayer, String deadNamePlayer, String killerNamePlayer, String firstBloodNamePlayer, List<ScorePlayerWhoHit> playersWhoHit, int nSkullsDeadPlayer) {
         super(idPlayer);
 
         if(deadNamePlayer == null)
@@ -63,7 +63,7 @@ public class ScorePlayersInfoResponse extends InfoResponse {
     }
 
 
-    public List<ScoreInfo> getPlayersWhoHit() {
+    public List<ScorePlayerWhoHit> getPlayersWhoHit() {
         return playersWhoHit;
     }
 }

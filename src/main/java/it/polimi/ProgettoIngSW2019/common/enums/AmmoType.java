@@ -5,11 +5,12 @@ package it.polimi.ProgettoIngSW2019.common.enums;
  * @author Priscilla Lo Bue
  */
 public enum AmmoType {
-    RED(1),
-    BLUE(3),
-    YELLOW(4);
+    RED(0),
+    BLUE(1),
+    YELLOW(2);
 
     private int intValue;
+    public static final int nAmmoType = contEnum();
 
     AmmoType(int intValue) {
         this.intValue = intValue;
@@ -23,5 +24,15 @@ public enum AmmoType {
      */
     public static int intFromAmmoType(AmmoType ammoType) {
         return ammoType.intValue;
+    }
+
+
+    public static int contEnum() {
+        int cont = 0;
+        for(AmmoType ammoType: AmmoType.values()) {
+            cont++;
+        }
+
+        return cont;
     }
 }

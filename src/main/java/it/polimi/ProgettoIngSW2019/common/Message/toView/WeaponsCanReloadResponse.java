@@ -20,8 +20,14 @@ public class WeaponsCanReloadResponse extends InfoResponse {
      */
     public WeaponsCanReloadResponse(int idPlayer, List<WeaponLM> weaponsCanReload, List<PayAmmoList> listPaymentReload) {
         super(idPlayer);
+
+        if(weaponsCanReload == null)
+            throw new NullPointerException("list weapons cannot be null");
+        if(listPaymentReload == null)
+            throw new NullPointerException("list payment cannot be null");
+
         this.weaponsCanReload = new ArrayList<>(weaponsCanReload);
-        this.listPaymentReload = listPaymentReload;
+        this.listPaymentReload = new ArrayList<>(listPaymentReload);
     }
 
 
@@ -34,6 +40,10 @@ public class WeaponsCanReloadResponse extends InfoResponse {
     }
 
 
+    /**
+     * get list of the payment
+     * @return     list pay ammo list
+     */
     public List<PayAmmoList> getListPaymentReload() {
         return listPaymentReload;
     }

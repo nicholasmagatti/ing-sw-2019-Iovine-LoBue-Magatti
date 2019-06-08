@@ -22,7 +22,6 @@ public class CreateJson {
     public CreateJson(TurnManager turnManager) {
         this.turnManager = turnManager;
     }
-    //TODO: serve turnManager?
 
 
 
@@ -84,13 +83,7 @@ public class CreateJson {
         if(weaponsList == null)
             throw new NullPointerException("WeaponList cannot be null");
 
-        List<WeaponLM> weaponsListLM = new ArrayList<>();
-
-        for(WeaponCard weaponCard: weaponsList) {
-            WeaponLM weaponLM = createWeaponLM(weaponCard);
-            weaponsListLM.add(weaponLM);
-        }
-
+        List<WeaponLM> weaponsListLM = createWeaponsListLM(weaponsList);
         return new Gson().toJson(weaponsListLM);
     }
 
@@ -120,8 +113,7 @@ public class CreateJson {
         if(player == null)
             throw new NullPointerException("Player cannot be null");
 
-        List<WeaponLM> unloadedWeaponsListLM = createWeaponsListLM(player.getUnloadedWeapons());
-        PlayerDataLM playerDataLM = new PlayerDataLM(player.getIdPlayer(), player.getCharaName(), unloadedWeaponsListLM, player.getRedAmmo(), player.getBlueAmmo(), player.getYellowAmmo(), player.getNumberOfSkulls(), player.isActive(), player.isPlayerDown(), player.getDamageLine(), player.getMarkLine());
+        PlayerDataLM playerDataLM = createPlayerLM(player);
         return new Gson().toJson(playerDataLM);
     }
 
@@ -151,8 +143,7 @@ public class CreateJson {
         if(player == null)
             throw new NullPointerException("Player cannot be null");
 
-        List<WeaponLM> loadedWeaponsListLM = createWeaponsListLM(player.getLoadedWeapons());
-        MyLoadedWeaponsLM myLoadedWeaponsLM = new MyLoadedWeaponsLM(loadedWeaponsListLM);
+        MyLoadedWeaponsLM myLoadedWeaponsLM = createMyLoadedWeaponsListLM(player);
         return new Gson().toJson(myLoadedWeaponsLM);
     }
 
@@ -180,7 +171,7 @@ public class CreateJson {
         if(powerUp == null)
             throw new NullPointerException("PowerUp card cannot be null");
 
-        PowerUpLM powerUpLM = new PowerUpLM(powerUp.getIdCard(), powerUp.getName(), powerUp.getDescription(), powerUp.getGainAmmoColor());
+        PowerUpLM powerUpLM = createPowerUpLM(powerUp);
         return new Gson().toJson(powerUpLM);
     }
 
@@ -210,13 +201,7 @@ public class CreateJson {
         if(powerUps == null)
             throw new NullPointerException("PowerUps cannot be null");
 
-        List<PowerUpLM> powerUpsListLM = new ArrayList<>();
-
-        for(PowerUp powerUp: powerUps) {
-            PowerUpLM powerUpLM = createPowerUpLM(powerUp);
-            powerUpsListLM.add(powerUpLM);
-        }
-
+        List<PowerUpLM> powerUpsListLM = createPowerUpsListLM(powerUps);
         return new Gson().toJson(powerUpsListLM);
     }
 
@@ -241,12 +226,11 @@ public class CreateJson {
      * @param player        player
      * @return              myPowerUpsLM json
      */
-    public String createMyPowerUpsListLMJson(Player player) {
+    public String createMyPowerUpsLMJson(Player player) {
         if(player == null)
             throw new NullPointerException("Player cannot be null");
 
-        List<PowerUpLM> powerUpsLM = createPowerUpsListLM(player.getPowerUps());
-        MyPowerUpLM myPowerUpLM = new MyPowerUpLM(powerUpsLM);
+        MyPowerUpLM myPowerUpLM= createMyPowerUpsLM(player);
         return new Gson().toJson(myPowerUpLM);
     }
 
@@ -278,13 +262,7 @@ public class CreateJson {
         if(ammoCard == null)
             throw new NullPointerException("AmmoCard card cannot be null");
 
-        int nAmmo = ammoCard.getAmmo().size();
-        AmmoCardLM ammoCardLM;
-        if(nAmmo == 2)
-            ammoCardLM = new AmmoCardLM(ammoCard.getIdCard(), ammoCard.getAmmo().get(0), ammoCard.getAmmo().get(1));
-        else
-            ammoCardLM =  new AmmoCardLM(ammoCard.getIdCard(), ammoCard.getAmmo().get(0), ammoCard.getAmmo().get(1), ammoCard.getAmmo().get(2));
-
+        AmmoCardLM ammoCardLM = createAmmoCardLM(ammoCard);
         return new Gson().toJson(ammoCardLM);
     }
 
@@ -331,6 +309,39 @@ public class CreateJson {
     }
 
 
+    /**
+     *
+     * @return mapLM json
+     */
+    public String createMapLMLMJson() {
+        return new Gson().toJson(createMapLM());
+    }
+
+
+    /**
+     * create the killShotTrackLM
+     * @return  killShotTrackLM
+     */
+    public KillshotTrackLM createKillShotTrackLM() {
+        int nSkulls = turnManager.getGameTable().initialNumberOfSkulls();
+        List<KillToken> killShotTrack = turnManager.getGameTable().getKillshotTrack();
+
+        return new KillshotTrackLM(killShotTrack, nSkulls);
+    }
+
+
+    /**
+     *
+     * @return  json killShotTrackLM
+     */
+    public String createKillShotTrackLMJson() {
+        return new Gson().toJson(createKillShotTrackLMJson());
+    }
+
+
+
+
+
 
 
 
@@ -360,7 +371,7 @@ public class CreateJson {
      * @param powerUps      list of draw powerUps
      * @return              json message
      */
-    public String createMessageMyPowerUpJson(Player player, List<PowerUp> powerUps) {
+    public String createMessageDrawMyPowerUpJson(Player player, List<PowerUp> powerUps) {
         if(player == null)
             throw new NullPointerException("Player cannot be null");
 
@@ -392,7 +403,7 @@ public class CreateJson {
      * @param nCards        n cards draw
      * @return              json message
      */
-    public String createMessageEnemyPowerUpJson(Player player, int nCards) {
+    public String createMessageEnemyDrawPowerUpJson(Player player, int nCards) {
         if(player == null)
             throw new NullPointerException("Player cannot be null");
 
