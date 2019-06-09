@@ -366,6 +366,16 @@ public class Player{
     }
 
     /**
+     * Eliminate the specified powerups from the player's collection
+     * @param powerUps - list of powerups to discard
+     */
+    public void discardPowerUps(List<PowerUp> powerUps){
+        for(PowerUp element: powerUps){
+            powerUps.remove(element);
+        }
+    }
+
+    /**
      * Check if the player can spend the required quantity of ammo, also considering
      * the possibility to discard powerups using them as ammo to pay part of all of the cost
      * @param ammoToSpend - the specified quantity of ammo
@@ -424,13 +434,24 @@ public class Player{
     }
 
     /**
-     * Reload a weapon
-     * @param weapon - weapon to reload
+     *  Discard the indicated ammo and/or powerups. The parameters can be empty lists but not null.
+     *  Throw exception if one of the parameters is null.
+     * @param ammoToSpend
+     * @param powerUpsToSpend
      */
-    public void reload(WeaponCard weapon){
-        discardAmmo(weapon.getreloadCost());
-        loadedWeapons.add(weapon);
-        unloadedWeapons.remove(weapon);
+    public void pay(List<AmmoType> ammoToSpend, List<PowerUp> powerUpsToSpend){
+        if(ammoToSpend == null || powerUpsToSpend == null){
+            String s;
+            if(ammoToSpend == null){
+                s = "ammoToSpend";
+            }
+            else{
+                s = "powerUpsToSpend";
+            }
+            throw new RuntimeException("The parameter " + s + "should not be null.");
+        }
+        discardAmmo(ammoToSpend);
+        discardPowerUps(powerUpsToSpend);
     }
 
     /**

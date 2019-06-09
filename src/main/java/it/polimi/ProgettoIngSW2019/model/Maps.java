@@ -8,7 +8,7 @@ import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
  * @author Nicholas Magatti
  */
 public class Maps {
-    //[][] indicate row and column respectively ([row][column])
+    //[][][] indicate row and column respectively ([map][row][column])
 
     private Square[][][] maps = new Square[GeneralInfo.NUMBER_OF_MAPS][GeneralInfo.ROWS_MAP][GeneralInfo.COLUMNS_MAP];
 
