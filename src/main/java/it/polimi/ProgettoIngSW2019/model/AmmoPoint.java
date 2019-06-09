@@ -30,7 +30,6 @@ public class AmmoPoint extends Square {
      * @Author: Luca Iovine
      */
     public AmmoCard getAmmoCard() {
-        //TODO: ritornare solo le info?
         return ammoCard;
     }
 

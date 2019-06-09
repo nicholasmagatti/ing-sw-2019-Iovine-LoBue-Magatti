@@ -1,21 +1,15 @@
 {
+	"typeOfEffect":"general",
 	"effect":{
-		"dmg":2,
-		"mark":1,
-		"aoe":"can_see",
-		"nr_target":1,
-		"target_per_square": "as_you_wish"
+		"dmg":0,
+		"mark":0,
+		"aoe":"",
+		"nrTarget":0
 	},
-	"must_move":{
-		"move_target":0,
-		"move_target_aoe_end": "none",
-		"move_yourself":0,
-		"move_yoruself_aoe_end": "none"
-	},
-	"optional_move":{
-		"move_target":0,
-		"move_target_aoe_end": "none",
-		"move_yourself":0,
-		"move_yoruself_aoe_end": "none"
+	"move":{
+		"hasToMove":true,
+		"isMandatory":true,
+		"isEnemyMove":false,
+		"nrOfMovement":0
 	}
 }

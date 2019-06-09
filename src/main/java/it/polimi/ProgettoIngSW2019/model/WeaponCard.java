@@ -1,9 +1,15 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import it.polimi.ProgettoIngSW2019.common.enums.*;
+import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
+import it.polimi.ProgettoIngSW2019.model.weapon_effects.WeaponEffect;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +22,10 @@ public class WeaponCard extends Card {
     private String name;
     private String description;
     private List<AmmoType> reloadCost;
-    private List<List<Player>> targetPlayerBySquare;
-    private List<WeaponEffect> weaponEffects;
+    private WeaponEffect baseEffect;
     private String pathOfEffectFile;
+    private Gson gson = new Gson();
+    private DistanceDictionary distance;
 
     /**
      * Constructor
@@ -34,10 +41,8 @@ public class WeaponCard extends Card {
         this.name  = name;
         this.description = description;
         this.reloadCost = reloadCost;
-        weaponEffects = new ArrayList<>();
         pathOfEffectFile = new File("").getAbsolutePath()+"\\resources\\json\\weaponeff\\"+effectFileName;
-        WeaponEffect effBase = new WeaponEffect(pathOfEffectFile);
-        weaponEffects.add(effBase);
+        setWeaponEffect(pathOfEffectFile);
     }
 
     /**
@@ -75,50 +80,67 @@ public class WeaponCard extends Card {
 
         return buyCost;
     }
+
+    private void setWeaponEffect(String pathOfEffectFile){
+        FileReader file;
+        BufferedReader br = null;
+        try {
+            file = new FileReader(pathOfEffectFile);
+            br = new BufferedReader(file);
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        }
+
+        JsonObject jsonObj = gson.fromJson(br, JsonObject.class);
+        WeaponEffectType type = WeaponEffectType.fromString(jsonObj.get("typeOfEffect").toString());
+        //TODO: testare l'assegnamento a type (che va a null)
+        /*switch(type){
+            case GENERAL:
+                baseEffect = new WeaponEffect(jsonObj,distance);
+                break;
+        }*/
+    }
     /**
      * Every list of the list represent all the player in a certain square.
      *
-     * @param square position from where you want to know the target visible for that specific weapon
+     * @param fromSquare position from where you want to know the target visible for that specific weapon
      * @return all the target visible to be hitted by the weapon
      * @author: Luca Iovine
      */
-    public List<List<Player>> getTarget(Square square, DistanceDictionary distDictionary) {
-        int idx = -1;
 
-        List<Square> targetPos = distDictionary.getTargetPosition(weaponEffects.get(0).getEffAoe(), square);
-        targetPlayerBySquare = new ArrayList<>();
-
-        for(Square s: targetPos){
-            targetPlayerBySquare.add(new ArrayList<>());
-            idx++;
-            for(Player p: s.getPlayerOnSquare()){
-                targetPlayerBySquare.get(idx).add(p);
-            }
-        }
-
-        return targetPlayerBySquare;
+    public List<Player> getEnemyList(Square fromSquare) {
+        return baseEffect.getEnemyList(fromSquare);
     }
 
-    /**
-     * Activate the base effect of the weapon.
-     *
-     * @param targetPlayer list of the player to be damaged by the weapon
-     * @param fromPlayer player who does the damage
-     * @param targetMove list of the movement of tragetted players (1:1 with targetPlayer list)
-     * @param userMove movement of the player who deals damage
-     * @author: Luca Iovine
-     */
-    public void useBaseEff(List<Player> targetPlayer, Player fromPlayer, List<Square> targetMove, Square userMove){
-        for(Player p: targetPlayer)
-            weaponEffects.get(0).activateEffect(p, fromPlayer);
+    public List<Square> getMovementList(Player weaponUser){
+        return baseEffect.getMovementList(weaponUser);
+    }
 
-        if(targetMove.size() != 0){
-            for(int i = 0; i < targetMove.size(); i++)
-                targetPlayer.get(i).moveTo(targetMove.get(i));
-        }
+    public void activateBaseEff(Player weaponUser, List<Player> enemyList){
+        baseEffect.activateEffect(weaponUser, enemyList);
+    }
 
-        if(userMove != null) {
-            fromPlayer.moveTo(userMove);
-        }
+    public boolean checkBaseEffectParameterValidity(Player weaponUser, List<Player> enemyChosenList){
+        return baseEffect.checkValidityEnemy(weaponUser, enemyChosenList);
+    }
+
+    public boolean checkBaseEffectMovementPositionValidity(Square position){
+        return baseEffect.checkValidityMoveUserPlayer(position);
+    }
+
+    public AreaOfEffect getBaseEffectAoe(){
+        return baseEffect.getAoe();
+    }
+
+    public boolean isEnemyMoveInBaseEffect(){
+        return baseEffect.isEnemyMove();
+    }
+
+    public boolean hasToMoveInBaseEffect(){
+        return baseEffect.hasMoveOptions();
+    }
+
+    public WeaponEffectType getBaseEffectType(){
+        return baseEffect.getWeaponEffectType();
     }
 }

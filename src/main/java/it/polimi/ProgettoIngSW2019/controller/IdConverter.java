@@ -1,5 +1,8 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+import it.polimi.ProgettoIngSW2019.custom_exception.IllegalIdException;
+import it.polimi.ProgettoIngSW2019.custom_exception.NotPartOfBoardException;
 import it.polimi.ProgettoIngSW2019.model.*;
 
 import java.util.List;
@@ -11,6 +14,10 @@ import java.util.List;
  */
 public class IdConverter {
     private GameTable gameTable;
+    private final int START_ID_POWERUP = 36;
+    private final int END_ID_POWERUP = 59;
+    private final int START_ID_WEAPON = 60;
+    private final int END_ID_WEAPON = 80;
 
     public IdConverter (GameTable gameTable){
         this.gameTable = gameTable;
@@ -21,11 +28,16 @@ public class IdConverter {
      * @return instnace of player associated to the id
      * @author: Luca Iovine
      */
-    public Player getPlayerById(int idPlayer){
-        Player userPlayer;
-        userPlayer = gameTable.getPlayers()[idPlayer];
+    public Player getPlayerById(int idPlayer) throws IllegalIdException {
+        Player[] playerInGame = gameTable.getPlayers();
+        Player player;
 
-        return userPlayer;
+        if(idPlayer >= 0 && idPlayer <= playerInGame.length - 1)
+            player = playerInGame[idPlayer];
+        else
+            throw new IllegalIdException();
+
+        return player;
     }
 
     /**
@@ -38,8 +50,10 @@ public class IdConverter {
         int row = coordintes[0];
         int column = coordintes[1];
 
-        if(row != -1 && column != -1)
+        if((row >= 0 && row <= GeneralInfo.ROWS_MAP) && (column >= 0 && column <= GeneralInfo.COLUMNS_MAP))
             square = gameTable.getMap()[row][column];
+        else
+            throw new NotPartOfBoardException("");
 
         return  square;
     }
@@ -52,15 +66,19 @@ public class IdConverter {
      * @return instance of the WeaponCard based on its id and the player owner id
      * @author: Luca Iovine
      */
-    public WeaponCard getLoadedWeaponById(int idPlayer, int idWeapon){
+    public WeaponCard getLoadedWeaponById(int idPlayer, int idWeapon) throws IllegalIdException{
         WeaponCard weaponCardLoaded = null;
-        List<WeaponCard> weaponCardLoadedList = gameTable.getPlayers()[idPlayer].getUnloadedWeapons();
 
-        for(WeaponCard wl: weaponCardLoadedList){
-            if(wl.getIdCard() == idWeapon){
-                weaponCardLoaded = wl;
+        if(idWeapon >= START_ID_WEAPON && idWeapon <= END_ID_WEAPON) {
+            List<WeaponCard> weaponCardLoadedList = gameTable.getPlayers()[idPlayer].getUnloadedWeapons();
+
+            for (WeaponCard wl : weaponCardLoadedList) {
+                if (wl.getIdCard() == idWeapon) {
+                    weaponCardLoaded = wl;
+                }
             }
-        }
+        }else
+            throw new IllegalIdException();
 
         return weaponCardLoaded;
     }
@@ -73,15 +91,19 @@ public class IdConverter {
      * @return instance of the WeaponCard based on its id and the player owner id
      * @author: Luca Iovine
      */
-    public WeaponCard getUnloadedWeaponById(int idPlayer, int idWeapon){
+    public WeaponCard getUnloadedWeaponById(int idPlayer, int idWeapon) throws IllegalIdException{
         WeaponCard weaponCardUnloaded = null;
-        List<WeaponCard> weaponUnloadedList = gameTable.getPlayers()[idPlayer].getUnloadedWeapons();
 
-        for(WeaponCard wu: weaponUnloadedList){
-            if(wu.getIdCard() == idWeapon){
-                weaponCardUnloaded = wu;
+        if(idWeapon >= START_ID_WEAPON && idWeapon <= END_ID_WEAPON) {
+            List<WeaponCard> weaponUnloadedList = gameTable.getPlayers()[idPlayer].getUnloadedWeapons();
+
+            for (WeaponCard wu : weaponUnloadedList) {
+                if (wu.getIdCard() == idWeapon) {
+                    weaponCardUnloaded = wu;
+                }
             }
-        }
+        }else
+            throw new IllegalIdException();
 
         return weaponCardUnloaded;
     }
@@ -92,15 +114,20 @@ public class IdConverter {
      * @return instance of the PowerUpCard based on its id and the player owner id
      * @author: Luca Iovine
      */
-    public PowerUp getPowerUpCardById(int idPlayer, int idPowerUp){
-        List<PowerUp> powerUpInHand = gameTable.getPlayers()[idPlayer].getPowerUps();
+    public PowerUp getPowerUpCardById(int idPlayer, int idPowerUp) throws IllegalIdException{
         PowerUp powerUp = null;
 
-        for(PowerUp pup: powerUpInHand){
-            if(pup.getIdCard() == idPowerUp){
-                powerUp = pup;
+        if(idPowerUp >= START_ID_POWERUP && idPowerUp <= END_ID_POWERUP) {
+            List<PowerUp> powerUpInHand = gameTable.getPlayers()[idPlayer].getPowerUps();
+
+
+            for (PowerUp pup : powerUpInHand) {
+                if (pup.getIdCard() == idPowerUp) {
+                    powerUp = pup;
+                }
             }
-        }
+        }else
+            throw new IllegalIdException();
 
         return powerUp;
     }

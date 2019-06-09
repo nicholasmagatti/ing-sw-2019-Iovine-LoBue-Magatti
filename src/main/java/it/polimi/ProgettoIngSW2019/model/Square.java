@@ -219,7 +219,6 @@ public abstract class Square {
      * @param board the actual map that is used
      * @author: Luca Iovine
      */
-    //TODO: make sure not to have problem in case of squares set as null
     public void setDependency(Square[][] board){
         if(this != null) {
             try {

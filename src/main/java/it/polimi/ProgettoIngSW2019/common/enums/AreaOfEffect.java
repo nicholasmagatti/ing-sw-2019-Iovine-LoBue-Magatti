@@ -14,6 +14,7 @@ public enum AreaOfEffect {
     CAN_SEE_ATLEAST_ONE ("can_see_atleast_one"),
     CAN_SEE_ATLEAST_TWO ("can_see_atleast_two"),
     EXACTLY_ONE("exactly_one"),
+    EXACTLY_TWO("exactly_two"),
     ALL("all");
 
     private String stringValue;
