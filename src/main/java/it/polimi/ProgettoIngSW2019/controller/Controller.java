@@ -59,21 +59,33 @@ public abstract class Controller implements Observer<Event> {
     }
 
 
-
+    /**
+     * access to IdConverter
+     * @return  IdConverter
+     */
     public IdConverter getIdConverter() {
         return idConverter;
     }
 
 
-
+    /**
+     * access to CreateJson
+     * @return  CreateJson
+     */
     public CreateJson getCreateJson() {
         return createJson;
     }
 
 
+    /**
+     * access to IdPlayersCreateList
+     * @return  IdPlayersCreateList
+     */
     public IdPlayersCreateList getIdPlayersCreateList() {
         return idPlayersCreateList;
     }
+
+
 
     /**
      * send info/event by virtual view
@@ -102,7 +114,8 @@ public abstract class Controller implements Observer<Event> {
             player = idConverter.getPlayerById(idPlayer);
         } catch(IllegalIdException e) {
             String messageError = "Ops, qualcosa è andato storto!";
-            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            //todo: mandare al client l'errore
+            //sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
             return null;
         }
         return player;

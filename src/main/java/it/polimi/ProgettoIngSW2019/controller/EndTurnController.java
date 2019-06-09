@@ -140,8 +140,13 @@ public class EndTurnController extends Controller {
 
             for (int i = 0; i < scorePlayers.length; i++) {
                 if(scorePlayers[i] > 0) {
-                    String namePlayer = getIdConverter().getPlayerById(i).getCharaName();
-                    scorePlayersWhoHits.add(new ScorePlayerWhoHit(namePlayer, scorePlayers[i]));
+                    Player player = convertPlayer(i);
+
+                    if (player != null) {
+                        String namePlayer = player.getCharaName();
+                        scorePlayersWhoHits.add(new ScorePlayerWhoHit(namePlayer, scorePlayers[i]));
+                    }
+                    else return;
                 }
             }
 

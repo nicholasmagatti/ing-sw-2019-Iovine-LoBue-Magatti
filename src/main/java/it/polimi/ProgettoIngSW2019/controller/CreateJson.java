@@ -5,6 +5,7 @@ import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.DrawCardsInfo;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageEnemyDrawPowerUp;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageDrawMyPowerUp;
+import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.model.*;
 
@@ -35,7 +36,40 @@ public class CreateJson {
         if(weaponCard == null)
             throw new NullPointerException("weapon card cannot be null");
 
-        return new WeaponLM(weaponCard.getIdCard(), weaponCard.getName(), weaponCard.getDescription());
+        int[] ammoCostReload = new int[AmmoType.contEnum()];
+        int[] ammoCostBuy = new int[AmmoType.contEnum()];
+
+        int blue = 0;
+        int yellow = 0;
+        int red = 0;
+
+        if(!weaponCard.getreloadCost().isEmpty()) {
+            for (AmmoType ammoType : weaponCard.getreloadCost()) {
+                if (ammoType == AmmoType.RED)
+                    ammoCostReload[AmmoType.intFromAmmoType(AmmoType.RED)] = red++;
+
+                if (ammoType == AmmoType.BLUE)
+                    ammoCostReload[AmmoType.intFromAmmoType(AmmoType.BLUE)] = blue;
+
+                if (ammoType == AmmoType.YELLOW)
+                    ammoCostReload[AmmoType.intFromAmmoType(AmmoType.YELLOW)] = yellow;
+            }
+        }
+
+        if(!weaponCard.getBuyCost().isEmpty()) {
+            for (AmmoType ammoType : weaponCard.getBuyCost()) {
+                if (ammoType == AmmoType.RED)
+                    ammoCostBuy[AmmoType.intFromAmmoType(AmmoType.RED)] = red++;
+
+                if (ammoType == AmmoType.BLUE)
+                    ammoCostBuy[AmmoType.intFromAmmoType(AmmoType.BLUE)] = blue;
+
+                if (ammoType == AmmoType.YELLOW)
+                    ammoCostBuy[AmmoType.intFromAmmoType(AmmoType.YELLOW)] = yellow;
+            }
+        }
+
+        return new WeaponLM(weaponCard.getIdCard(), weaponCard.getName(), weaponCard.getDescription(), ammoCostReload, ammoCostBuy);
     }
 
 
@@ -48,7 +82,7 @@ public class CreateJson {
         if(weaponCard == null)
             throw new NullPointerException("weapon card cannot be null");
 
-        WeaponLM weaponLM = new WeaponLM(weaponCard.getIdCard(), weaponCard.getName(), weaponCard.getDescription());
+        WeaponLM weaponLM = createWeaponLM(weaponCard);
         return new Gson().toJson(weaponLM);
     }
 

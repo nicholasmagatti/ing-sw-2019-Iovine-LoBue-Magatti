@@ -189,7 +189,7 @@ public class ReloadController extends Controller {
         if(!powerUpsToDiscard.isEmpty()) {
             String messagePowerUpDiscarded = getCreateJson().createPowerUpsListLMJson(powerUpsToDiscard);
             sendInfo(EventType.MSG_POWERUPS_DISCARDED_AS_AMMO, messagePowerUpDiscarded, getIdPlayersCreateList().addAllIdPlayers());
-            String myPowerUpsJson = getCreateJson().createMyPowerUpsListLMJson(ownerPlayer);
+            String myPowerUpsJson = getCreateJson().createMyPowerUpsLMJson(ownerPlayer);
             sendInfo(EventType.UPDATE_MY_POWERUPS, myPowerUpsJson, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
         }
 
@@ -227,8 +227,8 @@ public class ReloadController extends Controller {
 
     /**
      * converts ammo to pay int to list ammoType
-     * @param ammoToPayInt
-     * @return
+     * @param ammoToPayInt      list ammo to pay int format
+     * @return                  list of ammoType
      */
     public List<AmmoType> convertAmmoToPay(int[] ammoToPayInt) {
         List<AmmoType> ammoToPay = new ArrayList<>();
