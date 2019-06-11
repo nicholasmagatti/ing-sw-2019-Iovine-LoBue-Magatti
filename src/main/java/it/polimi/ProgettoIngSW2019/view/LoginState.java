@@ -16,7 +16,7 @@ public class LoginState extends Observable<Event> implements Observer<Event>, IS
 
 
     @Override
-    public void menu(StateManager stateManager){
+    public void startState(StateManager stateManager){
 
         System.out.println("###########################################");
         System.out.println("##       Welcome on adrenalina!        ##");

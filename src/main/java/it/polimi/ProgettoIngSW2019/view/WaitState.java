@@ -13,7 +13,7 @@ public class WaitState implements IState {
     //TODO: create (with new etc) all the states that will be used during the game (playerchoice, powerupstate etc)
 
     @Override
-    public void menu(StateManager stateManager) {
+    public void startState(StateManager stateManager) {
 
         //TODO if else
         stateManager.triggerNextState(enemyTurnState);

@@ -19,7 +19,7 @@ public class SpawnState extends Observable<Event> implements IState{
     int powerupChoice;
 
     @Override
-    public void menu(StateManager stateManager) {
+    public void startState(StateManager stateManager) {
         System.out.println("Questi sono i power up che hai in mano.");
         for(Integer id: idPowerUp){
             //TODO: mostrare il nome carta

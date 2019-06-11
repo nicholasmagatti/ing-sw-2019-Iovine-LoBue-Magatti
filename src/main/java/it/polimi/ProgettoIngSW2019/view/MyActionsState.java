@@ -2,6 +2,7 @@ package it.polimi.ProgettoIngSW2019.view;
 
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
+import it.polimi.ProgettoIngSW2019.model.GameTable;
 
 import java.util.List;
 import java.util.Scanner;
@@ -66,7 +67,7 @@ public class MyActionsState extends Observable<Event> implements IState {
     }
 
     @Override
-    public void menu(StateManager stateManager) {
+    public void startState(StateManager stateManager) {
         scanner = new Scanner(System.in);
 
 
@@ -224,7 +225,7 @@ public class MyActionsState extends Observable<Event> implements IState {
             case 5:
                 showEnemyDamageLine();
                 break;
-                default: System.out.println("Ritorno al menu di scelta");
+                default: System.out.println("Ritorno al startState di scelta");
         }
     }
 

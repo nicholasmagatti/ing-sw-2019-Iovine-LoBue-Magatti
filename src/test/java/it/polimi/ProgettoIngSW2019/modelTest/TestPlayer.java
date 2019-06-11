@@ -127,12 +127,9 @@ public class TestPlayer {
             System.out.println(e);
         }
     }
-    /*TODO: sometimes it doesn't work so make it work always(possibly adding specific ammo
-            even if there is the chance it is not possible with the way Player is protected
-             from the possibility of wrong accesses may make it impossible
-     */
+
     @Test
-    public void testHasEnoughAmmoAtStart(){
+    public void testHasEnoughAmmoDrawingCards(){
 
         //at first, the player has 1 of each color
         List<AmmoType> listOfAmmo = new ArrayList<>();
@@ -145,22 +142,22 @@ public class TestPlayer {
         assertTrue(player1.hasEnoughAmmo(listOfAmmo));
         listOfAmmo.add(AmmoType.YELLOW);
         listOfAmmo.add(AmmoType.RED);
-        //1b, 1r, 1y
+
         assertTrue(player1.hasEnoughAmmo(listOfAmmo));
         listOfAmmo.add(AmmoType.RED);
         assertFalse(player1.hasEnoughAmmo(listOfAmmo));
         listOfAmmo.add(AmmoType.YELLOW);
         listOfAmmo.add(AmmoType.BLUE);
-        //2b, 2r, 2y
+
         assertFalse(player1.hasEnoughAmmo(listOfAmmo));
         listOfAmmo.remove(AmmoType.RED);
         assertFalse(player1.hasEnoughAmmo(listOfAmmo));
         listOfAmmo.remove(AmmoType.YELLOW);
         listOfAmmo.remove(AmmoType.BLUE);
-        //1b, 1r, 1y
+
         assertTrue(player1.hasEnoughAmmo(listOfAmmo));
         listOfAmmo.add(AmmoType.BLUE);
-        //2b, 1r, 1y
+
         assertFalse(player1.hasEnoughAmmo(listOfAmmo));
 
         //now the player get more ammo
@@ -186,15 +183,16 @@ public class TestPlayer {
         //the player should have exactly
         assertTrue(player1.hasEnoughAmmo(listOfAmmo));
         listOfAmmo.add(AmmoType.YELLOW);
-        assertFalse(player1.hasEnoughAmmo(listOfAmmo));
         listOfAmmo.remove(AmmoType.YELLOW);
         listOfAmmo.remove(AmmoType.YELLOW);
         assertTrue(player1.hasEnoughAmmo(listOfAmmo));
 
         //reset the list again
         listOfAmmo = new ArrayList<>();
-        //add 4 units of blue ammo (the player can never have more that 3 units for each color)
-        for(int i=0; i < 4; i++) {
+        /*add 7 units of blue ammo (the player can never have more that 6 units for
+            each color(no more than 3 in the ammo box plus 3 thanks to the powerups in his/her hand)
+         */
+        for(int i=0; i < 7; i++) {
             listOfAmmo.add(AmmoType.RED);
         }
         assertFalse(player1.hasEnoughAmmo(listOfAmmo));

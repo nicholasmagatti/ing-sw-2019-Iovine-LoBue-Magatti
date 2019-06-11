@@ -8,10 +8,10 @@ import java.util.List;
  * Class that contains what the client can see
  * @author Nicholas Magatti
  */
-public class WhatISee {
+public class InfoOnView {
 
-    private int id;
-    private String nickname;
+    private int myId;
+    private String myNickname;
 
     private PlayerDataLM[] players;
     private MyLoadedWeaponsLM myLoadedWeapons;
@@ -20,11 +20,13 @@ public class WhatISee {
     private KillshotTrackLM killshotTrack;
 
 
-    public WhatISee(int id, String nickname, int numberOfPlayers){
-        this.id = id;
-        this.nickname = nickname;
+    public InfoOnView(int id, String nickname, int numberOfPlayers){
+        myId = id;
+        myNickname = nickname;
         players = new PlayerDataLM[numberOfPlayers];
     }
 
-
+    public int getMyId() {
+        return myId;
+    }
 }
