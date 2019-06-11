@@ -231,10 +231,14 @@ public class Player{
 
     /**
      * Move the player to the specified square of the map
-     * @param square - the square to move the player to
+     * @param destination - the square to move the player to
      */
-    public void moveTo(Square square) {
-        this.square = square;
+    public void moveTo(Square destination) {
+        if(square != null){
+            square.removePlayerOnSquare(this);
+        }
+        destination.addPlayerOnSquare(this);
+        square = destination;
     }
 
     /**

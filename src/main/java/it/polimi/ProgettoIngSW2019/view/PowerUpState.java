@@ -17,7 +17,7 @@ public class PowerUpState extends Observable<Event> implements IState {
     String yesnoChoice;
 
     @Override
-    public void menu(StateManager stateManager) {
+    public void startState(StateManager stateManager) {
         scanner = new Scanner(System.in);
 
         System.out.println("Hai delle power up che possono essere attivate.");

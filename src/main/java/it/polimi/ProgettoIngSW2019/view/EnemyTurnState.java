@@ -14,7 +14,7 @@ public class EnemyTurnState implements IState {
     private MyActionsState myActionsState;
 
     @Override
-    public void menu(StateManager stateManager) {
+    public void startState(StateManager stateManager) {
         while(!exit) {
             System.out.print("Mentre sei in attesa, vuoi vedere le info di qualcosa (y/n)? ");
             if (yesnoChoice.equalsIgnoreCase("y")) {
