@@ -29,6 +29,7 @@ public class AmmoPoint extends Square {
      * @return ammo card placed on the square
      * @Author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public AmmoCard getAmmoCard() {
         return ammoCard;
     }
@@ -39,6 +40,7 @@ public class AmmoPoint extends Square {
      * @return the ammo card grabbed from the game table by the player
      * @Author: Luca Iovine
      */
+    //TESTED --> shouldReturnAmmoCardAndRemoveItFromSquare
     public AmmoCard grabCard() {
         AmmoCard c = ammoCard;
         ammoCard = null;
@@ -49,6 +51,7 @@ public class AmmoPoint extends Square {
      *
      * @Author: Luca Iovine
      */
+    //NOT TO BE TESTED
     @Override
     public void reset(Deck deck) {
         if(ammoCard == null){

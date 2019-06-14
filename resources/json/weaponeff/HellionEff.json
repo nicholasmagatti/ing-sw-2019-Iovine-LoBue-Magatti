@@ -1,15 +1,14 @@
 {
-	"typeOfEffect":"general",
+	"typeOfEffect":"hellion",
 	"effect":{
-		"dmg":0,
+		"dmg":1,
 		"mark":0,
-		"aoe":"",
-		"nrTarget":0
+		"aoe":"can_see_at_least_one",
+		"nrTarget":1,
+		"hitAllPlayers":false
 	},
 	"move":{
-		"hasToMove":true,
-		"isMandatory":true,
-		"isEnemyMove":false,
+		"hasToMove":false,
 		"nrOfMovement":0
 	}
 }

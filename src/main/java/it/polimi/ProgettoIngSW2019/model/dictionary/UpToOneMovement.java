@@ -2,11 +2,12 @@ package it.polimi.ProgettoIngSW2019.model.dictionary;
 
 import it.polimi.ProgettoIngSW2019.model.Square;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CanSeeAtLeastOne extends Distance {
+public class UpToOneMovement extends Distance {
 
-    protected CanSeeAtLeastOne(Square[][] board) {
+    protected UpToOneMovement(Square[][] board) {
         super(board);
     }
 
@@ -22,7 +23,7 @@ public class CanSeeAtLeastOne extends Distance {
     }
 
     /**
-     * It calculate all the square that are at least one movement of distance and that it could be seen
+     * It calculate all the square that are up to one movement of distance and that it could be seen
      * from the position passed as parameter
      * It can be called from the other distance type class in order to do more complex calculation.
      *
@@ -30,20 +31,11 @@ public class CanSeeAtLeastOne extends Distance {
      * @return list of square that indicates the position visible.
      * @author: Luca Iovine
      */
-    //TESTED --> canSeeAtLeastOneFromP2
+    //TESTED --> UpToOneFromP2
     protected static List<Square> calculateDistance(Square fromPosition){
-        List<Square> squareCanSee = CanSee.calculateDistance(fromPosition);
-        List<Square> squareToRemove = SameSquare.calculateDistance(fromPosition);
-
-        if(squareCanSee.isEmpty()){
-            return null;
-        }
-
-        for(Square toRemoveSquare: squareToRemove){
-            if(squareCanSee.contains(toRemoveSquare)){
-                squareCanSee.remove(toRemoveSquare);
-            }
-        }
-        return squareCanSee;
+        List<Square> upToOneMovement = new ArrayList<>();
+        upToOneMovement.add(fromPosition);
+        upToOneMovement.addAll(fromPosition.getSquaresVisibleFromHere());
+       return upToOneMovement;
     }
 }

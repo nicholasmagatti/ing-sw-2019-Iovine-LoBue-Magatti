@@ -1,15 +1,14 @@
 {
-	"typeOfEffect":"general",
+	"typeOfEffect":"same_room",
 	"effect":{
-		"dmg":0,
+		"dmg":1,
 		"mark":0,
-		"aoe":"",
-		"nrTarget":0
+		"aoe":"near_room",
+		"nrTarget":4,
+		"hitAllPlayers":true
 	},
 	"move":{
-		"hasToMove":true,
-		"isMandatory":true,
-		"isEnemyMove":false,
+		"hasToMove":false,
 		"nrOfMovement":0
 	}
 }

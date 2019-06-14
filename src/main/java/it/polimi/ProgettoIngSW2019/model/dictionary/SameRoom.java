@@ -10,11 +10,26 @@ public class SameRoom extends Distance {
         super(board);
     }
 
+    /**
+     * @param fromPosition position from where calculate the possible position
+     * @return list of square that indicates the position visible.
+     * @author: Luca Iovine
+     */
+    //NOT TO BE TESTED
     @Override
     protected List<Square> getDistance(Square fromPosition) {
         return calculateDistance(fromPosition);
     }
 
+    /**
+     * It calculate all the square that are in the same room as the position passed as parameter.
+     * It can be called from the other distance type class in order to do more complex calculation.
+     *
+     * @param fromPosition position from where calculate the possible position
+     * @return list of square that indicates the position visible.
+     * @author: Luca Iovine
+     */
+    //TESTED --> sameRoomFromP2
     protected static List<Square> calculateDistance(Square fromPosition){
         List<Square> targetPosition = new ArrayList<>();
 
