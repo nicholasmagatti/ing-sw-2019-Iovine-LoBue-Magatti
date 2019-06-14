@@ -34,6 +34,7 @@ public class SpawningPoint extends Square {
      * @return the list of wapon on the square
      * @Author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public List<WeaponCard> getWeaponCards(){
         return this.weaponCards;
     }
@@ -44,6 +45,7 @@ public class SpawningPoint extends Square {
      * @return weapon card grabbed from the game table by the player
      * @Author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public void removeWeaponFromSpawnPoint(WeaponCard weaponCardToGrab){
         weaponCards.remove(weaponCardToGrab);
     }
@@ -52,6 +54,7 @@ public class SpawningPoint extends Square {
      *
      * @Author: Luca Iovine
      */
+    //NOT TO BE TESTED
     @Override
     public void reset(Deck deck){
         while(weaponCards.size() != MAX_CARD){
@@ -64,6 +67,7 @@ public class SpawningPoint extends Square {
      *
      * @Author: Luca Iovine
      */
+    //TESTED --> ShouldSwapTheTwoCard
     public void swapWeaponsOnSpawnPoint(WeaponCard cardToGrab, WeaponCard cardToFree){
         weaponCards.remove(cardToGrab);
         weaponCards.add(cardToFree);

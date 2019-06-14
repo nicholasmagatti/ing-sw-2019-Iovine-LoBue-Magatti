@@ -1,14 +1,15 @@
 {
 	"typeOfEffect":"shift_one_movement",
-	"effect":{
+	"dmg":{
 		"dmg":2,
-		"mark":0,
+		"mark":2,
 		"aoe":"can_see",
-		"nrTarget":1,
-		"hitAllPlayers":false
+		"nrTarget":1
 	},
 	"move":{
 		"hasToMove":true,
+		"isMandatory":false,
+		"isEnemyMove":true,
 		"nrOfMovement":1
 	}
 }

@@ -50,18 +50,18 @@ public class TestDictionaryDistance {
 
         d = new DistanceDictionary(map);
 
-        map[0][0].setPlayerOnSquare(new Player(0, "P1", gt));
-        map[0][1].setPlayerOnSquare(new Player(1, "P2", gt));
-        map[0][2].setPlayerOnSquare(new Player(2, "P3", gt));
-        map[0][3].setPlayerOnSquare(new Player(3, "P4", gt));
-        map[1][0].setPlayerOnSquare(new Player(4, "P5", gt));
-        map[1][1].setPlayerOnSquare(new Player(5, "P6", gt));
-        map[1][2].setPlayerOnSquare(new Player(6, "P7", gt));
-        map[1][3].setPlayerOnSquare(new Player(7, "P8", gt));
-        map[2][0].setPlayerOnSquare(new Player(8, "P9", gt));
-        map[2][1].setPlayerOnSquare(new Player(9, "P10", gt));
-        map[2][2].setPlayerOnSquare(new Player(10, "P11", gt));
-        map[2][3].setPlayerOnSquare(new Player(11, "P12", gt));
+        map[0][0].addPlayerOnSquare(new Player(0, "P1", gt));
+        map[0][1].addPlayerOnSquare(new Player(1, "P2", gt));
+        map[0][2].addPlayerOnSquare(new Player(2, "P3", gt));
+        map[0][3].addPlayerOnSquare(new Player(3, "P4", gt));
+        map[1][0].addPlayerOnSquare(new Player(4, "P5", gt));
+        map[1][1].addPlayerOnSquare(new Player(5, "P6", gt));
+        map[1][2].addPlayerOnSquare(new Player(6, "P7", gt));
+        map[1][3].addPlayerOnSquare(new Player(7, "P8", gt));
+        map[2][0].addPlayerOnSquare(new Player(8, "P9", gt));
+        map[2][1].addPlayerOnSquare(new Player(9, "P10", gt));
+        map[2][2].addPlayerOnSquare(new Player(10, "P11", gt));
+        map[2][3].addPlayerOnSquare(new Player(11, "P12", gt));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class TestDictionaryDistance {
     }
 
     @Test
-    public void SameSquareP2(){
+    public void sameSquareP2(){
         List<Square> s = d.getTargetPosition(AreaOfEffect.SAME_SQUARE, map[0][1]);
 
         assertFalse(s.contains(map[0][0]));
@@ -152,5 +152,95 @@ public class TestDictionaryDistance {
         assertTrue(s.contains(map[2][1]));
         assertFalse(s.contains(map[2][2]));
         assertTrue(s.contains(map[2][3]));
+    }
+
+    @Test
+    public void nearRoomFromP2(){
+        List<Square> s = d.getTargetPosition(AreaOfEffect.NEAR_ROOM_VISIBLE, map[0][1]);
+
+        assertFalse(s.contains(map[0][0]));
+        assertFalse(s.contains(map[0][1]));
+        assertTrue(s.contains(map[0][2]));
+        assertFalse(s.contains(map[0][3]));
+        assertFalse(s.contains(map[1][0]));
+        assertTrue(s.contains(map[1][1]));
+        assertTrue(s.contains(map[1][2]));
+        assertFalse(s.contains(map[1][3]));
+        assertFalse(s.contains(map[2][0]));
+        assertFalse(s.contains(map[2][1]));
+        assertTrue(s.contains(map[2][2]));
+        assertFalse(s.contains(map[2][3]));
+    }
+
+    @Test
+    public void sameRoomFromP2(){
+        List<Square> s = d.getTargetPosition(AreaOfEffect.SAME_ROOM, map[0][1]);
+
+        assertTrue(s.contains(map[0][0]));
+        assertTrue(s.contains(map[0][1]));
+        assertFalse(s.contains(map[0][2]));
+        assertFalse(s.contains(map[0][3]));
+        assertTrue(s.contains(map[1][0]));
+        assertFalse(s.contains(map[1][1]));
+        assertFalse(s.contains(map[1][2]));
+        assertFalse(s.contains(map[1][3]));
+        assertFalse(s.contains(map[2][0]));
+        assertFalse(s.contains(map[2][1]));
+        assertFalse(s.contains(map[2][2]));
+        assertFalse(s.contains(map[2][3]));
+    }
+
+    @Test
+    public void allFromP2(){
+        List<Square> s = d.getTargetPosition(AreaOfEffect.ALL, map[0][1]);
+
+        assertTrue(s.contains(map[0][0]));
+        assertTrue(s.contains(map[0][1]));
+        assertTrue(s.contains(map[0][2]));
+        assertTrue(s.contains(map[0][3]));
+        assertTrue(s.contains(map[1][0]));
+        assertTrue(s.contains(map[1][1]));
+        assertTrue(s.contains(map[1][2]));
+        assertTrue(s.contains(map[1][3]));
+        assertTrue(s.contains(map[2][0]));
+        assertTrue(s.contains(map[2][1]));
+        assertTrue(s.contains(map[2][2]));
+        assertTrue(s.contains(map[2][3]));
+    }
+
+    @Test
+    public void UpToOneFromP2(){
+        List<Square> s = d.getTargetPosition(AreaOfEffect.UP_TO_ONE, map[0][1]);
+
+        assertTrue(s.contains(map[0][0]));
+        assertTrue(s.contains(map[0][1]));
+        assertTrue(s.contains(map[0][2]));
+        assertFalse(s.contains(map[0][3]));
+        assertFalse(s.contains(map[1][0]));
+        assertTrue(s.contains(map[1][1]));
+        assertFalse(s.contains(map[1][2]));
+        assertFalse(s.contains(map[1][3]));
+        assertFalse(s.contains(map[2][0]));
+        assertFalse(s.contains(map[2][1]));
+        assertFalse(s.contains(map[2][2]));
+        assertFalse(s.contains(map[2][3]));
+    }
+
+    @Test
+    public void UpToTwoFromP6() {
+        List<Square> s = d.getTargetPosition(AreaOfEffect.UP_TO_TWO, map[1][1]);
+
+        assertTrue(s.contains(map[0][0]));
+        assertTrue(s.contains(map[0][1]));
+        assertTrue(s.contains(map[0][2]));
+        assertFalse(s.contains(map[0][3]));
+        assertFalse(s.contains(map[1][0]));
+        assertTrue(s.contains(map[1][1]));
+        assertTrue(s.contains(map[1][2]));
+        assertTrue(s.contains(map[1][3]));
+        assertTrue(s.contains(map[2][0]));
+        assertTrue(s.contains(map[2][1]));
+        assertTrue(s.contains(map[2][2]));
+        assertFalse(s.contains(map[2][3]));
     }
 }

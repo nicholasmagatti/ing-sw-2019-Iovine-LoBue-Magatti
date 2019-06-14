@@ -10,11 +10,27 @@ public class NearRoom extends Distance {
         super(board);
     }
 
+    /**
+     * @param fromPosition position from where calculate the possible position
+     * @return list of square that indicates the position visible.
+     * @author: Luca Iovine
+     */
+    //NOT TO BE TESTED
     @Override
     protected List<Square> getDistance(Square fromPosition) {
         return calculateDistance(fromPosition);
     }
 
+    /**
+     * It calculate all the square that are in rooms near the position passed as parameter.
+     * Not the same of the position passed.
+     * It can be called from the other distance type class in order to do more complex calculation.
+     *
+     * @param fromPosition position from where calculate the possible position
+     * @return list of square that indicates the position visible.
+     * @author: Luca Iovine
+     */
+    //TESTED --> nearRoomFromP2
     protected static List<Square> calculateDistance(Square fromPosition){
         int idRoom;
         List<Integer> listIdRoom = new ArrayList<>();

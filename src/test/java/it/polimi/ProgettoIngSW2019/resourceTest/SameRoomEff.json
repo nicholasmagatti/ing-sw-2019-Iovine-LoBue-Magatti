@@ -1,0 +1,15 @@
+{
+	"typeOfEffect":"sameroom",
+	"dmg":{
+		"dmg":2,
+		"mark":2,
+		"aoe":"near_room_visible",
+		"nrTarget":4
+	},
+	"move":{
+		"hasToMove":false,
+		"isMandatory":false,
+		"isEnemyMove":false,
+		"nrOfMovement":0
+	}
+}

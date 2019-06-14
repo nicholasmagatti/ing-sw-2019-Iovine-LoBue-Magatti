@@ -7,22 +7,24 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import javax.naming.SizeLimitExceededException;
 import java.util.List;
 
-public class PowerGloveEffect extends WeaponEffect {
+public class HellionEffect extends  WeaponEffect {
+    private final int nrOfMarkToGiveAfterEffect = 1;
     /**
      * Constructor class
-     * Read the weapon effect file and associate to paramater
+     * Read the weapon effect configuration json file and setup the effect
      *
      * @param jsonObj
+     * @param distance
      * @suthor: Luca Iovine
      */
-    public PowerGloveEffect(JsonObject jsonObj, DistanceDictionary distance) {
+    public HellionEffect(JsonObject jsonObj, DistanceDictionary distance) {
         super(jsonObj, distance);
     }
 
     /**
      * It activate the effect of the weapon doing damage and marking the player in the enemyChosenList,
      * which has to be one and no more.
-     * After the damage, it move the user player in the same square of the enemy hitted.
+     * After the damage, it mark all the player on the same square of the enemy.
      *
      * @param weaponUser user player
      * @param enemyChosenList list of the enemy chosen from the user
@@ -33,6 +35,8 @@ public class PowerGloveEffect extends WeaponEffect {
     @Override
     public void activateEffect(Player weaponUser, List<Player> enemyChosenList) throws SizeLimitExceededException {
         super.activateEffect(weaponUser, enemyChosenList);
-        weaponUser.moveTo(enemyChosenList.get(0).getPosition());
+        for(Player target: enemyChosenList.get(0).getPosition().getPlayerOnSquare()){
+            target.markPlayer(nrOfMarkToGiveAfterEffect, target);
+        }
     }
 }

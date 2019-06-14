@@ -10,10 +10,8 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import javax.naming.SizeLimitExceededException;
 import java.util.List;
 
-public class TractorBeamEffect extends WeaponEffect {
-    List<Square> positionList;
+public class ShiftOneMovementEffect extends WeaponEffect {
     Square chosenPosition;
-
     /**
      * Constructor class
      * Read the weapon effect file and associate to paramater
@@ -21,14 +19,14 @@ public class TractorBeamEffect extends WeaponEffect {
      * @param jsonObj
      * @suthor: Luca Iovine
      */
-    public TractorBeamEffect(JsonObject jsonObj, DistanceDictionary distance) {
+    public ShiftOneMovementEffect(JsonObject jsonObj, DistanceDictionary distance) {
         super(jsonObj, distance);
     }
 
     /**
      * It activate the effect of the weapon doing damage and marking the player in the enemyChosenList,
      * which has to be one.
-     * After the damage it move the enemy in a position up to 2 movement away from the user based on its choice.
+     * After the damage it move the enemy in a position up to 1 movement away from the enemy itself.
      *
      * @param player user player
      * @param enemyList list of the enemy chosen from the user
@@ -58,13 +56,13 @@ public class TractorBeamEffect extends WeaponEffect {
     //NOT TO BE TESTED
     @Override
     public List<Square> getMovementList(Player player, Player enemy) {
-        positionList = distance.getTargetPosition(AreaOfEffect.UP_TO_TWO, player.getPosition());
+        List<Square> positionList = distance.getTargetPosition(AreaOfEffect.UP_TO_ONE, enemy.getPosition());
 
         return positionList;
     }
 
     /**
-     * It assert that the movement that the user or the enemy has to do is actually a correct selection.
+     * It assert that the movement that the enemy has to do is actually a correct selection.
      *
      * @param chosenPosition position where the user/enemy should go
      * @param enemyList is the enemy hitted by the weapon. It must be one target only
@@ -72,15 +70,15 @@ public class TractorBeamEffect extends WeaponEffect {
      * @suthor: Luca Iovine
      */
     /*
-        TESTED --> checkMovementTractorBeam
-                   checkWRONGMovementTractorBeam
-
+        TESTED --> checkValidityMoveEnemyTest
+                   checkValidityMoveEnemyWrongTest
      */
     @Override
-    public boolean checkValidityMoveEnemy(Square chosenPosition, List<Player> enemyList) throws EnemySizeLimitExceededException{
+    public boolean checkValidityMoveEnemy(Square chosenPosition, List<Player> enemyList) throws EnemySizeLimitExceededException {
         boolean result = false;
-
         if(enemyList.size() <= 1) {
+            List<Square> positionList = distance.getTargetPosition(AreaOfEffect.UP_TO_ONE, enemyList.get(0).getPosition());
+
             if (positionList.contains(chosenPosition)) {
                 this.chosenPosition = chosenPosition;
                 result = true;

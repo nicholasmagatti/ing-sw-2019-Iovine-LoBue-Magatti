@@ -1,0 +1,15 @@
+{
+	"typeOfEffect":"general",
+	"dmg":{
+		"dmg":2,
+		"mark":2,
+		"aoe":"can_see",
+		"nrTarget":1
+	},
+	"move":{
+		"hasToMove":true,
+		"isMandatory":true,
+		"isEnemyMove":false,
+		"nrOfMovement":0
+	}
+}

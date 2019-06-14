@@ -49,6 +49,7 @@ public abstract class Square {
      * @return id room of the square
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public int getIdRoom() {
         return idRoom;
     }
@@ -59,6 +60,7 @@ public abstract class Square {
      * @return the square at right
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public Square getEastSquare() {
         return eastSquare;
     }
@@ -68,6 +70,7 @@ public abstract class Square {
      * @return the square at up
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public Square getNorthSquare() {
         return northSquare;
     }
@@ -77,6 +80,7 @@ public abstract class Square {
      * @return the square at down
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public Square getSouthSquare() {
         return southSquare;
     }
@@ -86,6 +90,7 @@ public abstract class Square {
      * @return the square at left
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public Square getWestSquare() {
         return westSquare;
     }
@@ -95,6 +100,7 @@ public abstract class Square {
      * @return if there is a wall at right direction
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public boolean getIsBlockedAtEast() {
         return isBlockedAtEast;
     }
@@ -104,6 +110,7 @@ public abstract class Square {
      * @return if there is a wall at up direction
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public boolean getIsBlockedAtNorth() {
         return isBlockedAtNorth;
     }
@@ -113,6 +120,7 @@ public abstract class Square {
      * @return if there is a wall at left direction
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public boolean getIsBlockedAtWest() {
         return isBlockedAtWest;
     }
@@ -122,6 +130,7 @@ public abstract class Square {
      * @return if there is a wall at down direction
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public boolean getIsBlockedAtSouth() {
         return isBlockedAtSouth;
     }
@@ -132,6 +141,7 @@ public abstract class Square {
      * @param p player to add
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public void addPlayerOnSquare(Player p) {
         playerOnSquare.add(p);
     }
@@ -141,6 +151,7 @@ public abstract class Square {
      * @param p player to remove
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public void removePlayerOnSquare(Player p) {
         playerOnSquare.remove(p);
     }
@@ -149,6 +160,7 @@ public abstract class Square {
      * @return all the player on the square
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public List<Player> getPlayerOnSquare() {
         return playerOnSquare;
     }
@@ -157,6 +169,7 @@ public abstract class Square {
      * @return a list of squares that surronds it
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public List<Square> getSquaresVisibleFromHere(){
         List<Square> cardinal = new ArrayList<>();
 
@@ -180,6 +193,7 @@ public abstract class Square {
      * @return the square type
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public SquareType getSquareType() {
         return squareType;
     }
@@ -190,6 +204,7 @@ public abstract class Square {
      * @param squareType enum that represent the square type
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     protected void setSquareType(SquareType squareType){
         this.squareType = squareType;
     }
@@ -201,23 +216,17 @@ public abstract class Square {
      * @param deck could be "weapon deck" or "ammo deck" based on the type of square
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public void reset(Deck deck){}
-
-    /**
-     * It is used to add player on a square after a movement on it
-     *
-     * @param p player to be added on the square
-     * @author: Luca Iovine
-     */
-    public void setPlayerOnSquare(Player p){
-        playerOnSquare.add(p);
-    }
 
     /**
      * It will set what there are around the square.
      *
      * @param board the actual map that is used
      * @author: Luca Iovine
+     */
+    /*
+        TESTED --> setSurrondProperly
      */
     public void setDependency(Square[][] board){
         if(this != null) {
@@ -231,7 +240,7 @@ public abstract class Square {
                     south = board[axis[0] + 1][axis[1]];
                     if(south != null) {
                         if (!isBlockedAtSouth || south.getIdRoom() == this.idRoom) {
-                            northSquare = south;
+                            southSquare = south;
                         }
                     }
                 }
@@ -239,7 +248,7 @@ public abstract class Square {
                     north = board[axis[0] - 1][axis[1]];
                     if(north != null) {
                         if (!isBlockedAtNorth || north.getIdRoom() == this.idRoom) {
-                            southSquare = north;
+                             northSquare = north;
                         }
                     }
                 }
@@ -270,6 +279,10 @@ public abstract class Square {
      * @return the coordinates (x,y) in order to know the exact position in the space of the map
      * @throws NotPartOfBoardException it will be thrown only if the square you try to get coordinates are not part of the board
      * @author: Luca Iovine
+     */
+    /*
+        TESTED --> shouldGetAxis0and2
+                   shouldThrowNotPartOfBoardException
      */
     public int[] getCoordinates(Square[][] board) throws NotPartOfBoardException {
         int axis[] = new int[2];

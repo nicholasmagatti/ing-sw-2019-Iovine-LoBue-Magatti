@@ -1,15 +1,14 @@
 {
-	"typeOfEffect":"general",
+	"typeOfEffect":"one_per_square",
 	"effect":{
-		"dmg":0,
+		"dmg":1,
 		"mark":0,
-		"aoe":"",
-		"nrTarget":0
+		"aoe":"up_to_one",
+		"nrTarget":3,
+		"hitAllPlayers":false
 	},
 	"move":{
-		"hasToMove":true,
-		"isMandatory":true,
-		"isEnemyMove":false,
+		"hasToMove":false,
 		"nrOfMovement":0
 	}
 }

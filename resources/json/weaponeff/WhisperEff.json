@@ -1,15 +1,14 @@
 {
 	"typeOfEffect":"general",
 	"effect":{
-		"dmg":0,
-		"mark":0,
-		"aoe":"",
-		"nrTarget":0
+		"dmg":3,
+		"mark":1,
+		"aoe":"can_see_at_least_two",
+		"nrTarget":1,
+		"hitAllPlayers":false
 	},
 	"move":{
-		"hasToMove":true,
-		"isMandatory":true,
-		"isEnemyMove":false,
+		"hasToMove":false,
 		"nrOfMovement":0
 	}
 }

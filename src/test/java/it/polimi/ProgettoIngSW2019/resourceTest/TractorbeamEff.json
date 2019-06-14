@@ -1,0 +1,15 @@
+{
+	"typeOfEffect":"flamethrower",
+	"dmg":{
+		"dmg":2,
+		"mark":2,
+		"aoe":"all",
+		"nrTarget":1
+	},
+	"move":{
+		"hasToMove":true,
+		"isMandatory":true,
+		"isEnemyMove":true,
+		"nrOfMovement":0
+	}
+}
