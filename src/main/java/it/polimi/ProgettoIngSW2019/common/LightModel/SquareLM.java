@@ -14,20 +14,27 @@ public abstract class SquareLM {
     private boolean blockedAtEast;
     private boolean blockedAtSouth;
     private boolean blockedAtWest;
+    private int idRoom;
 
     /**
      * Constructor
      * @param players - list of ids of the players on the square
      * @param squareType
+     * @param blockedAtNorth
+     * @param blockedAtEast
+     * @param blockedAtSouth
+     * @param blockedAtWest
+     * @param idRoom
      */
     public SquareLM(List<Integer> players, SquareType squareType,
-                    boolean blockedAtNorth, boolean blockedAtEast, boolean blockedAtSouth, boolean blockedAtWest){
+                    boolean blockedAtNorth, boolean blockedAtEast, boolean blockedAtSouth, boolean blockedAtWest, int idRoom){
         this.players = players;
         this.squareType = squareType;
         this.blockedAtNorth = blockedAtNorth;
         this.blockedAtEast = blockedAtEast;
         this.blockedAtSouth = blockedAtSouth;
         this.blockedAtWest = blockedAtWest;
+        this.idRoom = idRoom;
     }
 
     /**
@@ -77,4 +84,13 @@ public abstract class SquareLM {
     public boolean isBlockedAtWest() {
         return blockedAtWest;
     }
+
+    /**
+     * Get the id of the room of this square
+     * @return the id of the room of this square
+     */
+    public int getIdRoom() {
+        return idRoom;
+    }
 }
+

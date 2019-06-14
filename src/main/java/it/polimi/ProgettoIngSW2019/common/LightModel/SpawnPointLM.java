@@ -18,10 +18,10 @@ public class SpawnPointLM extends SquareLM {
      * @param weapons - weapons available on the spawn point
      */
     public SpawnPointLM(List<Integer> players, List<WeaponLM> weapons,
-                        boolean blockedAtNorth, boolean blockedAtEast, boolean blockedAtSouth, boolean blockedAtWest){
+                        boolean blockedAtNorth, boolean blockedAtEast, boolean blockedAtSouth, boolean blockedAtWest, int idRoom){
 
         super(players, SquareType.SPAWNING_POINT,
-                blockedAtNorth, blockedAtEast, blockedAtSouth, blockedAtWest);
+                blockedAtNorth, blockedAtEast, blockedAtSouth, blockedAtWest, idRoom);
         this.weapons = weapons;
     }
 
