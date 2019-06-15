@@ -71,6 +71,7 @@ public class EndTurnController extends Controller {
                     sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMLMJson(), getIdPlayersCreateList().addAllIdPlayers());
                     sendInfo(EventType.UPDATE_KILLSHOTTRACK, getCreateJson().createKillShotTrackLMJson(), getIdPlayersCreateList().addAllIdPlayers());
                     getTurnManager().changeCurrentPlayer();
+                    sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(getTurnManager().getCurrentPlayer()), getIdPlayersCreateList().addAllIdPlayers());
                 }
             }
         }

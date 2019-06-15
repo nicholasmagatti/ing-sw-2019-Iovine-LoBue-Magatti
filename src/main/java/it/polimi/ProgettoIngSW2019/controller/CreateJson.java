@@ -2,9 +2,7 @@ package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.LightModel.*;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.DrawCardsInfo;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageEnemyDrawPowerUp;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageDrawMyPowerUp;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.model.*;
@@ -324,12 +322,12 @@ public class CreateJson {
 
                     if(square instanceof SpawningPoint) {
                         List<WeaponCard> weaponCardsList = ((SpawningPoint) square).getWeaponCards();
-                        mapLM[i][j] = new SpawnPointLM(idPlayers, createWeaponsListLM(weaponCardsList), square.getIsBlockedAtNorth(), square.getIsBlockedAtEast(), square.getIsBlockedAtSouth(), square.getIsBlockedAtWest());
+                        mapLM[i][j] = new SpawnPointLM(idPlayers, createWeaponsListLM(weaponCardsList), square.getIsBlockedAtNorth(), square.getIsBlockedAtEast(), square.getIsBlockedAtSouth(), square.getIsBlockedAtWest(), square.getIdRoom());
                     }
 
                     if(square instanceof AmmoPoint) {
                         AmmoCard ammoCard = ((AmmoPoint) square).getAmmoCard();
-                        mapLM[i][j] = new AmmoPointLM(idPlayers, createAmmoCardLM(ammoCard), square.getIsBlockedAtNorth(), square.getIsBlockedAtEast(), square.getIsBlockedAtSouth(), square.getIsBlockedAtWest());
+                        mapLM[i][j] = new AmmoPointLM(idPlayers, createAmmoCardLM(ammoCard), square.getIsBlockedAtNorth(), square.getIsBlockedAtEast(), square.getIsBlockedAtSouth(), square.getIsBlockedAtWest(), square.getIdRoom());
                     }
                 }
                 else {
@@ -369,9 +367,20 @@ public class CreateJson {
      * @return  json killShotTrackLM
      */
     public String createKillShotTrackLMJson() {
-        return new Gson().toJson(createKillShotTrackLMJson());
+        return new Gson().toJson(createKillShotTrackLM());
     }
 
+
+/*
+    public SpawnPointLM createSpawnPointLM(SpawningPoint spawningPoint) {
+        if(spawningPoint == null)
+            throw new NullPointerException();
+
+        List<Integer> idPlayers
+
+        return new SpawnPointLM(spawningPoint.getPlayerOnSquare())
+    }
+*/
 
 
 
@@ -381,7 +390,7 @@ public class CreateJson {
 
 //CLASSES TO VIEW
     /**
-     * create DrawCardsInfo json
+     * create DrawCardsInfoResponse json
      * @param player        spawn player
      * @return              json
      */
@@ -389,11 +398,24 @@ public class CreateJson {
         if(player == null)
             throw new NullPointerException("Player cannot be null");
 
-        DrawCardsInfo drawCardsInfo = new DrawCardsInfo(player.getIdPlayer(), createPlayerLM(player), createMyPowerUpsLM(player));
-        return new Gson().toJson(drawCardsInfo);
+        DrawCardsInfoResponse drawCardsInfoResponse = new DrawCardsInfoResponse(player.getIdPlayer(), createPlayerLM(player), createMyPowerUpsLM(player));
+        return new Gson().toJson(drawCardsInfoResponse);
     }
 
 
+    public String createWeaponsToPayJson(Player player, List<WeaponCard> weaponCards, List<PayAmmoList> payment) {
+        if(player == null)
+            throw new NullPointerException("Player cannot be null");
+
+        if(weaponCards == null)
+            throw new NullPointerException("Weapons cards cannot be null");
+
+        if(payment == null)
+            throw new NullPointerException("payment cannot be null");
+
+        List<WeaponLM> weaponLMs = createWeaponsListLM(weaponCards);
+        return new Gson().toJson(new WeaponsCanPayResponse(player.getIdPlayer(), weaponLMs, payment));
+    }
 
 
 
@@ -417,6 +439,7 @@ public class CreateJson {
 
         int i = 0;
 
+        //this control can be changed
         if(powerUps.size() > 2)
             throw new IllegalArgumentException("The player cannot draw more than 2 powerUps");
 
@@ -446,5 +469,60 @@ public class CreateJson {
 
         MessageEnemyDrawPowerUp messageEnemyDrawPowerUp = new MessageEnemyDrawPowerUp(player.getIdPlayer(), player.getCharaName(), nCards);
         return new Gson().toJson(messageEnemyDrawPowerUp);
+    }
+
+
+    /**
+     * common Message to view
+     * @param player    player
+     * @return          Message
+     */
+    public Message createMessage(Player player) {
+        if(player == null)
+            throw new NullPointerException("player cannot be null");
+
+       return new Message(player.getIdPlayer(), player.getCharaName());
+    }
+
+
+    /**
+     * common Message json to view
+     * @param player    player
+     * @return          message json
+     */
+    public String createMessageJson(Player player) {
+        if(player == null)
+            throw new NullPointerException("player cannot be null");
+
+        return new Gson().toJson(createMessage(player));
+    }
+
+
+
+    public String createMessageEnemyWeaponPay(Player player, WeaponCard weaponPay) {
+        if(player == null)
+            throw new NullPointerException("player cannot be null");
+
+        if(weaponPay == null)
+            throw new NullPointerException("weapon cannot be null");
+
+        MessageWeaponPay messageWeaponPay = new MessageWeaponPay(player.getIdPlayer(), player.getCharaName(), weaponPay.getIdCard(), weaponPay.getName(), createPlayerLM(player));
+        return new Gson().toJson(messageWeaponPay);
+    }
+
+
+
+    public String createMessagePlayerSwapWeapons(Player player, WeaponCard weaponDiscarded, WeaponCard weaponBuy) {
+        if(player == null)
+            throw new NullPointerException("player cannot be null");
+
+        if(weaponDiscarded == null)
+            throw new NullPointerException("weapon cannot be null");
+
+        if(weaponBuy == null)
+            throw new NullPointerException("weapon cannot be null");
+
+        MessagePlayerSwapWeapons messagePlayerSwapWeapons = new MessagePlayerSwapWeapons(player.getIdPlayer(), player.getCharaName(), weaponBuy.getIdCard(), weaponBuy.getName(), createPlayerLM(player), weaponDiscarded.getIdCard(), weaponDiscarded.getName());
+        return new Gson().toJson(messagePlayerSwapWeapons);
     }
 }

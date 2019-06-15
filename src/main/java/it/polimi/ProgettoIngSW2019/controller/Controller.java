@@ -6,11 +6,10 @@ import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.custom_exception.IllegalAttributeException;
 import it.polimi.ProgettoIngSW2019.custom_exception.IllegalIdException;
-import it.polimi.ProgettoIngSW2019.model.Player;
-import it.polimi.ProgettoIngSW2019.model.PowerUp;
-import it.polimi.ProgettoIngSW2019.model.TurnManager;
-import it.polimi.ProgettoIngSW2019.model.WeaponCard;
+import it.polimi.ProgettoIngSW2019.custom_exception.NotPartOfBoardException;
+import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
+import jdk.nashorn.internal.runtime.regexp.joni.ApplyCaseFoldArg;
 
 import java.util.List;
 
@@ -122,25 +121,7 @@ public abstract class Controller implements Observer<Event> {
     }
 
 
-    /**
-     * check if is the turn of the player
-     * if not send a message error
-     * @param player    player
-     * @return          true if is turn player, false if not
-     */
-    public boolean checkCurrentPlayer(Player player) {
-        if(player == null)
-            throw new NullPointerException("player cannot be null");
-
-        if(player.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer()) {
-            String messageError = "ERROR: Non è il tuo turno";
-            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
-            return false;
-        }
-        return true;
-    }
-
-
+//CONVERT
     /**
      * if the id is correct return the powerUp
      * otherwise null
@@ -158,7 +139,7 @@ public abstract class Controller implements Observer<Event> {
         PowerUp powerUp;
 
         try {
-            powerUp = getIdConverter().getPowerUpCardById(player.getIdPlayer(), idPowerUp);
+            powerUp = idConverter.getPowerUpCardById(player.getIdPlayer(), idPowerUp);
         } catch (IllegalIdException e) {
             String messageError = "Ops, qualcosa è andato storto!";
             sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
@@ -187,9 +168,9 @@ public abstract class Controller implements Observer<Event> {
 
         try {
             if(unloadedWeapon)
-                weaponCard = getIdConverter().getUnloadedWeaponById(player.getIdPlayer(), idWeapon);
+                weaponCard = idConverter.getUnloadedWeaponById(player.getIdPlayer(), idWeapon);
             else
-                weaponCard = getIdConverter().getLoadedWeaponById(player.getIdPlayer(), idWeapon);
+                weaponCard = idConverter.getLoadedWeaponById(player.getIdPlayer(), idWeapon);
         } catch (IllegalIdException e) {
             String messageError = "Ops, qualcosa è andato storto!";
             sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
@@ -199,6 +180,73 @@ public abstract class Controller implements Observer<Event> {
     }
 
 
+
+    public Square convertSquare(Player player, int[] coordinates) {
+        Square square;
+        try {
+            square = idConverter.getSquareByCoordinates(coordinates);
+        } catch(NotPartOfBoardException e) {
+            String messageError = "Ops, qualcosa è andato storto!";
+            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            return null;
+        }
+        return square;
+    }
+
+
+
+//CHECK TURN
+    /**
+     * check if is the turn of the player
+     * if not send a message error
+     * @param player    player
+     * @return          true if is turn player, false if not
+     */
+    public boolean checkCurrentPlayer(Player player) {
+        if(player == null)
+            throw new NullPointerException("player cannot be null");
+
+        if(player.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer()) {
+            String messageError = "ERROR: Non è il tuo turno";
+            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * @param player    player
+     * @return          true if there are no action left
+     */
+    public boolean checkNoActionLeft(Player player) {
+        if(player == null)
+            throw new NullPointerException("player cannot be null");
+
+        if (getTurnManager().getActionsLeft() != 0) {
+            String messageError = "ERROR: Non puoi finire il turno in questo momento.";
+            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            return false;
+        }
+        return true;
+    }
+
+
+    public boolean checkHasActionLeft(Player player) {
+        if(player == null)
+            throw new NullPointerException("player cannot be null");
+
+        if (getTurnManager().getActionsLeft() == 0) {
+            String messageError = "ERROR: Non hai più azioni a disposizione.";
+            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            return false;
+        }
+        return true;
+    }
+
+
+
+//CHECK CONTAINS
     /**
      *
      * @param player        player
@@ -255,23 +303,8 @@ public abstract class Controller implements Observer<Event> {
     }
 
 
-    /**
-     * @param player    player
-     * @return          true if there are no action left
-     */
-    public boolean checkNoActionLeft(Player player) {
-        if(player == null)
-            throw new NullPointerException("player cannot be null");
 
-        if (getTurnManager().getActionsLeft() != 0) {
-            String messageError = "ERROR: Non puoi finire il turno in questo momento.";
-            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
-            return false;
-        }
-        return true;
-    }
-
-
+//OTHER
     /**
      * check if the player has enough ammo to pay
      * @param player        player
@@ -292,7 +325,5 @@ public abstract class Controller implements Observer<Event> {
         }
         else
             return true;
-
-
     }
 }

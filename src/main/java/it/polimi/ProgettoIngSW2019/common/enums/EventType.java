@@ -12,6 +12,10 @@ public enum EventType {
     REQUEST_ENDTURN_INFO,                            //toController: in the end turn state score point and the player goes in the endTurn state
     REQUEST_WEAPON_INFO,                             //toController: request info to shoot
     REQUEST_SHOOT,                                   //toController: request choice to shoot
+    REQUEST_GRAB,                                    //toController: request choice to grab
+    REQUEST_GRAB_INFO,                               //toController: request choice to grab info
+    REQUEST_GRAB_WEAPON,
+
 
     //Response Controller to View
     RESPONSE_REQUEST_USE_POWERUP,
@@ -23,10 +27,6 @@ public enum EventType {
     RESPONSE_REQUEST_WEAPON_INFO,                   //toView: response info shoot
 
 
-
-    //TODO: change name
-    RESPONSE_REQUEST_ENDTURN_INFO,                  //toController:
-
     //Other things XD
     SCORE_DEAD_PLAYERS,                             //toView: send info score at the end of the turn
     LOGIN,
@@ -34,6 +34,10 @@ public enum EventType {
     INPUT_TIME_EXPIRED,
     ERROR,                                          //toView: send message error
     PLAYER_IN_SPAWN_STATE,                          //toView: move player in spawnState
+    WEAPONS_CAN_BUY,                                //toView: send the weapons can buy in the sp
+    DISCARD_WEAPON,                                 //toView: send to the player his weapon to choose one to discard before buying another
+
+
 
     //Update LM from Controller
     UPDATE_MY_POWERUPS,                             //toView: send obj MyPowerUpsLM
@@ -47,7 +51,9 @@ public enum EventType {
     MSG_DRAW_MY_POWERUP,                            //msg to send to the player: draw card
     MSG_POWERUPS_DISCARDED_AS_AMMO,                 //msg to send to all with the powerUps discarded for ammo
     MSG_ENEMY_SPAWN,                                //msg to send with all enemy spawn info
-    MSG_ENEMY_RELOAD_WEAPON,                        //msg to send to all enemy info reload
-    MSG_MY_RELOAD_WEAPON,                           //msg to send to the reload player with update info
+    MSG_ALL_RELOAD_WEAPON,                        //msg to send to all enemy info reload
     MSG_DOUBLEKILL,                                 //msg to send to all players doubleKill
+    MSG_NEW_TURN,                                   //msg to all players new turn, changed player
+    MSG_WEAPON_BUY,                                 //msg to all players, the player bought the weapon
+    MSG_WEAPON_SWAP,                                //msg to all players, the player swapped a weapon card and bought another
 }

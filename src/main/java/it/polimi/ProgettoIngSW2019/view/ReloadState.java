@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.WeaponLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponsCanReloadResponse;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponsCanPayResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
 
@@ -43,7 +43,7 @@ public class ReloadState extends Observable<Event> implements IState, Observer<E
     private void chooseWeaponToReload(String jsonMsg){
         int chosenOption; //typed by user
         int chosenWeapon; // to send to view
-        WeaponsCanReloadResponse reloadInfo = new Gson().fromJson(jsonMsg, WeaponsCanReloadResponse.class);
+        WeaponsCanPayResponse reloadInfo = new Gson().fromJson(jsonMsg, WeaponsCanPayResponse.class);
         List<WeaponLM>weapons = reloadInfo.getWeaponsCanReload();
         if(weapons.isEmpty()){
             stateManager.triggerNextState(spawnState);

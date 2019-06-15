@@ -45,6 +45,8 @@ public class TestDeck {
         assertEquals(DeckType.AMMO_CARD, ammoCardDrawn.getCardType());
         assertEquals(ammo, ammoCardDrawn.getAmmo());
         assertEquals(nCardsExp, ammoDeck.getCards().size());
+        assertEquals(0, DeckFactory.getFirstIdAmmo());
+        assertEquals(35, DeckFactory.getLastIdAmmo());
     }
 
 
@@ -71,6 +73,8 @@ public class TestDeck {
         assertEquals("", powerUpCardDrawn.getDescription());
         assertTrue(powerUpCardDrawn.getPowerUpEffect() instanceof TagbackGrenadeEff);
         assertEquals(nCardsExp, powerUpDeck.getCards().size());
+        assertEquals(36, DeckFactory.getFirstIdPowerUp());
+        assertEquals(59, DeckFactory.getLastIdPowerUp());
     }
 
 
@@ -96,6 +100,8 @@ public class TestDeck {
         assertEquals("", weaponCardDrawn.getDescription());
         assertEquals(reload, weaponCardDrawn.getreloadCost());
         assertEquals(nCardsExp, weaponDeck.getCards().size());
+        assertEquals(60, DeckFactory.getFirstIdWeapon());
+        assertEquals(80, DeckFactory.getLastIdWeapon());
     }
 
 

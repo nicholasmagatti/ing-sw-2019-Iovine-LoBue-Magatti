@@ -2,13 +2,10 @@ package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
-import it.polimi.ProgettoIngSW2019.common.LightModel.WeaponLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.ReloadChoiceRequest;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageEnemyWeaponReloaded;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageMyWeaponReloaded;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageWeaponPay;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.PayAmmoList;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponsCanReloadResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
@@ -89,7 +86,6 @@ public class ReloadController extends Controller {
         setListWeaponsCanReload();
 
         if(!weaponsCanReload.isEmpty()) {
-            List<WeaponLM> weaponsCanReloadLM = getCreateJson().createWeaponsListLM(weaponsCanReload);
             List<PayAmmoList> payAmmoLists = new ArrayList<>();
 
             for(WeaponCard weaponCard: weaponsCanReload) {
@@ -97,13 +93,13 @@ public class ReloadController extends Controller {
                 payAmmoLists.add(payAmmoController.ammoToPay(ownerPlayer, weaponCard, ammoCost));
             }
 
-            String reloadInfoString = new Gson().toJson(new WeaponsCanReloadResponse(ownerPlayer.getIdPlayer(), weaponsCanReloadLM, payAmmoLists));
+            String reloadInfoString = getCreateJson().createWeaponsToPayJson(ownerPlayer, weaponsCanReload, payAmmoLists);
             sendInfo(EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD, reloadInfoString, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
         }
         else {
-            List<WeaponLM> weaponsCanReloadLMEmpty = new ArrayList<>();
+            List<WeaponCard> weaponsCanReloadEmpty = new ArrayList<>();
             List<PayAmmoList> payAmmoListsEmpty = new ArrayList<>();
-            String reloadInfoString = new Gson().toJson(new WeaponsCanReloadResponse(ownerPlayer.getIdPlayer(), weaponsCanReloadLMEmpty, payAmmoListsEmpty));
+            String reloadInfoString = getCreateJson().createWeaponsToPayJson(ownerPlayer, weaponsCanReloadEmpty, payAmmoListsEmpty);
             sendInfo(EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD, reloadInfoString, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
         }
     }
@@ -194,12 +190,12 @@ public class ReloadController extends Controller {
         }
 
         //send message to all enemy players with reload info
-        String messageEnemyWeaponReloadedJson = createMessageEnemyWeaponReloadedJson();
-        sendInfo(EventType.MSG_ENEMY_RELOAD_WEAPON, messageEnemyWeaponReloadedJson, getIdPlayersCreateList().addAllExceptPlayer(ownerPlayer));
+        String messageEnemyWeaponReloadedJson = createMessageWeaponReloadedJson();
+        sendInfo(EventType.MSG_ALL_RELOAD_WEAPON, messageEnemyWeaponReloadedJson, getIdPlayersCreateList().addAllIdPlayers());
 
         //send to the player the new loaded weapons
-        String messageMyWeaponReloadedJson = createMessageMyWeaponReloaded();
-        sendInfo(EventType.MSG_MY_RELOAD_WEAPON, messageMyWeaponReloadedJson, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
+        String updateMyLoadedWeapons = getCreateJson().createMyLoadedWeaponsListLMJson(ownerPlayer);
+        sendInfo(EventType.UPDATE_MY_LOADED_WEAPONS, updateMyLoadedWeapons, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
 
         reloadInfo();
     }
@@ -209,20 +205,11 @@ public class ReloadController extends Controller {
      * creates the message for the enemies with reload info
      * @return  message json for enemies
      */
-    public String createMessageEnemyWeaponReloadedJson() {
-        MessageEnemyWeaponReloaded message = new MessageEnemyWeaponReloaded(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), weaponToReload.getIdCard(), weaponToReload.getName(), getCreateJson().createPlayerLM(ownerPlayer));
+    public String createMessageWeaponReloadedJson() {
+        MessageWeaponPay message = new MessageWeaponPay(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), weaponToReload.getIdCard(), weaponToReload.getName(), getCreateJson().createPlayerLM(ownerPlayer));
         return new Gson().toJson(message);
     }
 
-
-    /**
-     * creates the message for the player with the reload info
-     * @return  message json for the player
-     */
-    public String createMessageMyWeaponReloaded() {
-        MessageMyWeaponReloaded message = new MessageMyWeaponReloaded(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), weaponToReload.getIdCard(), weaponToReload.getName(), getCreateJson().createPlayerLM(ownerPlayer), getCreateJson().createMyLoadedWeaponsListLM(ownerPlayer));
-        return new Gson().toJson(message);
-    }
 
 
     /**

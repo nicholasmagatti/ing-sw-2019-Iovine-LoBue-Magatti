@@ -6,7 +6,7 @@ import it.polimi.ProgettoIngSW2019.common.LightModel.PlayerDataLM;
  * message to enemy player with reload info
  * @author Priscilla Lo Bue
  */
-public class MessageEnemyWeaponReloaded extends Message{
+public class MessageWeaponPay extends Message{
     private int idWeapon;
     private String nameWeapon;
     private PlayerDataLM playerLM;
@@ -20,7 +20,7 @@ public class MessageEnemyWeaponReloaded extends Message{
      * @param nameWeapon        name weapon reload
      * @param playerLM          player reload LM updated
      */
-    public MessageEnemyWeaponReloaded(int idPlayer, String namePlayer, int idWeapon, String nameWeapon, PlayerDataLM playerLM) {
+    public MessageWeaponPay(int idPlayer, String namePlayer, int idWeapon, String nameWeapon, PlayerDataLM playerLM) {
         super(idPlayer, namePlayer);
 
         if(namePlayer == null)

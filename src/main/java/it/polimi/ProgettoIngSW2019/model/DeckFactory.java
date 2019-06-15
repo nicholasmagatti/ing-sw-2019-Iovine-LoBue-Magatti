@@ -20,6 +20,13 @@ public class DeckFactory {
     private List<Card> deck;
     private IdCardGenerator idCardGenerator = new IdCardGenerator();
 
+    private static int firstIdAmmo = 0;
+    private static int lastIdAmmo = 0;
+    private static int firstIdPowerUp = 0;
+    private static int lastIdPowerUp = 0;
+    private static int firstIdWeapon = 0;
+    private static int lastIdWeapon = 0;
+
     private static final String TAGBACK_GRENADE = "TAGBACK GRENADE";
     private static final String NEWTON = "NEWTON";
     private static final String TARGETING_SCOPE = "TARGETING SCOPE";
@@ -44,6 +51,7 @@ public class DeckFactory {
                 deck = new ArrayList<>();
                 //36 ammo cards: 12 with 3 ammo and 12 with 2 ammo and one powerUp
                 //18 ammo cards with 3 ammo
+                firstIdAmmo = idCardGenerator.getId();
                 deck.add(new AmmoCard(idCardGenerator.generateId(), DeckType.AMMO_CARD, AmmoType.YELLOW, AmmoType.BLUE, AmmoType.BLUE));
                 deck.add(new AmmoCard(idCardGenerator.generateId(), DeckType.AMMO_CARD, AmmoType.YELLOW, AmmoType.RED, AmmoType.RED));
                 deck.add(new AmmoCard(idCardGenerator.generateId(), DeckType.AMMO_CARD, AmmoType.RED, AmmoType.BLUE, AmmoType.BLUE));
@@ -85,6 +93,8 @@ public class DeckFactory {
                 deck.add(new AmmoCard(idCardGenerator.generateId(), DeckType.AMMO_CARD, AmmoType.YELLOW, AmmoType.RED));
                 deck.add(new AmmoCard(idCardGenerator.generateId(), DeckType.AMMO_CARD, AmmoType.YELLOW, AmmoType.BLUE));
                 deck.add(new AmmoCard(idCardGenerator.generateId(), DeckType.AMMO_CARD, AmmoType.RED, AmmoType.BLUE));
+
+                lastIdAmmo = idCardGenerator.getId() - 1;
                 break;
 
 
@@ -92,6 +102,7 @@ public class DeckFactory {
                 deck = new ArrayList<>();
                 //24 powerUps cards, 4 PowerUps, 4 color x2
                 //6 TagBack grenade
+                firstIdPowerUp = idCardGenerator.getId();
                 deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
                 deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
                 deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
@@ -122,11 +133,13 @@ public class DeckFactory {
                 deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, TELEPORTER, descrTeleporter, new TeleporterEff()));
                 deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, TELEPORTER, descrTeleporter, new TeleporterEff()));
                 deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, TELEPORTER, descrTeleporter, new TeleporterEff()));
+                lastIdPowerUp = idCardGenerator.getId() - 1;
                 break;
 
 
             case WEAPON_CARD:
                 deck = new ArrayList<>();
+                firstIdWeapon = idCardGenerator.getId();
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "LOCK RIFLE", "", Arrays.asList(AmmoType.BLUE, AmmoType.BLUE), "LockRifleEff.json"));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "ELECTROSCYTHE", "", Arrays.asList(AmmoType.BLUE), "ElectroSchyteEff.json"));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "MACHINE GUN", "", Arrays.asList(AmmoType.BLUE, AmmoType.RED), "MachineGunEff.json"));
@@ -148,11 +161,42 @@ public class DeckFactory {
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "SHOCKWAVE", "", Arrays.asList(AmmoType.YELLOW), "ShockWaveEff.json"));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "CYBERBLADE", "", Arrays.asList(AmmoType.YELLOW, AmmoType.RED), "CyberBladeEff.json"));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "SLEDGEHAMMER", "", Arrays.asList(AmmoType.YELLOW), "SledgeHammerEff.json"));
+                lastIdWeapon = idCardGenerator.getId() - 1;
                 break;
 
              default:
                  throw new IllegalArgumentException("It is not passed a DeckType");
         }
         return deck;
+    }
+
+
+    public static int getLastIdAmmo() {
+        return lastIdAmmo;
+    }
+
+
+    public static int getFirstIdAmmo() {
+        return firstIdAmmo;
+    }
+
+
+    public static int getFirstIdPowerUp() {
+        return firstIdPowerUp;
+    }
+
+
+    public static int getLastIdPowerUp() {
+        return lastIdPowerUp;
+    }
+
+
+    public static int getFirstIdWeapon() {
+        return firstIdWeapon;
+    }
+
+
+    public static int getLastIdWeapon() {
+        return lastIdWeapon;
     }
 }
