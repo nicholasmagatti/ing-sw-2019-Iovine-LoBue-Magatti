@@ -29,8 +29,9 @@ public enum EventType {
 
     //Other things XD
     SCORE_DEAD_PLAYERS,                             //toView: send info score at the end of the turn
-    LOGIN,
-    CHECK_USERNAME_AVIABLITY,
+    REQUEST_LOGIN,
+    RESPONSE_NEW_LOGIN,
+    RESPONSE_RECONNECT,
     INPUT_TIME_EXPIRED,
     ERROR,                                          //toView: send message error
     PLAYER_IN_SPAWN_STATE,                          //toView: move player in spawnState

@@ -11,8 +11,8 @@ public class InputScanner extends Observable<Event>{
     private boolean timeExpired;
     private boolean keepTimerAlive;
     private Thread inputThread;
-    InputStreamReader isr;
-    BufferedReader br;
+    private InputStreamReader isr;
+    private BufferedReader br;
 
     public InputScanner(){
         timeExpired = false;
@@ -46,7 +46,6 @@ public class InputScanner extends Observable<Event>{
      */
     private void requestInput(){
         try{
-            System.out.print("Fai la tua scelta: ");
             while(!br.ready())
                 Thread.sleep(200);
             input = br.readLine();
