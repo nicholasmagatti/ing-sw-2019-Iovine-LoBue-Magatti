@@ -34,21 +34,31 @@ public class Player{
     private boolean active = true;
     //-1 means nobody hit this player on this turn
     private int idPlayerDamageDealer = -1;
+    private String hostname;
 
 
     /**
      * Constructor
      */
-    public Player(int idPlayer, String charaName, GameTable gameTable){
+    public Player(int idPlayer, String charaName, GameTable gameTable, String hostname){
         this.idPlayer = idPlayer;
         this.charaName = charaName;
         this.gameTable = gameTable;
-        if(charaName == null) {
+        this.hostname = hostname;
+        if(charaName == null || hostname == null) {
             throw new NullPointerException();
         }
-        if(charaName.equals("")){
-            throw new RuntimeException("The name of a player cannot be an empty string.");
+        if(charaName.equals("") || hostname.equals("")){
+            throw new RuntimeException("The name of a player and the host name cannot be an empty string.");
         }
+    }
+
+    /**
+     * Get the name of the host
+     * @return the name of the host
+     */
+    public String getHostname() {
+        return hostname;
     }
 
     /**

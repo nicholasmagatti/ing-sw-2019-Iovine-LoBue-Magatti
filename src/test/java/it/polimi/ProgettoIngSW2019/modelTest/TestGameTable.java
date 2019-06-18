@@ -32,7 +32,7 @@ public class TestGameTable {
         names.add("Giulia");
         names.add("Alessia");
         names.add("Ermes");
-        gameTable.setPlayersBeforeStart(names);
+        gameTable.setPlayersBeforeStart(names, "host");
         carlo = gameTable.getPlayers()[0];
         giulia = gameTable.getPlayers()[1];
         alessia = gameTable.getPlayers()[2];

@@ -27,5 +27,6 @@ public abstract class GeneralInfo {
     public static final String NO = "no";
     public static final String EXIT = "exit";
     public static final String DESCRIPTION_EXIT = "exit from game";
+    public static final String PREFIX_COMMAND_DESCRIPTION = "description ";
 
 }

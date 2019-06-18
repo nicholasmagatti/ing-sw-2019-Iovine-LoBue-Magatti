@@ -24,10 +24,10 @@ public class TestPlayer {
     @Before
     public void setUp(){
         gameTable = new GameTable(maps[3],5);
-        player1 = new Player(0, "Nome1", gameTable);
-        player2 = new Player(1, "Nome2", gameTable);
-        player3 = new Player(2, "Nome3", gameTable);
-        player4 = new Player(3, "Nome4", gameTable);
+        player1 = new Player(0, "Nome1", gameTable, "host");
+        player2 = new Player(1, "Nome2", gameTable, "host");
+        player3 = new Player(2, "Nome3", gameTable, "host");
+        player4 = new Player(3, "Nome4", gameTable, "host");
 
         ammoPoint1 = new AmmoPoint(3, true, true, true, true);
         ammoPoint2 = new AmmoPoint(3, true, true, true, true);
@@ -202,14 +202,14 @@ public class TestPlayer {
     public void tryToSetWrongName(){
 
         try{
-            new Player(0, null, gameTable);
+            new Player(0, null, gameTable, "host");
         }
         catch (RuntimeException e){
             System.out.println(e);
         }
 
         try{
-            new Player(0, "", gameTable);
+            new Player(0, "", gameTable, "host");
         }
         catch (RuntimeException e){
             System.out.println(e);
