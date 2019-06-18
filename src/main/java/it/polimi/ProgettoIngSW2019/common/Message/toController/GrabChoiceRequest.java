@@ -11,11 +11,12 @@ public class GrabChoiceRequest extends PlayerChoiceRequest {
 
     /**
      * Constructor
-     * @param idPlayer      idPlayer
-     * @param coordinates   array int of 2 coordinates of the square
+     * @param hostNamePlayer    host name client
+     * @param idPlayer          idPlayer
+     * @param coordinates       array int of 2 coordinates of the square
      */
-    public GrabChoiceRequest(int idPlayer, int[] coordinates) {
-        super(idPlayer);
+    public GrabChoiceRequest(String hostNamePlayer, int idPlayer, int[] coordinates) {
+        super(hostNamePlayer, idPlayer);
         this.coordinates = coordinates;
     }
 

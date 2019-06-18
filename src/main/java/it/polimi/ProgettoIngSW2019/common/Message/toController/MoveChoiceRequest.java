@@ -11,12 +11,13 @@ public class MoveChoiceRequest extends PlayerChoiceRequest {
 
     /**
      * Constructor
-     * @param idPlayer      id player
-     * @param x             coordinate x
-     * @param y             coordinate y
+     * @param hostNamePlayer    host name client
+     * @param idPlayer          id player
+     * @param x                 coordinate x
+     * @param y                 coordinate y
      */
-    public MoveChoiceRequest(int idPlayer, int x, int y) {
-        super(idPlayer);
+    public MoveChoiceRequest(String hostNamePlayer, int idPlayer, int x, int y) {
+        super(hostNamePlayer, idPlayer);
         if(x < 0)
             throw new IllegalArgumentException("the position x cannot be negative");
         if(y < 0)

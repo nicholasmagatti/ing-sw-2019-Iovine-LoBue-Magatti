@@ -9,8 +9,8 @@ public class GrabWeaponChoiceRequest extends PlayerChoiceRequest {
     private List<Integer> idPowerUpToDiscard;
 
 
-    public GrabWeaponChoiceRequest(int idPlayer, int idWeaponToDiscard, int idWeaponToGrab, int[] ammoToDiscard, List<Integer> idPowerUpToDiscard) {
-        super(idPlayer);
+    public GrabWeaponChoiceRequest(String hostNamePlayer, int idPlayer, int idWeaponToDiscard, int idWeaponToGrab, int[] ammoToDiscard, List<Integer> idPowerUpToDiscard) {
+        super(hostNamePlayer, idPlayer);
         this.idWeaponToDiscard = idWeaponToDiscard;
         this.idWeaponToGrab = idWeaponToGrab;
         this.ammoToDiscard = ammoToDiscard;

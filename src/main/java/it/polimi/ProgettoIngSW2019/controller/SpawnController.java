@@ -8,7 +8,6 @@ import it.polimi.ProgettoIngSW2019.common.Message.toView.SpawnChoiceResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
-import it.polimi.ProgettoIngSW2019.custom_exception.IllegalIdException;
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
@@ -32,8 +31,8 @@ public class SpawnController extends Controller {
      * @param turnManager               turn manager
      * @param virtualView               virtual view
      */
-    public SpawnController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, IdPlayersCreateList idPlayersCreateList) {
-        super(turnManager, virtualView, idConverter, createJson, idPlayersCreateList);
+    public SpawnController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList) {
+        super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
     }
 
 
@@ -45,13 +44,13 @@ public class SpawnController extends Controller {
         if((event.getCommand().equals(EventType.REQUEST_SPAWN_CARDS) || (event.getCommand().equals(EventType.REQUEST_INITIAL_SPAWN_CARDS)))) {
             InfoRequest infoRequest = new Gson().fromJson(event.getMessageInJsonFormat(), InfoRequest.class);
 
-            spawnPlayer = convertPlayer(infoRequest.getIdPlayer());
+            spawnPlayer = convertPlayer(infoRequest.getIdPlayer(), infoRequest.getHostNamePlayer());
 
             if(spawnPlayer != null) {
                 if (event.getCommand().equals(EventType.REQUEST_SPAWN_CARDS)) {
                     if(!spawnPlayer.isPlayerDown()) {
                         String messageError = "ERROR: you are not dead, cannot spawn";
-                        sendInfo(EventType.ERROR, messageError, getIdPlayersCreateList().addOneIdPlayers(spawnPlayer));
+                        sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(spawnPlayer));
                         return;
                     }
                     spawnDrawCard();
@@ -60,7 +59,7 @@ public class SpawnController extends Controller {
                 if (event.getCommand().equals(EventType.REQUEST_INITIAL_SPAWN_CARDS)) {
                     if(spawnPlayer.getPosition() != null) {
                         String messageError = "ops! qualcosa è andato storto.";
-                        sendInfo(EventType.ERROR, messageError, getIdPlayersCreateList().addOneIdPlayers(spawnPlayer));
+                        sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(spawnPlayer));
                         return;
                     }
                     spawnDrawTwoCards();
@@ -68,11 +67,11 @@ public class SpawnController extends Controller {
 
                 //send message spawn player draw cards
                 String messageDrawMyPowerUpJson = getCreateJson().createMessageDrawMyPowerUpJson(spawnPlayer, powerUpsDraw);
-                sendInfo(EventType.MSG_DRAW_MY_POWERUP, messageDrawMyPowerUpJson, getIdPlayersCreateList().addOneIdPlayers(spawnPlayer));
+                sendInfo(EventType.MSG_DRAW_MY_POWERUP, messageDrawMyPowerUpJson, getHostNameCreateList().addOneHostName(spawnPlayer));
 
                 //send message to all players except the spawn player
                 String messageEnemyDrawPowerUp = getCreateJson().createMessageEnemyDrawPowerUpJson(spawnPlayer, powerUpsDraw.size());
-                sendInfo(EventType.MSG_ENEMY_DRAW_POWERUP, messageEnemyDrawPowerUp, getIdPlayersCreateList().addAllExceptPlayer(spawnPlayer));
+                sendInfo(EventType.MSG_ENEMY_DRAW_POWERUP, messageEnemyDrawPowerUp, getHostNameCreateList().addAllExceptOneHostName(spawnPlayer));
             }
         }
 
@@ -97,7 +96,7 @@ public class SpawnController extends Controller {
 
         //send spawn info to spawn player
         String spawnDrawCardsResponseJson = getCreateJson().createDrawCardsInfoJson(spawnPlayer);
-        sendInfo(EventType.RESPONSE_REQUEST_INITIAL_SPAWN_CARDS, spawnDrawCardsResponseJson, getIdPlayersCreateList().addOneIdPlayers(spawnPlayer));
+        sendInfo(EventType.RESPONSE_REQUEST_INITIAL_SPAWN_CARDS, spawnDrawCardsResponseJson, getHostNameCreateList().addOneHostName(spawnPlayer));
     }
 
 
@@ -111,7 +110,7 @@ public class SpawnController extends Controller {
 
         //send new spawn player to all the players
         String playerLM = getCreateJson().createPlayerLMJson(spawnPlayer);
-        sendInfo(EventType.UPDATE_PLAYER_INFO, playerLM, getIdPlayersCreateList().addAllExceptPlayer(spawnPlayer));
+        sendInfo(EventType.UPDATE_PLAYER_INFO, playerLM, getHostNameCreateList().addAllExceptOneHostName(spawnPlayer));
 
         powerUpsDraw.clear();
 
@@ -121,7 +120,7 @@ public class SpawnController extends Controller {
 
         //send spawn info to spawn player
         String spawnDrawCardsResponseJson = getCreateJson().createDrawCardsInfoJson(spawnPlayer);
-        sendInfo(EventType.RESPONSE_REQUEST_SPAWN_CARDS, spawnDrawCardsResponseJson, getIdPlayersCreateList().addOneIdPlayers(spawnPlayer));
+        sendInfo(EventType.RESPONSE_REQUEST_SPAWN_CARDS, spawnDrawCardsResponseJson, getHostNameCreateList().addOneHostName(spawnPlayer));
     }
 
 
@@ -132,7 +131,7 @@ public class SpawnController extends Controller {
     public void checkRespawnFromView(String messageJson) {
         SpawnChoiceRequest spawnChoiceRequest = new Gson().fromJson(messageJson, SpawnChoiceRequest.class);
 
-        spawnPlayer = convertPlayer(spawnChoiceRequest.getIdPlayer());
+        spawnPlayer = convertPlayer(spawnChoiceRequest.getIdPlayer(), spawnChoiceRequest.getHostNamePlayer());
 
         if(spawnPlayer != null) {
 
@@ -143,7 +142,7 @@ public class SpawnController extends Controller {
                 if(checkContainsPowerUp(spawnPlayer, powerUpToDiscard)) {
                     if (!spawnPlayer.isPlayerDown() || spawnPlayer.getPosition() != null) {
                         String messageError = "ERROR: Non puoi spawnare";
-                        sendInfo(EventType.ERROR, messageError, getIdPlayersCreateList().addOneIdPlayers(spawnPlayer));
+                        sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(spawnPlayer));
                     } else
                         respawn();
                 }
@@ -185,12 +184,12 @@ public class SpawnController extends Controller {
 
         //send spawn info to all the players
         String spawnChoiceResponse = createSpawnChoiceResponseJson(spawnPlayer, powerUpToDiscard);
-        sendInfo(EventType.RESPONSE_REQUEST_SPAWN, spawnChoiceResponse, getIdPlayersCreateList().addOneIdPlayers(spawnPlayer));
-        sendInfo(EventType.MSG_ENEMY_SPAWN, spawnChoiceResponse, getIdPlayersCreateList().addAllExceptPlayer(spawnPlayer));
+        sendInfo(EventType.RESPONSE_REQUEST_SPAWN, spawnChoiceResponse, getHostNameCreateList().addOneHostName(spawnPlayer));
+        sendInfo(EventType.MSG_ENEMY_SPAWN, spawnChoiceResponse, getHostNameCreateList().addAllExceptOneHostName(spawnPlayer));
 
         //send my powerUpsLM to the player
         String myPowerUpsLMJson = getCreateJson().createMyPowerUpsLMJson(spawnPlayer);
-        sendInfo(EventType.UPDATE_MY_POWERUPS, myPowerUpsLMJson, getIdPlayersCreateList().addOneIdPlayers(spawnPlayer));
+        sendInfo(EventType.UPDATE_MY_POWERUPS, myPowerUpsLMJson, getHostNameCreateList().addOneHostName(spawnPlayer));
     }
 
 

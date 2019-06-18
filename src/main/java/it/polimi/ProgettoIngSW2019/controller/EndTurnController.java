@@ -37,8 +37,8 @@ public class EndTurnController extends Controller {
      * @param turnManager turnManager
      * @param virtualView virtualView
      */
-    public EndTurnController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, IdPlayersCreateList idPlayersCreateList) {
-        super(turnManager, virtualView, idConverter, createJson, idPlayersCreateList);
+    public EndTurnController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList) {
+        super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
         weaponDeck = turnManager.getGameTable().getWeaponDeck();
         ammoDeck = turnManager.getGameTable().getAmmoDeck();
     }
@@ -61,17 +61,17 @@ public class EndTurnController extends Controller {
     public void checkInfoFromView(String messageJson) {
         InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
 
-        ownerPlayer = convertPlayer(infoRequest.getIdPlayer());
+        ownerPlayer = convertPlayer(infoRequest.getIdPlayer(), infoRequest.getHostNamePlayer());
 
         if(ownerPlayer != null) {
             if(checkCurrentPlayer(ownerPlayer)) {
                 if(checkNoActionLeft(ownerPlayer)) {
                     checkScore();
                     resetMap();
-                    sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMLMJson(), getIdPlayersCreateList().addAllIdPlayers());
-                    sendInfo(EventType.UPDATE_KILLSHOTTRACK, getCreateJson().createKillShotTrackLMJson(), getIdPlayersCreateList().addAllIdPlayers());
+                    sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMLMJson(), getHostNameCreateList().addAllHostName());
+                    sendInfo(EventType.UPDATE_KILLSHOTTRACK, getCreateJson().createKillShotTrackLMJson(), getHostNameCreateList().addAllHostName());
                     getTurnManager().changeCurrentPlayer();
-                    sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(getTurnManager().getCurrentPlayer()), getIdPlayersCreateList().addAllIdPlayers());
+                    sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(getTurnManager().getCurrentPlayer()), getHostNameCreateList().addAllHostName());
                 }
             }
         }
@@ -91,7 +91,7 @@ public class EndTurnController extends Controller {
 
             if(doubleKill) {
                 String msgDoubleKill = new Gson().toJson(new Message(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName()));
-                sendInfo(EventType.MSG_DOUBLEKILL, msgDoubleKill, getIdPlayersCreateList().addAllIdPlayers());
+                sendInfo(EventType.MSG_DOUBLEKILL, msgDoubleKill, getHostNameCreateList().addAllHostName());
             }
 
 
@@ -109,7 +109,7 @@ public class EndTurnController extends Controller {
 
             //send the scores infoRequest to all players
             String messageScorePlayerListJson = new Gson().toJson(messageScorePlayerList);
-            sendInfo(EventType.SCORE_DEAD_PLAYERS, messageScorePlayerListJson, getIdPlayersCreateList().addAllIdPlayers());
+            sendInfo(EventType.SCORE_DEAD_PLAYERS, messageScorePlayerListJson, getHostNameCreateList().addAllHostName());
         }
     }
 
@@ -141,13 +141,14 @@ public class EndTurnController extends Controller {
 
             for (int i = 0; i < scorePlayers.length; i++) {
                 if(scorePlayers[i] > 0) {
-                    Player player = convertPlayer(i);
+                    Player player = convertPlayerWithId(i);
 
                     if (player != null) {
                         String namePlayer = player.getCharaName();
                         scorePlayersWhoHits.add(new ScorePlayerWhoHit(namePlayer, scorePlayers[i]));
                     }
-                    else return;
+                    else
+                        throw new IllegalAttributeException("The id player is wrong!");
                 }
             }
 
@@ -159,7 +160,7 @@ public class EndTurnController extends Controller {
 
             //msg to dead player to go to spawn state
             String msgPlayerInSpawnState = new Gson().toJson(new InfoResponse(deadPlayer.getIdPlayer()));
-            sendInfo(EventType.PLAYER_IN_SPAWN_STATE, msgPlayerInSpawnState, getIdPlayersCreateList().addOneIdPlayers(deadPlayer));
+            sendInfo(EventType.PLAYER_IN_SPAWN_STATE, msgPlayerInSpawnState, getHostNameCreateList().addOneHostName(deadPlayer));
         }
     }
 

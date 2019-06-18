@@ -14,11 +14,12 @@ public class ReloadChoiceRequest extends PlayerChoiceRequest {
 
     /**
      * Constructor
+     * @param hostNamePlayer    host name client
      * @param idPlayer          id Player
      * @param idWeaponToReload  id Weapon to reload
      */
-    public ReloadChoiceRequest(int idPlayer, int idWeaponToReload, int[] ammoToDiscard, List<Integer> idPowerUpToDiscard) {
-        super(idPlayer);
+    public ReloadChoiceRequest(String hostNamePlayer, int idPlayer, int idWeaponToReload, int[] ammoToDiscard, List<Integer> idPowerUpToDiscard) {
+        super(hostNamePlayer, idPlayer);
 
         if(idWeaponToReload < 0)
             throw new IllegalArgumentException("IdWeapon cannot be negative");

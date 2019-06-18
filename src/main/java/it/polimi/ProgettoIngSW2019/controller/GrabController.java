@@ -31,8 +31,8 @@ public class GrabController extends Controller {
     private WeaponCard weaponToGrab;
 
 
-    public GrabController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, IdPlayersCreateList idPlayersCreateList, PayAmmoController payAmmoController){
-        super(turnManager, virtualView, idConverter, createJson, idPlayersCreateList);
+    public GrabController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList, PayAmmoController payAmmoController){
+        super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
         powerUpDeck = turnManager.getGameTable().getPowerUpDeck();
         this.payAmmoController = payAmmoController;
     }
@@ -58,7 +58,7 @@ public class GrabController extends Controller {
     public void checkGrabInfoFromView(String messageJson) {
         InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
 
-        grabberPlayer = convertPlayer(infoRequest.getIdPlayer());
+        grabberPlayer = convertPlayer(infoRequest.getIdPlayer(), infoRequest.getHostNamePlayer());
 
         if(grabberPlayer != null) {
             if(checkCurrentPlayer(grabberPlayer)) {
@@ -83,7 +83,7 @@ public class GrabController extends Controller {
         }
         else {
             String message = "ERROR: Qualcosa è andato storto!";
-            sendInfo(EventType.ERROR, message, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+            sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
         }
     }
 
@@ -110,13 +110,13 @@ public class GrabController extends Controller {
 
                     if (weaponToDiscard == null) {
                         String message = "ERROR: hai più di 3 armi in mano, per pescarne una devi lasciare una carta arma nell0 Spawning Point.";
-                        sendInfo(EventType.ERROR, message, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+                        sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
                         return;
                     }
                 }
                 else {
                     String message = "ERROR: hai più di 3 armi in mano, per pescarne una devi lasciare una carta arma nell0 Spawning Point.";
-                    sendInfo(EventType.ERROR, message, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+                    sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
                     return;
                 }
             }
@@ -148,13 +148,13 @@ public class GrabController extends Controller {
                 }
                 else {
                     String message = "ERROR: Hai sbagliato il pagamento: ";
-                    sendInfo(EventType.ERROR, message, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+                    sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
                 }
             }
         }
         else {
             String message = "ERROR: Qualcosa è andato storto!";
-            sendInfo(EventType.ERROR, message, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+            sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
         }
     }
 
@@ -199,7 +199,7 @@ public class GrabController extends Controller {
 
 
             String grabInfoResponseJson = createGrabInfoResponseJson();
-            sendInfo(EventType.REQUEST_GRAB_INFO, grabInfoResponseJson, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+            sendInfo(EventType.REQUEST_GRAB_INFO, grabInfoResponseJson, getHostNameCreateList().addOneHostName(grabberPlayer));
         }
         else
             throw new IllegalAttributeException("square player cannot be null");
@@ -257,13 +257,13 @@ public class GrabController extends Controller {
 
             if(!found) {
                 String message = "ERROR: Hai non puoi scegliere questo Square per fare il grab";
-                sendInfo(EventType.ERROR, message, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+                sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
                 return;
             }
             else {
                 grabberPlayer.moveTo(squareToGrab);
                 String updateMapLM = getCreateJson().createMapLMLMJson();
-                sendInfo(EventType.UPDATE_MAP, updateMapLM, getIdPlayersCreateList().addAllIdPlayers());
+                sendInfo(EventType.UPDATE_MAP, updateMapLM, getHostNameCreateList().addAllHostName());
             }
         }
 
@@ -292,7 +292,7 @@ public class GrabController extends Controller {
 
         if(spawningPoint.getWeaponCards().isEmpty()) {
             String message = "ERROR: non ci sono armi, rifare la selezione dello square";
-            sendInfo(EventType.ERROR, message, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+            sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
             return;
         }
         else {
@@ -319,7 +319,7 @@ public class GrabController extends Controller {
                     }
 
                     String myWeaponsJson = getCreateJson().createWeaponsListLMJson(myWeapons);
-                    sendInfo(EventType.DISCARD_WEAPON, myWeaponsJson, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+                    sendInfo(EventType.DISCARD_WEAPON, myWeaponsJson, getHostNameCreateList().addOneHostName(grabberPlayer));
                 }
 
                 for(WeaponCard weaponCard: weaponsCanBuy) {
@@ -327,7 +327,7 @@ public class GrabController extends Controller {
                 }
             }
             String weaponsToPayJson = getCreateJson().createWeaponsToPayJson(grabberPlayer, weaponsCanBuy, paymentWeaponBuy);
-            sendInfo(EventType.WEAPONS_CAN_BUY, weaponsToPayJson, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+            sendInfo(EventType.WEAPONS_CAN_BUY, weaponsToPayJson, getHostNameCreateList().addOneHostName(grabberPlayer));
         }
     }
 
@@ -339,15 +339,15 @@ public class GrabController extends Controller {
 
         if(weaponToDiscard == null) {
             String messageEnemyWeaponPayJson = getCreateJson().createMessageEnemyWeaponPay(grabberPlayer, weaponToGrab);
-            sendInfo(EventType.MSG_WEAPON_BUY, messageEnemyWeaponPayJson, getIdPlayersCreateList().addAllExceptPlayer(grabberPlayer));
+            sendInfo(EventType.MSG_WEAPON_BUY, messageEnemyWeaponPayJson, getHostNameCreateList().addAllExceptOneHostName(grabberPlayer));
         }
         else {
             String messagePlayerSwapWeapons = getCreateJson().createMessagePlayerSwapWeapons(grabberPlayer, weaponToDiscard, weaponToGrab);
-            sendInfo(EventType.MSG_WEAPON_SWAP, messagePlayerSwapWeapons, getIdPlayersCreateList().addAllIdPlayers());
+            sendInfo(EventType.MSG_WEAPON_SWAP, messagePlayerSwapWeapons, getHostNameCreateList().addAllHostName());
         }
 
         String updateMyLoadedWeapons = getCreateJson().createMyLoadedWeaponsListLMJson(grabberPlayer);
-        sendInfo(EventType.UPDATE_MY_LOADED_WEAPONS, updateMyLoadedWeapons, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+        sendInfo(EventType.UPDATE_MY_LOADED_WEAPONS, updateMyLoadedWeapons, getHostNameCreateList().addOneHostName(grabberPlayer));
     }
 
 
@@ -365,17 +365,17 @@ public class GrabController extends Controller {
 
         grabberPlayer.grabAmmoCardFromThisSquare();
         String updatePlayer = getCreateJson().createPlayerLMJson(grabberPlayer);
-        sendInfo(EventType.UPDATE_PLAYER_INFO, updatePlayer, getIdPlayersCreateList().addAllIdPlayers());
+        sendInfo(EventType.UPDATE_PLAYER_INFO, updatePlayer, getHostNameCreateList().addAllHostName());
 
         if(powerUp != null) {
             String messageDrawMyPowerUp = getCreateJson().createMessageDrawMyPowerUpJson(grabberPlayer, Arrays.asList(powerUp));
-            sendInfo(EventType.MSG_DRAW_MY_POWERUP, messageDrawMyPowerUp, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+            sendInfo(EventType.MSG_DRAW_MY_POWERUP, messageDrawMyPowerUp, getHostNameCreateList().addOneHostName(grabberPlayer));
 
             String messageEnemyDrawPowerUp = getCreateJson().createMessageEnemyDrawPowerUpJson(grabberPlayer, 1);
-            sendInfo(EventType.MSG_ENEMY_DRAW_POWERUP, messageEnemyDrawPowerUp, getIdPlayersCreateList().addAllExceptPlayer(grabberPlayer));
+            sendInfo(EventType.MSG_ENEMY_DRAW_POWERUP, messageEnemyDrawPowerUp, getHostNameCreateList().addAllExceptOneHostName(grabberPlayer));
 
             String updateMyPowerUps = getCreateJson().createMyPowerUpsLMJson(grabberPlayer);
-            sendInfo(EventType.UPDATE_MY_POWERUPS, updateMyPowerUps, getIdPlayersCreateList().addOneIdPlayers(grabberPlayer));
+            sendInfo(EventType.UPDATE_MY_POWERUPS, updateMyPowerUps, getHostNameCreateList().addOneHostName(grabberPlayer));
         }
     }
 

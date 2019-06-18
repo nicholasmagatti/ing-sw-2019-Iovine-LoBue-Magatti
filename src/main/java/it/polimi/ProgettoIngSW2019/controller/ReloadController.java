@@ -35,8 +35,8 @@ public class ReloadController extends Controller {
      * @param turnManager   turnManager
      * @param virtualView   virtualView
      */
-    public ReloadController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, IdPlayersCreateList idPlayersCreateList, PayAmmoController payAmmoController) {
-        super(turnManager, virtualView, idConverter, createJson, idPlayersCreateList);
+    public ReloadController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList, PayAmmoController payAmmoController) {
+        super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
         this.payAmmoController = payAmmoController;
     }
 
@@ -67,7 +67,7 @@ public class ReloadController extends Controller {
         //extract the json message in class with his data
         InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
 
-        ownerPlayer = convertPlayer(infoRequest.getIdPlayer());
+        ownerPlayer = convertPlayer(infoRequest.getIdPlayer(), infoRequest.getHostNamePlayer());
 
         if(ownerPlayer != null) {
             if(checkCurrentPlayer(ownerPlayer)) {
@@ -94,13 +94,13 @@ public class ReloadController extends Controller {
             }
 
             String reloadInfoString = getCreateJson().createWeaponsToPayJson(ownerPlayer, weaponsCanReload, payAmmoLists);
-            sendInfo(EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD, reloadInfoString, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
+            sendInfo(EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD, reloadInfoString, getHostNameCreateList().addOneHostName(ownerPlayer));
         }
         else {
             List<WeaponCard> weaponsCanReloadEmpty = new ArrayList<>();
             List<PayAmmoList> payAmmoListsEmpty = new ArrayList<>();
             String reloadInfoString = getCreateJson().createWeaponsToPayJson(ownerPlayer, weaponsCanReloadEmpty, payAmmoListsEmpty);
-            sendInfo(EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD, reloadInfoString, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
+            sendInfo(EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD, reloadInfoString, getHostNameCreateList().addOneHostName(ownerPlayer));
         }
     }
 
@@ -159,7 +159,7 @@ public class ReloadController extends Controller {
                             reloadWeapon(ammoToPay, powerUps);
                         else {
                             String messageError ="ERROR: hai sbagliato input di pagamento.";
-                            sendInfo(EventType.ERROR, messageError, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
+                            sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(ownerPlayer));
                         }
                     }
                 }
@@ -184,18 +184,18 @@ public class ReloadController extends Controller {
 
         if(!powerUpsToDiscard.isEmpty()) {
             String messagePowerUpDiscarded = getCreateJson().createPowerUpsListLMJson(powerUpsToDiscard);
-            sendInfo(EventType.MSG_POWERUPS_DISCARDED_AS_AMMO, messagePowerUpDiscarded, getIdPlayersCreateList().addAllIdPlayers());
+            sendInfo(EventType.MSG_POWERUPS_DISCARDED_AS_AMMO, messagePowerUpDiscarded, getHostNameCreateList().addAllHostName());
             String myPowerUpsJson = getCreateJson().createMyPowerUpsLMJson(ownerPlayer);
-            sendInfo(EventType.UPDATE_MY_POWERUPS, myPowerUpsJson, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
+            sendInfo(EventType.UPDATE_MY_POWERUPS, myPowerUpsJson, getHostNameCreateList().addOneHostName(ownerPlayer));
         }
 
         //send message to all enemy players with reload info
         String messageEnemyWeaponReloadedJson = createMessageWeaponReloadedJson();
-        sendInfo(EventType.MSG_ALL_RELOAD_WEAPON, messageEnemyWeaponReloadedJson, getIdPlayersCreateList().addAllIdPlayers());
+        sendInfo(EventType.MSG_ALL_RELOAD_WEAPON, messageEnemyWeaponReloadedJson, getHostNameCreateList().addAllHostName());
 
         //send to the player the new loaded weapons
         String updateMyLoadedWeapons = getCreateJson().createMyLoadedWeaponsListLMJson(ownerPlayer);
-        sendInfo(EventType.UPDATE_MY_LOADED_WEAPONS, updateMyLoadedWeapons, getIdPlayersCreateList().addOneIdPlayers(ownerPlayer));
+        sendInfo(EventType.UPDATE_MY_LOADED_WEAPONS, updateMyLoadedWeapons, getHostNameCreateList().addOneHostName(ownerPlayer));
 
         reloadInfo();
     }

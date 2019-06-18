@@ -9,8 +9,8 @@ import it.polimi.ProgettoIngSW2019.custom_exception.IllegalIdException;
 import it.polimi.ProgettoIngSW2019.custom_exception.NotPartOfBoardException;
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
-import jdk.nashorn.internal.runtime.regexp.joni.ApplyCaseFoldArg;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,7 +23,7 @@ public abstract class Controller implements Observer<Event> {
     private VirtualView virtualView;
     private IdConverter idConverter;
     private CreateJson createJson;
-    private IdPlayersCreateList idPlayersCreateList;
+    private HostNameCreateList hostNameCreateList;
 
 
 
@@ -31,12 +31,12 @@ public abstract class Controller implements Observer<Event> {
      * Constructor
      * @param turnManager   access to TurnManger model
      */
-    public Controller(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, IdPlayersCreateList idPlayersCreateList) {
+    public Controller(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList) {
         this.turnManager = turnManager;
         this.virtualView = virtualView;
         this.idConverter = idConverter;
         this.createJson = createJson;
-        this.idPlayersCreateList = idPlayersCreateList;
+        this.hostNameCreateList = hostNameCreateList;
     }
 
 
@@ -77,24 +77,23 @@ public abstract class Controller implements Observer<Event> {
 
 
     /**
-     * access to IdPlayersCreateList
-     * @return  IdPlayersCreateList
+     * access to HostNameCreateList
+     * @return  HostPlayerCreateList
      */
-    public IdPlayersCreateList getIdPlayersCreateList() {
-        return idPlayersCreateList;
+    public HostNameCreateList getHostNameCreateList() {
+        return hostNameCreateList;
     }
-
 
 
     /**
      * send info/event by virtual view
-     * @param eventType     type of the event
-     * @param msgJson       message in json format
-     * @param idPlayers     list of player who will receive the message
+     * @param eventType         type of the event
+     * @param msgJson           message in json format
+     * @param hostNameList      list of host name player who will receive the message
      */
-    public void sendInfo(EventType eventType, String msgJson, List<Integer> idPlayers) {
+    public void sendInfo(EventType eventType, String msgJson, List<String> hostNameList) {
         Event event = new Event(eventType, msgJson);
-        virtualView.sendMessage(event, idPlayers);
+        virtualView.sendMessage(event, hostNameList);
     }
 
 
@@ -104,7 +103,7 @@ public abstract class Controller implements Observer<Event> {
      * @param idPlayer          id player
      * @return                  return the player id the id is correct, otherwise null
      */
-    public Player convertPlayer(int idPlayer) {
+    public Player convertPlayer(int idPlayer, String hostName) {
         Player player;
         if(idPlayer < 0)
             throw new IllegalAttributeException("id player cannot be negative");
@@ -113,12 +112,32 @@ public abstract class Controller implements Observer<Event> {
             player = idConverter.getPlayerById(idPlayer);
         } catch(IllegalIdException e) {
             String messageError = "Ops, qualcosa è andato storto!";
-            //todo: mandare al client l'errore
-            //sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            sendInfo(EventType.ERROR, messageError, Arrays.asList(hostName));
             return null;
         }
         return player;
     }
+
+
+    /**
+     * create the player if the id is correct
+     * else return null and send a message error
+     * @param idPlayer          id player
+     * @return                  return the player id the id is correct, otherwise null
+     */
+    public Player convertPlayerWithId(int idPlayer) {
+        Player player;
+        if(idPlayer < 0)
+            throw new IllegalAttributeException("id player cannot be negative");
+
+        try {
+            player = idConverter.getPlayerById(idPlayer);
+        } catch(IllegalIdException e) {
+            return null;
+        }
+        return player;
+    }
+
 
 
 //CONVERT
@@ -142,7 +161,7 @@ public abstract class Controller implements Observer<Event> {
             powerUp = idConverter.getPowerUpCardById(player.getIdPlayer(), idPowerUp);
         } catch (IllegalIdException e) {
             String messageError = "Ops, qualcosa è andato storto!";
-            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return null;
         }
         return powerUp;
@@ -173,7 +192,7 @@ public abstract class Controller implements Observer<Event> {
                 weaponCard = idConverter.getLoadedWeaponById(player.getIdPlayer(), idWeapon);
         } catch (IllegalIdException e) {
             String messageError = "Ops, qualcosa è andato storto!";
-            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return null;
         }
         return weaponCard;
@@ -187,7 +206,7 @@ public abstract class Controller implements Observer<Event> {
             square = idConverter.getSquareByCoordinates(coordinates);
         } catch(NotPartOfBoardException e) {
             String messageError = "Ops, qualcosa è andato storto!";
-            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return null;
         }
         return square;
@@ -208,7 +227,7 @@ public abstract class Controller implements Observer<Event> {
 
         if(player.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer()) {
             String messageError = "ERROR: Non è il tuo turno";
-            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return false;
         }
         return true;
@@ -225,7 +244,7 @@ public abstract class Controller implements Observer<Event> {
 
         if (getTurnManager().getActionsLeft() != 0) {
             String messageError = "ERROR: Non puoi finire il turno in questo momento.";
-            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return false;
         }
         return true;
@@ -238,7 +257,7 @@ public abstract class Controller implements Observer<Event> {
 
         if (getTurnManager().getActionsLeft() == 0) {
             String messageError = "ERROR: Non hai più azioni a disposizione.";
-            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return false;
         }
         return true;
@@ -262,7 +281,7 @@ public abstract class Controller implements Observer<Event> {
 
         if (!player.getPowerUps().contains(powerUp)) {
             String messageError = "ERROR: Non hai questo PowerUp: " + powerUp.getName();
-            sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return false;
         }
         return true;
@@ -288,7 +307,7 @@ public abstract class Controller implements Observer<Event> {
                 return true;
             else {
                 String messageError = "ERROR: Non hai questa arma: " + weaponCard.getIdCard() + ", scegli un'altra";
-                sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+                sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
                 return false;
             }
         } else {
@@ -296,7 +315,7 @@ public abstract class Controller implements Observer<Event> {
                 return true;
             else {
                 String messageError = "ERROR: Non hai questa arma: " + weaponCard.getIdCard() + ", scegli un'altra";
-                sendInfo(EventType.ERROR, messageError, idPlayersCreateList.addOneIdPlayers(player));
+                sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
                 return false;
             }
         }
@@ -320,7 +339,7 @@ public abstract class Controller implements Observer<Event> {
 
         if(!player.hasEnoughAmmo(ammoToPay)) {
             String messageError = "ERROR: Non puoi pagare il costo";
-            sendInfo(EventType.ERROR, messageError, getIdPlayersCreateList().addOneIdPlayers(player));
+            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return false;
         }
         else

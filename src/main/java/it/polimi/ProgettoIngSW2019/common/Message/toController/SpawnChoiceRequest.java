@@ -11,11 +11,12 @@ public class SpawnChoiceRequest extends PlayerChoiceRequest {
 
     /**
      * Constructor
+     * @param hostNamePlayer        host name client
      * @param idPlayer              id player
      * @param idPowerUpToDiscard    id powerUp to discard
      */
-    public SpawnChoiceRequest(int idPlayer, int idPowerUpToDiscard) {
-        super(idPlayer);
+    public SpawnChoiceRequest(String hostNamePlayer, int idPlayer, int idPowerUpToDiscard) {
+        super(hostNamePlayer, idPlayer);
         if(idPowerUpToDiscard < 0)
             throw new IllegalArgumentException("The id of the powerUp cannot be negative");
         this.idPowerUpToDiscard = idPowerUpToDiscard;
