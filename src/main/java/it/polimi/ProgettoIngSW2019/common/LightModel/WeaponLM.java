@@ -9,6 +9,8 @@ public class WeaponLM {
     private int idWeapon;
     private String name;
     private String description;
+    private int[] ammoCostReload;
+    private int[] ammoCostBuy;
 
 
     /**
@@ -17,7 +19,7 @@ public class WeaponLM {
      * @param name          name of the weapon
      * @param description   description of the weapon
      */
-    public WeaponLM(int idWeapon, String name, String description) {
+    public WeaponLM(int idWeapon, String name, String description, int[] ammoCostReload, int[] ammoCostBuy) {
         if(idWeapon < 0)
             throw new IllegalArgumentException("The id cannot be negative");
         this.idWeapon = idWeapon;
@@ -29,6 +31,9 @@ public class WeaponLM {
         if(description == null)
             throw new NullPointerException("Description of the weapon cannot be null");
         this.description = description;
+
+        this.ammoCostReload = ammoCostReload;
+        this.ammoCostBuy = ammoCostBuy;
     }
 
 
@@ -57,5 +62,23 @@ public class WeaponLM {
      */
     public String getDescription() {
         return this.description;
+    }
+
+
+    /**
+     *
+     * @return  cost in ammo of the reload
+     */
+    public int[] getAmmoCostReload() {
+        return ammoCostReload;
+    }
+
+
+    /**
+     *
+     * @return  cost in ammo of the weapon
+     */
+    public int[] getAmmoCostBuy() {
+        return ammoCostBuy;
     }
 }

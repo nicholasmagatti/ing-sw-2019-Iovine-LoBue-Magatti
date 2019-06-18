@@ -71,6 +71,7 @@ public class EndTurnController extends Controller {
                     sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMLMJson(), getIdPlayersCreateList().addAllIdPlayers());
                     sendInfo(EventType.UPDATE_KILLSHOTTRACK, getCreateJson().createKillShotTrackLMJson(), getIdPlayersCreateList().addAllIdPlayers());
                     getTurnManager().changeCurrentPlayer();
+                    sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(getTurnManager().getCurrentPlayer()), getIdPlayersCreateList().addAllIdPlayers());
                 }
             }
         }
@@ -140,8 +141,13 @@ public class EndTurnController extends Controller {
 
             for (int i = 0; i < scorePlayers.length; i++) {
                 if(scorePlayers[i] > 0) {
-                    String namePlayer = getIdConverter().getPlayerById(i).getCharaName();
-                    scorePlayersWhoHits.add(new ScorePlayerWhoHit(namePlayer, scorePlayers[i]));
+                    Player player = convertPlayer(i);
+
+                    if (player != null) {
+                        String namePlayer = player.getCharaName();
+                        scorePlayersWhoHits.add(new ScorePlayerWhoHit(namePlayer, scorePlayers[i]));
+                    }
+                    else return;
                 }
             }
 

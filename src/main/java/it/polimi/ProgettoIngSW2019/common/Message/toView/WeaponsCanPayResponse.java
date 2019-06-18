@@ -8,26 +8,27 @@ import java.util.List;
  * Reload info class
  * @author Priscilla Lo Bue
  */
-public class WeaponsCanReloadResponse extends InfoResponse {
-    private List<WeaponLM> weaponsCanReload;
-    private List<PayAmmoList> listPaymentReload;
+public class WeaponsCanPayResponse extends InfoResponse {
+    private List<WeaponLM> weaponsCanPay;
+    private List<PayAmmoList> listPaymentWeapons;
 
 
     /**
      * Constructor from controller to view
      * @param idPlayer              id player that wants to reload a weapon
-     * @param weaponsCanReload      list of weapon the player can reload
+     * @param weaponsCanPay         list of weapon the player can pay
+     * @param listPaymentWeapons    list payment
      */
-    public WeaponsCanReloadResponse(int idPlayer, List<WeaponLM> weaponsCanReload, List<PayAmmoList> listPaymentReload) {
+    public WeaponsCanPayResponse(int idPlayer, List<WeaponLM> weaponsCanPay, List<PayAmmoList> listPaymentWeapons) {
         super(idPlayer);
 
-        if(weaponsCanReload == null)
+        if(weaponsCanPay == null)
             throw new NullPointerException("list weapons cannot be null");
-        if(listPaymentReload == null)
+        if(listPaymentWeapons == null)
             throw new NullPointerException("list payment cannot be null");
 
-        this.weaponsCanReload = new ArrayList<>(weaponsCanReload);
-        this.listPaymentReload = new ArrayList<>(listPaymentReload);
+        this.weaponsCanPay = new ArrayList<>(weaponsCanPay);
+        this.listPaymentWeapons = new ArrayList<>(listPaymentWeapons);
     }
 
 
@@ -36,7 +37,7 @@ public class WeaponsCanReloadResponse extends InfoResponse {
      * @return  list of weapons
      */
     public List<WeaponLM> getWeaponsCanReload() {
-        return weaponsCanReload;
+        return weaponsCanPay;
     }
 
 
@@ -45,6 +46,6 @@ public class WeaponsCanReloadResponse extends InfoResponse {
      * @return     list pay ammo list
      */
     public List<PayAmmoList> getListPaymentReload() {
-        return listPaymentReload;
+        return listPaymentWeapons;
     }
 }

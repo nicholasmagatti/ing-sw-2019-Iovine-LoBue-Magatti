@@ -6,16 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WeaponInfo {
-    List<EnemyInfo> enemyVisible;
-    boolean hasToMove;
-    boolean isEnemyToMove;
-    WeaponEffectType effectType;
+    private List<EnemyInfo> enemyVisible;
+    private boolean hasToMove;
+    private WeaponEffectType effectType;
 
-    public WeaponInfo(List<EnemyInfo> enemyVisible, boolean isEnemyToMove, boolean hasToMove, WeaponEffectType effectType){
+    public WeaponInfo(List<EnemyInfo> enemyVisible, boolean hasToMove, WeaponEffectType effectType){
         this.effectType = effectType;
         this.enemyVisible = enemyVisible;
         this.hasToMove = hasToMove;
-        this.isEnemyToMove = isEnemyToMove;
     }
 
 
@@ -27,7 +25,7 @@ public class WeaponInfo {
         return effectType;
     }
 
-    public boolean isEnemyToMove() {
+    public boolean hasMoveOption() {
         return hasToMove;
     }
 }

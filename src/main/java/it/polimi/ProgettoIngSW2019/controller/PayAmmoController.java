@@ -58,8 +58,8 @@ public class PayAmmoController {
         if(player.getPowerUps() == null)
             throw new NullPointerException("list powerUps cannot be null");
 
-        int[] ammoInAmmoBox = new int[AmmoType.nAmmoType];
-        int[] ammoCostArray = new int[AmmoType.nAmmoType];
+        int[] ammoInAmmoBox = new int[AmmoType.contEnum()];
+        int[] ammoCostArray = new int[AmmoType.contEnum()];
 
         if(!player.getPowerUps().isEmpty())
             ammoInPowerUp(player.getPowerUps());

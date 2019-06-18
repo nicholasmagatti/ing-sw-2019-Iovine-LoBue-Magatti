@@ -1,71 +1,82 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
-import it.polimi.ProgettoIngSW2019.common.Message.LoginInfo;
+import it.polimi.ProgettoIngSW2019.common.Message.toController.LoginRequest;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.LoginResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.model.LoginHandler;
-import it.polimi.ProgettoIngSW2019.model.Session;
+import it.polimi.ProgettoIngSW2019.model.TurnManager;
+import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 
-public class ConnectionController implements Observer<Event> {
-    LoginInfo loginInfo;
-    Gson gson = new Gson();
-    LoginHandler loginHandler;
+public class ConnectionController extends Controller implements Observer<Event> {
+    private LoginHandler loginHandler;
 
-    public ConnectionController(LoginHandler loginHandler){
+    public ConnectionController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, IdPlayersCreateList idPlayersCreateList, LoginHandler loginHandler) {
+        super(turnManager, virtualView, idConverter, createJson, idPlayersCreateList);
         this.loginHandler = loginHandler;
     }
 
-    /**
-     * Handle the event sent by the virtual view.
-     * When LOGIN event happen, create a new session and bind it to the client.
-     * When CHECK_USERNAME_AVIABLITY event happen, check if the username can be used or not
-     *
-     * @param event contain the data
-     * @author: Luca Iovine
-     */
+
+    @Override
     public void update(Event event) {
-        if(event.getCommand() == EventType.LOGIN) {
-            deserializeInfo(event.getMessageInJsonFormat());
-            createNewLogin(loginInfo.getUsername(), loginInfo.getHostname());
-        }
-        if(event.getCommand() == EventType.CHECK_USERNAME_AVIABLITY){
-            String username = event.getMessageInJsonFormat();
-            if(this.loginHandler.isUsernameAviable(username)){
-                //TODO: notify che è disponibile, la view a questo punto genererà un commando di login
-            }
-            else{
-                //TODO: notify che non è disponibile, la view a questo punto richiederà il nome utente
+        LoginResponse loginResponse;
+
+        if(event.getCommand().equals(EventType.REQUEST_LOGIN)){
+            LoginRequest info = (LoginRequest) deserialize(event.getMessageInJsonFormat(), LoginRequest.class);
+
+            if(!loginHandler.isGameStarted()) {
+                if (loginHandler.checkUserExist(info.getUsername())) {
+                    /*
+                        Non c'è bisogno di controllare che sia loggato nel caso la partita non sia ancora
+                        iniziata, perché nel momento in cui si disconnette (lo sapremo grazie al ping da
+                        parte del server) verrà dissociato come utente giocante e, di conseguenza, il nome
+                        ritornerà ad essere libero.
+                     */
+                    loginResponse = new LoginResponse(false);
+                } else {
+                    loginHandler.generateNewLogin(info.getUsername(), info.getpassword(), info.getHostname());
+                    loginResponse = new LoginResponse(true);
+                }
+                getVirtualView().sendMessage(new Event(EventType.RESPONSE_NEW_LOGIN, serialize(loginResponse)), info.getHostname());
+            }else{
+                if(loginHandler.checkLoginValidity(info.getHostname(), info.getpassword(), info.getHostname()))
+                    loginResponse = new LoginResponse(true);
+                else
+                    loginResponse = new LoginResponse(false);
+
+                getVirtualView().sendMessage(new Event(EventType.RESPONSE_RECONNECT, serialize(loginResponse)), info.getHostname());
             }
         }
     }
 
     /**
-     * Create a new session and notify it to the client which have been connected
+     * To serialize information of the event
      *
-     * @param username of the player
-     * @param hostname of player's client
+     * @param objToSerialize object that needs to be serialized
+     * @return object serialized
      * @author: Luca Iovine
      */
-    private void createNewLogin(String username, String hostname){
-        Session session = null;
+    private String serialize(Object objToSerialize){
+        Gson gsonReader = new Gson();
+        String serializedObj = gsonReader.toJson(objToSerialize, objToSerialize.getClass());
 
-        if(loginHandler.isLogged(username, hostname))
-            session = loginHandler.getSession(username);
-        else
-            session = loginHandler.newSession(username, hostname);
-
-        //TODO: deve poi essere notificata la sessione al client
+        return serializedObj;
     }
 
     /**
-     * Deserialize the login info which come in json form
+     * To deserialize information in the event
      *
-     * @param jsonLoginInfo string in json format which contain the login info
+     * @param json string that contains data in json format
+     * @param cls class to deserialize
+     * @return object deserialized
      * @author: Luca Iovine
      */
-    private void deserializeInfo(String jsonLoginInfo){
-        loginInfo = gson.fromJson(jsonLoginInfo, loginInfo.getClass());
+    private Object deserialize(String json, Class<?> cls){
+        Gson gsonReader = new Gson();
+        Object deserializedObj = gsonReader.fromJson(json, cls);
+
+        return deserializedObj;
     }
 }

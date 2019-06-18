@@ -1,16 +1,17 @@
 package it.polimi.ProgettoIngSW2019.common.enums;
 
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+
 /**
  * Enum AmmoType to add color for ammo and square
  * @author Priscilla Lo Bue
  */
 public enum AmmoType {
-    RED(0),
-    BLUE(1),
-    YELLOW(2);
+    RED(GeneralInfo.RED_ROOM_ID),
+    BLUE(GeneralInfo.BLUE_ROOM_ID),
+    YELLOW(GeneralInfo.YELLOW_ROOM_ID);
 
     private int intValue;
-    public static final int nAmmoType = contEnum();
 
     AmmoType(int intValue) {
         this.intValue = intValue;

@@ -7,6 +7,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface IVirtualView extends Remote {
-    void registerMessageReceiver(IClientMessageReceiver<Event> IClientMessageReceiver) throws RemoteException;
+    void registerMessageReceiver(String hostname, IClientMessageReceiver<Event> IClientMessageReceiver) throws RemoteException;
+    void deregisterMessageReceiver(String hostname) throws RemoteException;
     void forwardEvent(Event event) throws RemoteException;
 }

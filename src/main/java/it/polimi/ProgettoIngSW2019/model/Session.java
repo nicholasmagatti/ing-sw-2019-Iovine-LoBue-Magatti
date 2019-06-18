@@ -7,25 +7,29 @@ package it.polimi.ProgettoIngSW2019.model;
  */
 public class Session {
     private String username;
-    private String sessionKey;
+    private String pwd;
+    private String hostname;
 
     /**
      * Constructor
      * Assign the param to class attribute
      *
      * @param username string value for username
-     * @param sessionKey string value for the session key
+     * @param pwd one time password used to login first time and reconnect
+     * @param hostname string value for the session key
      * @author: Luca Iovine
      */
-    public Session(String username, String sessionKey){
+    public Session(String username, String pwd, String hostname){
         this.username = username;
-        this.sessionKey = sessionKey;
+        this.pwd = pwd;
+        this.hostname = hostname;
     }
 
     /**
      * @return the username
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     public String getUsername() {
         return username;
     }
@@ -34,7 +38,17 @@ public class Session {
      * @return the session key
      * @author: Luca Iovine
      */
-    public String getSessionKey() {
-        return sessionKey;
+    //NOT TO BE TESTED
+    public String gethostname() {
+        return hostname;
+    }
+
+    /**
+     * @return the password
+     * @author: Luca Iovine
+     */
+    //NOT TO BE TESTED
+    public String getPassword() {
+        return pwd;
     }
 }

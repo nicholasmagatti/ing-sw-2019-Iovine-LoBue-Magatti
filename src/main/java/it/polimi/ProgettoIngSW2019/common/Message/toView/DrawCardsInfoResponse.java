@@ -6,7 +6,7 @@ import it.polimi.ProgettoIngSW2019.common.LightModel.PlayerDataLM;
 /**
  * Spawn Draw Cards Response
  */
-public class DrawCardsInfo extends InfoResponse {
+public class DrawCardsInfoResponse extends InfoResponse {
     private PlayerDataLM playerLM;
     private MyPowerUpLM myPowerUpLM;
 
@@ -17,7 +17,7 @@ public class DrawCardsInfo extends InfoResponse {
      * @param playerLM     spawn playerLM
      * @param myPowerUpLM       powerUps LM spawn Player
      */
-    public DrawCardsInfo(int idPlayer, PlayerDataLM playerLM, MyPowerUpLM myPowerUpLM) {
+    public DrawCardsInfoResponse(int idPlayer, PlayerDataLM playerLM, MyPowerUpLM myPowerUpLM) {
         super(idPlayer);
 
         if(playerLM == null)
