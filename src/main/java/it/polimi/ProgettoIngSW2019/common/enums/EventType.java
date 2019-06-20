@@ -15,6 +15,7 @@ public enum EventType {
     REQUEST_GRAB,                                    //toController: request choice to grab
     REQUEST_GRAB_INFO,                               //toController: request choice to grab info
     REQUEST_GRAB_WEAPON,
+    REQUEST_LOGIN,
 
 
     //Response Controller to View
@@ -25,18 +26,22 @@ public enum EventType {
     RESPONSE_REQUEST_INITIAL_SPAWN_CARDS,           //toView: response draw 2 cards to spawn
     RESPONSE_REQUEST_WEAPONS_CAN_RELOAD,            //toView: response with a list of weapons can be reloaded
     RESPONSE_REQUEST_WEAPON_INFO,                   //toView: response info shoot
+    RESPONSE_NEW_LOGIN,
+    RESPONSE_RECONNECT,
 
 
     //Other things XD
     SCORE_DEAD_PLAYERS,                             //toView: send info score at the end of the turn
-    REQUEST_LOGIN,
-    RESPONSE_NEW_LOGIN,
-    RESPONSE_RECONNECT,
     INPUT_TIME_EXPIRED,
     ERROR,                                          //toView: send message error
     PLAYER_IN_SPAWN_STATE,                          //toView: move player in spawnState
     WEAPONS_CAN_BUY,                                //toView: send the weapons can buy in the sp
     DISCARD_WEAPON,                                 //toView: send to the player his weapon to choose one to discard before buying another
+    GO_IN_GAME_SETUP,                               //per avvisare i client che devono spostarsi nella fase di setup del gioco
+    CHECK_IS_ALIVE,                                 //per verificare che i client siano attivi
+    CAP_REACHED,                                    //per avvisare che il numero di giocatori per avviare la partita è stato raggiunto
+    NOT_ALIVE,                                      //per segnalare che un certo client non è vivo
+    USER_HAS_DISCONNECTED,                          //avvisa gli altri che un utente si è disconnesso
 
 
 
@@ -52,7 +57,7 @@ public enum EventType {
     MSG_DRAW_MY_POWERUP,                            //msg to send to the player: draw card
     MSG_POWERUPS_DISCARDED_AS_AMMO,                 //msg to send to all with the powerUps discarded for ammo
     MSG_ENEMY_SPAWN,                                //msg to send with all enemy spawn info
-    MSG_ALL_RELOAD_WEAPON,                        //msg to send to all enemy info reload
+    MSG_ALL_RELOAD_WEAPON,                          //msg to send to all enemy info reload
     MSG_DOUBLEKILL,                                 //msg to send to all players doubleKill
     MSG_NEW_TURN,                                   //msg to all players new turn, changed player
     MSG_WEAPON_BUY,                                 //msg to all players, the player bought the weapon
