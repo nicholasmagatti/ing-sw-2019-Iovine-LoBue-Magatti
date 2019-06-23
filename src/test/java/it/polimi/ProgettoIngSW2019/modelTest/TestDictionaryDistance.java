@@ -14,6 +14,7 @@ public class TestDictionaryDistance {
     private DistanceDictionary d;
     private Square[][] map;
     private GameTable gt;
+    private final String hostname = "hostTest";
     /*
         ---------------------
         |1S  |1   |2   |3S  |
@@ -50,18 +51,18 @@ public class TestDictionaryDistance {
 
         d = new DistanceDictionary(map);
 
-        map[0][0].addPlayerOnSquare(new Player(0, "P1", gt, ""));
-        map[0][1].addPlayerOnSquare(new Player(1, "P2", gt, ""));
-        map[0][2].addPlayerOnSquare(new Player(2, "P3", gt, ""));
-        map[0][3].addPlayerOnSquare(new Player(3, "P4", gt, ""));
-        map[1][0].addPlayerOnSquare(new Player(4, "P5", gt, ""));
-        map[1][1].addPlayerOnSquare(new Player(5, "P6", gt, ""));
-        map[1][2].addPlayerOnSquare(new Player(6, "P7", gt, ""));
-        map[1][3].addPlayerOnSquare(new Player(7, "P8", gt, ""));
-        map[2][0].addPlayerOnSquare(new Player(8, "P9", gt, ""));
-        map[2][1].addPlayerOnSquare(new Player(9, "P10", gt, ""));
-        map[2][2].addPlayerOnSquare(new Player(10, "P11", gt, ""));
-        map[2][3].addPlayerOnSquare(new Player(11, "P12", gt, ""));
+        map[0][0].addPlayerOnSquare(new Player(0, "P1", gt, hostname));
+        map[0][1].addPlayerOnSquare(new Player(1, "P2", gt, hostname));
+        map[0][2].addPlayerOnSquare(new Player(2, "P3", gt, hostname));
+        map[0][3].addPlayerOnSquare(new Player(3, "P4", gt, hostname));
+        map[1][0].addPlayerOnSquare(new Player(4, "P5", gt, hostname));
+        map[1][1].addPlayerOnSquare(new Player(5, "P6", gt, hostname));
+        map[1][2].addPlayerOnSquare(new Player(6, "P7", gt, hostname));
+        map[1][3].addPlayerOnSquare(new Player(7, "P8", gt, hostname));
+        map[2][0].addPlayerOnSquare(new Player(8, "P9", gt, hostname));
+        map[2][1].addPlayerOnSquare(new Player(9, "P10", gt, hostname));
+        map[2][2].addPlayerOnSquare(new Player(10, "P11", gt, hostname));
+        map[2][3].addPlayerOnSquare(new Player(11, "P12", gt, hostname));
     }
 
     @Test

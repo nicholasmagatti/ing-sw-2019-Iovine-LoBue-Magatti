@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.LoginRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.LoginResponse;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupChoiceResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
 

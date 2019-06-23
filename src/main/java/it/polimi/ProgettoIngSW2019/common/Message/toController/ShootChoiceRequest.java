@@ -17,8 +17,8 @@ public class ShootChoiceRequest extends PlayerChoiceRequest {
      * @param idPlayer          id player
      * @param idWeaponUsed      id weapon used
      */
-    public ShootChoiceRequest(int idPlayer, int idWeaponUsed, List<Integer> enemyChosenListId, int[] positionChosen) {
-        super(idPlayer);
+    public ShootChoiceRequest(String hostaname, int idPlayer, int idWeaponUsed, List<Integer> enemyChosenListId, int[] positionChosen) {
+        super(hostaname, idPlayer);
         if (idWeaponUsed < 0)
             throw new IllegalArgumentException("The weapon id cannot be negative");
         this.idWeaponUsed = idWeaponUsed;

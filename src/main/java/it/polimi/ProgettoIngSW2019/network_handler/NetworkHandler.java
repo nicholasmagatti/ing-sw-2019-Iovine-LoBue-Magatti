@@ -47,6 +47,7 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
         try {
             virtualView.forwardEvent(event);
         }catch(RemoteException ex){
+            //TODO: persa connessione con il server, riavviare il gioco
             ex.printStackTrace();
         }
     }
@@ -69,13 +70,13 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
                     virtualView.deregisterMessageReceiver(InetAddress.getLocalHost().getHostName());
                     UnicastRemoteObject.unexportObject(clientMessageReceiver, true);
                 } catch (NoSuchObjectException e) {
-                    //TODO: vedere come gestire eccezione
+                    //TODO: eccezione bloccante, chiudere l'applicazione
                     e.printStackTrace();
                 }catch(RemoteException e) {
-                    //TODO: vedere come gestire eccezione
+                    //TODO: persa connessione con il server, riavviare il gioco
                     e.printStackTrace();
                 }catch(UnknownHostException e){
-                    //TODO: vedere come gestire eccezione
+                    //TODO: l'ip del giocatore non può essere risolto, quindi non può giocare
                     e.printStackTrace();
                 }
             }
@@ -83,6 +84,7 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
         notify(event);
     }
 
+    //NOT TO BE TESTED
     @Override
     public void update(Event event) {
         if(event.getCommand().equals(EventType.REQUEST_LOGIN)) {
@@ -90,10 +92,10 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
                 clientMessageReceiver = new ClientMessageReceiver(this);
                 virtualView.registerMessageReceiver(InetAddress.getLocalHost().getHostName(),clientMessageReceiver);
             }catch(RemoteException e){
-                //TODO: vedere come gestire eccezione
+                //TODO: persa connessione con il server
                 e.printStackTrace();
             }catch(UnknownHostException e){
-                //TODO: vedere come gestire eccezione
+                //TODO: l'ip del giocatore non può essere risolto, quindi non può giocare
                 e.printStackTrace();
             }
         }

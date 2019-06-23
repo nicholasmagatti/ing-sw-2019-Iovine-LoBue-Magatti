@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.common.utilities;
 
 import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,13 +65,13 @@ public class InputScanner extends Observable<Event>{
     public void read(){
         try {
             if(!keepTimerAlive){
-                //TODO: notify di far partire il timer
+                notify(new Event(EventType.START_ACTION_TIMER, ""));
                 keepTimerAlive = true;
             }
             inputThread.start();
             inputThread.join();
         }catch(InterruptedException e){
-            e.printStackTrace();
+            System.out.println("Unexpected behaviour, the input has been interrupted");
         }
     }
 
@@ -80,13 +81,10 @@ public class InputScanner extends Observable<Event>{
      * @author: Luca Iovine
      */
     public void close(){
-        try{
-            keepTimerAlive = false;
-            if(inputThread.isAlive())
-                inputThread.interrupt();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        keepTimerAlive = false;
+        notify(new Event(EventType.STOP_ACTION_TIMER, ""));
+        if(inputThread.isAlive())
+            inputThread.interrupt();
     }
 
     /**

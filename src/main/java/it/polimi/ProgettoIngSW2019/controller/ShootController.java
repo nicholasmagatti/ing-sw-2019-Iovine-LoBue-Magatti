@@ -8,6 +8,7 @@ import it.polimi.ProgettoIngSW2019.common.Message.toView.EnemyInfo;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponInfo;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.WeaponEffectType;
+import it.polimi.ProgettoIngSW2019.custom_exception.EnemySizeLimitExceededException;
 import it.polimi.ProgettoIngSW2019.custom_exception.IllegalAttributeException;
 import it.polimi.ProgettoIngSW2019.custom_exception.IllegalIdException;
 import it.polimi.ProgettoIngSW2019.custom_exception.NotPartOfBoardException;
@@ -15,6 +16,7 @@ import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 
+import javax.naming.SizeLimitExceededException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +35,8 @@ public class ShootController extends Controller{
     String somethingWentWrong = "Ops, qualcosa è andato storto!";
     String wrongChoiceErr;
 
-    public ShootController(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson, IdPlayersCreateList idPlayersCreateList, DistanceDictionary distance) {
-        super(turnManager, virtualView, idConverter, createJson, idPlayersCreateList);
+    public ShootController(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson, HostNameCreateList hostNameCreateList, DistanceDictionary distance) {
+        super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
         this.distance = distance;
     }
 
@@ -43,7 +45,7 @@ public class ShootController extends Controller{
        switch(event.getCommand()){
            case REQUEST_WEAPON_INFO:
                InfoRequest infoRequest = gson.fromJson(event.getMessageInJsonFormat(), InfoRequest.class);
-               weaponUser = convertPlayer(infoRequest.getIdPlayer());
+               weaponUser = convertPlayer(infoRequest.getIdPlayer(), infoRequest.getHostNamePlayer());
 
                if(weaponUser != null){
                    if(checkCurrentPlayer(weaponUser))
@@ -52,27 +54,33 @@ public class ShootController extends Controller{
                break;
            case REQUEST_SHOOT:
                ShootChoiceRequest shootChoice = gson.fromJson(event.getMessageInJsonFormat(), ShootChoiceRequest.class);
-               weaponUser = convertPlayer(shootChoice.getIdPlayer());
+               weaponUser = convertPlayer(shootChoice.getIdPlayer(), shootChoice.getHostNamePlayer());
 
                if(weaponUser != null){
                    if(checkCurrentPlayer(weaponUser)){
-                       weaponChosen = convertWeaponCardFromView(weaponUser, shootChoice.getIdWeaponUsed());
-                       enemyChosenList = convertEnemyListFromView(weaponUser, shootChoice.getEnemyChosenListId());
+                       weaponChosen = convertWeapon(weaponUser, shootChoice.getIdWeaponUsed(), false);
+                       if(checkContainsWeapon(weaponUser, weaponChosen, false)) {
+                           enemyChosenList = convertEnemyListFromView(weaponUser, shootChoice.getEnemyChosenListId());
 
-                       if(enemyChosenList.size() != 0){
-                           positionToMove = convertkMovementFromView(weaponUser, shootChoice.getPositionChosen());
+                           if (enemyChosenList.size() != 0) {
+                               positionToMove = convertkMovementFromView(weaponUser, shootChoice.getPositionChosen());
 
-                           if (!weaponChosen.checkBaseEffectParameterValidity(weaponUser, enemyChosenList)) {
-                               wrongChoiceErr = "I nemici scelti non sono validi.\n" +
-                                       "Rifare la selezione.\n";
-                               sendInfo(EventType.ERROR, wrongChoiceErr, getIdPlayersCreateList().addOneIdPlayers(weaponUser));
+                               try {
+                                   if (!weaponChosen.checkBaseEffectParameterValidity(weaponUser, enemyChosenList)) {
+                                       wrongChoiceErr = "I nemici scelti non sono validi.\n" +
+                                               "Rifare la selezione.\n";
+                                       sendInfo(EventType.ERROR, wrongChoiceErr, getHostNameCreateList().addOneHostName(weaponUser));
 
-                           } else if (!weaponChosen.checkBaseEffectMovementPositionValidity(positionToMove)) {
-                               wrongChoiceErr = "Lo spostamento scelto non è valido.\n" +
-                                       "Rifare la selezione.\n";
-                               sendInfo(EventType.ERROR, wrongChoiceErr, getIdPlayersCreateList().addOneIdPlayers(weaponUser));
-                           } else {
-                               activateEffect();
+                                   } else if (!weaponChosen.checkBaseEffectMovementPositionValidity(positionToMove, enemyChosenList)) {
+                                       wrongChoiceErr = "Lo spostamento scelto non è valido.\n" +
+                                               "Rifare la selezione.\n";
+                                       sendInfo(EventType.ERROR, wrongChoiceErr, getHostNameCreateList().addOneHostName(weaponUser));
+                                   } else {
+                                       activateEffect();
+                                   }
+                               } catch (EnemySizeLimitExceededException e) {
+                                   //TODO: to handle
+                               }
                            }
                        }
                    }
@@ -89,19 +97,22 @@ public class ShootController extends Controller{
 
         for(WeaponCard card: weaponUser.getLoadedWeapons()){
             List<EnemyInfo> enemyVisible = generateEnemyInfoList(card);
-            isEnemyToMove = card.isEnemyMoveInBaseEffect();
             hasToMove = card.hasToMoveInBaseEffect();
             effectType = card.getBaseEffectType();
 
-            weaponInfoList.add(new WeaponInfo(enemyVisible, isEnemyToMove, hasToMove, effectType));
+            weaponInfoList.add(new WeaponInfo(enemyVisible, hasToMove, effectType));
         }
 
         String jsonObj = gson.toJson(weaponInfoList);
-        sendInfo(EventType.RESPONSE_REQUEST_WEAPON_INFO, jsonObj, getIdPlayersCreateList().addOneIdPlayers(weaponUser));
+        sendInfo(EventType.RESPONSE_REQUEST_WEAPON_INFO, jsonObj, getHostNameCreateList().addOneHostName(weaponUser));
     }
 
     private void activateEffect(){
-        weaponChosen.activateBaseEff(weaponUser, enemyChosenList);
+        try {
+            weaponChosen.activateBaseEff(weaponUser, enemyChosenList);
+        } catch (SizeLimitExceededException e) {
+            //TODO: to handle
+        }
     }
 
     private List<EnemyInfo> generateEnemyInfoList(WeaponCard card){
@@ -111,7 +122,7 @@ public class ShootController extends Controller{
         for(Square s: area){
             for(Player enemy: s.getPlayerOnSquare()){
                 List<int[]> movementList = new ArrayList<>();
-                for(Square movementPos: card.getMovementList(weaponUser)){
+                for(Square movementPos: card.getMovementList(weaponUser, enemy)){
                     movementList.add(movementPos.getCoordinates(getTurnManager().getGameTable().getMap()));
                 }
                 int[] enemyPosition = enemy.getPosition().getCoordinates(getTurnManager().getGameTable().getMap());
@@ -153,21 +164,6 @@ public class ShootController extends Controller{
         }
     }
 
-    private WeaponCard convertWeaponCardFromView(Player player, int idWeapon){
-        WeaponCard weapon = null;
-
-        if(idWeapon < -1)
-            throw new IllegalAttributeException("id weapon cannot be negative");
-
-        try{
-            weapon = getIdConverter().getLoadedWeaponById(player.getIdPlayer(), idWeapon);
-        }catch(IllegalIdException e){
-            sendInfo(EventType.ERROR, somethingWentWrong, getIdPlayersCreateList().addOneIdPlayers(player));
-        }
-
-        return weapon;
-    }
-
     private List<Player> convertEnemyListFromView(Player player, List<Integer> idEnemyList){
         List<Player> enemylist = new ArrayList<>();
 
@@ -178,7 +174,7 @@ public class ShootController extends Controller{
             try {
                 enemylist.add(getIdConverter().getPlayerById(idEnemy));
             }catch(IllegalIdException e){
-                sendInfo(EventType.ERROR, somethingWentWrong, getIdPlayersCreateList().addOneIdPlayers(player));
+                sendInfo(EventType.ERROR, somethingWentWrong, getHostNameCreateList().addOneHostName(player));
                 enemylist.clear();
                 break;
             }
@@ -193,7 +189,7 @@ public class ShootController extends Controller{
         try{
             newPostion = getIdConverter().getSquareByCoordinates(position);
         }catch(NotPartOfBoardException e){
-            sendInfo(EventType.ERROR, somethingWentWrong, getIdPlayersCreateList().addOneIdPlayers(player));
+            sendInfo(EventType.ERROR, somethingWentWrong, getHostNameCreateList().addOneHostName(player));
         }
 
         return newPostion;

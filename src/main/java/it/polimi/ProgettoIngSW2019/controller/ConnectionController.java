@@ -3,52 +3,97 @@ package it.polimi.ProgettoIngSW2019.controller;
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.LoginRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.LoginResponse;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageConnection;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.model.LoginHandler;
-import it.polimi.ProgettoIngSW2019.model.TurnManager;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 
-public class ConnectionController extends Controller implements Observer<Event> {
-    private LoginHandler loginHandler;
+import java.util.Arrays;
 
-    public ConnectionController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, IdPlayersCreateList idPlayersCreateList, LoginHandler loginHandler) {
-        super(turnManager, virtualView, idConverter, createJson, idPlayersCreateList);
+public class ConnectionController implements Observer<Event> {
+    private LoginHandler loginHandler;
+    private VirtualView virtualView;
+
+    public ConnectionController(VirtualView virtualView, LoginHandler loginHandler) {
         this.loginHandler = loginHandler;
+        this.virtualView = virtualView;
     }
 
-
+    //TESTED:
     @Override
     public void update(Event event) {
         LoginResponse loginResponse;
+        LoginRequest info = (LoginRequest) deserialize(event.getMessageInJsonFormat(), LoginRequest.class);
+        /*
+            --> RequestGameIsStartedTrueTest
+                RequestGameIsStartedFalseTest
+         */
+        if(event.getCommand().equals(EventType.REQUEST_GAME_IS_STARTED)){
+            if(loginHandler.isGameStarted())
+                loginResponse = new LoginResponse(true);
+            else
+                loginResponse = new LoginResponse(false);
 
+            virtualView.sendMessage(new Event(EventType.RESPONSE_GAME_IS_STARTED, serialize(loginResponse)), Arrays.asList(info.getHostname()));
+        }
+
+        /*
+            --> RequestLoginBeforeStartValidUsernameTest
+                RequestLoginBeforeStartNOTValidUsernameTest
+                RequestLoginAfterStartValidCredentialTest
+                RequestLoginAfterStartNOTValidCredentialTest
+                RequestLoginAfterStartCapReachedTest
+         */
         if(event.getCommand().equals(EventType.REQUEST_LOGIN)){
-            LoginRequest info = (LoginRequest) deserialize(event.getMessageInJsonFormat(), LoginRequest.class);
-
-            if(!loginHandler.isGameStarted()) {
-                if (loginHandler.checkUserExist(info.getUsername())) {
-                    /*
-                        Non c'è bisogno di controllare che sia loggato nel caso la partita non sia ancora
-                        iniziata, perché nel momento in cui si disconnette (lo sapremo grazie al ping da
-                        parte del server) verrà dissociato come utente giocante e, di conseguenza, il nome
-                        ritornerà ad essere libero.
-                     */
-                    loginResponse = new LoginResponse(false);
+            if(loginHandler.getNrOfPlayerConnected() < 5) {
+                if (!loginHandler.isGameStarted()) {
+                    if (loginHandler.checkUserExist(info.getUsername())) {
+                        /*
+                            Non c'è bisogno di controllare che sia loggato nel caso la partita non sia ancora
+                            iniziata, perché nel momento in cui si disconnette (lo sapremo grazie al ping da
+                            parte del server) verrà dissociato come utente giocante e, di conseguenza, il nome
+                            ritornerà ad essere libero.
+                         */
+                        loginResponse = new LoginResponse(false);
+                    } else {
+                        loginHandler.generateNewLogin(info.getUsername(), info.getpassword(), info.getHostname());
+                        loginResponse = new LoginResponse(true);
+                    }
+                    virtualView.sendMessage(new Event(EventType.RESPONSE_NEW_LOGIN, serialize(loginResponse)), Arrays.asList(info.getHostname()));
                 } else {
-                    loginHandler.generateNewLogin(info.getUsername(), info.getpassword(), info.getHostname());
-                    loginResponse = new LoginResponse(true);
-                }
-                getVirtualView().sendMessage(new Event(EventType.RESPONSE_NEW_LOGIN, serialize(loginResponse)), info.getHostname());
-            }else{
-                if(loginHandler.checkLoginValidity(info.getHostname(), info.getpassword(), info.getHostname()))
-                    loginResponse = new LoginResponse(true);
-                else
-                    loginResponse = new LoginResponse(false);
+                    if (loginHandler.checkLoginValidity(info.getUsername(), info.getpassword(), info.getHostname()))
+                        loginResponse = new LoginResponse(true);
+                    else
+                        loginResponse = new LoginResponse(false);
 
-                getVirtualView().sendMessage(new Event(EventType.RESPONSE_RECONNECT, serialize(loginResponse)), info.getHostname());
+                    virtualView.sendMessage(new Event(EventType.RESPONSE_RECONNECT, serialize(loginResponse)), Arrays.asList(info.getHostname()));
+                }
+            }
+            else{
+                MessageConnection capPlayer = new MessageConnection(info.getUsername(), info.getHostname());
+                virtualView.sendMessage(new Event(EventType.CAP_REACHED, serialize(capPlayer)), Arrays.asList(info.getHostname()));
             }
         }
+
+        /*
+            -->
+         */
+        if(event.getCommand().equals(EventType.NOT_ALIVE)){
+            MessageConnection msg = (MessageConnection) deserialize(event.getMessageInJsonFormat(), MessageConnection.class);
+            loginHandler.disconnectPlayer(msg.getHostname());
+            MessageConnection disconnectedPlayer = new MessageConnection(msg.getUsername(), "");
+            virtualView.sendMessage(new Event(EventType.USER_HAS_DISCONNECTED, serialize(disconnectedPlayer)), loginHandler.getUsersHostname());
+        }
+
+        // --> NOT TO BE TESTED
+        if(event.getCommand().equals(EventType.START_ACTION_TIMER))
+            loginHandler.startActionTimer();
+
+        // --> NOT TO BE TESTED
+        if(event.getCommand().equals(EventType.STOP_ACTION_TIMER))
+            loginHandler.stopActionTimer();
     }
 
     /**
@@ -58,6 +103,7 @@ public class ConnectionController extends Controller implements Observer<Event> 
      * @return object serialized
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     private String serialize(Object objToSerialize){
         Gson gsonReader = new Gson();
         String serializedObj = gsonReader.toJson(objToSerialize, objToSerialize.getClass());
@@ -73,6 +119,7 @@ public class ConnectionController extends Controller implements Observer<Event> 
      * @return object deserialized
      * @author: Luca Iovine
      */
+    //NOT TO BE TESTED
     private Object deserialize(String json, Class<?> cls){
         Gson gsonReader = new Gson();
         Object deserializedObj = gsonReader.fromJson(json, cls);

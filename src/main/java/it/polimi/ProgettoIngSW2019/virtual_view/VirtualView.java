@@ -1,8 +1,12 @@
 package it.polimi.ProgettoIngSW2019.virtual_view;
 
+import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageConnection;
+import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.IClientMessageReceiver;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
+import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -13,7 +17,7 @@ import java.util.List;
  *
  * @author: Luca Iovine
  */
-public class VirtualView extends Observable<Event> implements IVirtualView {
+public class VirtualView extends Observable<Event> implements IVirtualView, Observer<Event> {
     private HashMap<String, IClientMessageReceiver<Event>> clientMessageReceiver;
 
     public VirtualView() {
@@ -58,24 +62,58 @@ public class VirtualView extends Observable<Event> implements IVirtualView {
     }
 
     /**
-     * @deprecated
-     */
-    public void sendMessage(Event event, List<Integer> idPlayers) {}
-
-    /**
      * It allow to send the data generated from server to client knowing only the hostname
      * of the client
      *
      * @param event contain data coming rom server
-     * @param hostname of the client to send data
+     * @param hostnameList list of the client to send data
      * @author: Luca Iovine
      */
     //NOT TO BE TESTED
-    public void sendMessage(Event event, String hostname) {
+    public void sendMessage(Event event, List<String> hostnameList) {
         try {
-            clientMessageReceiver.get(hostname).send(event);
+            for(String hostname: hostnameList)
+                clientMessageReceiver.get(hostname).send(event);
         } catch (RemoteException ex) {
+            //TODO: non riesce a contattare il client e lo disconnette
             ex.printStackTrace();
         }
+    }
+
+    //NOT TO BE TESTED
+    @Override
+    public void update(Event event) {
+        MessageConnection msg = (MessageConnection) deserialize(event.getMessageInJsonFormat(), MessageConnection.class);
+        if(event.getCommand().equals(EventType.CHECK_IS_ALIVE)) {
+            try {
+                clientMessageReceiver.get(msg.getHostname()).send(event);
+            }catch(RemoteException e){
+                notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
+            }
+        }
+        if(event.getCommand().equals(EventType.INPUT_TIME_EXPIRED)){
+            try {
+                clientMessageReceiver.get(msg.getHostname()).send(event);
+                notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
+            }catch(RemoteException e){
+                notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
+            }
+        }
+    }
+
+    /**
+     * To deserialize information in the event
+     *
+     * @param json string that contains data in json format
+     * @param cls class to deserialize
+     * @return object deserialized
+     * @author: Luca Iovine
+     */
+    //NOT TO BE TESTED
+    private Object deserialize(String json, Class<?> cls){
+        Gson gsonReader = new Gson();
+        Object deserializedObj = gsonReader.fromJson(json, cls);
+
+        return deserializedObj;
     }
 }
