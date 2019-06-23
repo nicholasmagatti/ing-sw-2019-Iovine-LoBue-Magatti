@@ -20,10 +20,10 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class TestTractorbeamEffect {
-    DistanceDictionary distance;
-    Square[][] map;
-    GameTable gt;
-    WeaponEffect weaponEffect;
+    private DistanceDictionary distance;
+    private Square[][] map;
+    private GameTable gt;
+    private WeaponEffect weaponEffect;
 
     /*
         ---------------------
@@ -62,35 +62,35 @@ public class TestTractorbeamEffect {
                 square.setDependency(map);
         }
 
-        Player p1 = new Player(1, "P1", gt);
+        Player p1 = new Player(1, "P1", gt, "");
         p1.moveTo(map[0][0]);
-        Player p2 = new Player(2, "P2", gt);
+        Player p2 = new Player(2, "P2", gt, "");
         p2.moveTo(map[0][0]);
-        Player p3 = new Player(3, "P3", gt);
+        Player p3 = new Player(3, "P3", gt, "");
         p3.moveTo(map[0][2]);
-        Player p4 = new Player(4, "P4", gt);
+        Player p4 = new Player(4, "P4", gt, "");
         p4.moveTo(map[0][3]);
-        Player p5 = new Player(5, "P5", gt);
+        Player p5 = new Player(5, "P5", gt, "");
         p5.moveTo(map[1][0]);
-        Player p6 = new Player(6, "P6", gt);
+        Player p6 = new Player(6, "P6", gt, "");
         p6.moveTo(map[1][1]);
-        Player p7 = new Player(7, "P7", gt);
+        Player p7 = new Player(7, "P7", gt, "");
         p7.moveTo(map[1][2]);
-        Player p8 = new Player(8, "P8", gt);
+        Player p8 = new Player(8, "P8", gt, "");
         p8.moveTo(map[1][3]);
-        Player p9 = new Player(9, "P9", gt);
+        Player p9 = new Player(9, "P9", gt, "");
         p9.moveTo(map[2][0]);
-        Player p10 = new Player(10, "P10", gt);
+        Player p10 = new Player(10, "P10", gt, "");
         p10.moveTo(map[2][1]);
-        Player p11 = new Player(11, "P11", gt);
+        Player p11 = new Player(11, "P11", gt, "");
         p11.moveTo(map[2][2]);
-        Player p12 = new Player(12, "P12", gt);
+        Player p12 = new Player(12, "P12", gt, "");
         p12.moveTo(map[2][3]);
 
         assignWeaponEffect();
     }
 
-    public void assignWeaponEffect(){
+    private void assignWeaponEffect(){
         String pathOfEffectFile;
 
         pathOfEffectFile = new File("").getAbsolutePath()+"\\src\\test\\java\\it\\polimi\\ProgettoIngSW2019\\resourceTest\\TractorbeamEff.json";
