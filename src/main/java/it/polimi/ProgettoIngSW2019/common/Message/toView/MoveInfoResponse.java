@@ -1,7 +1,9 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 import it.polimi.ProgettoIngSW2019.common.Message.toView.InfoResponse;
+import it.polimi.ProgettoIngSW2019.model.Square;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,7 +11,7 @@ import java.util.List;
  * message with the request and response move info
  */
 public class MoveInfoResponse extends InfoResponse {
-    private List<Integer[]> availablePosition;
+    private List<Square> availablePosition = new ArrayList<>();
 
 
     /**
@@ -17,7 +19,7 @@ public class MoveInfoResponse extends InfoResponse {
      * @param idPlayer              id Player
      * @param availablePosition     position you can move
      */
-    public MoveInfoResponse(int idPlayer, List<Integer[]> availablePosition) {
+    public MoveInfoResponse(int idPlayer, List<Square> availablePosition) {
         super(idPlayer);
         this.availablePosition = availablePosition;
     }
@@ -26,7 +28,7 @@ public class MoveInfoResponse extends InfoResponse {
     /**
      * @return  list of position
      */
-    public List<Integer[]> getAvailablePosition() {
+    public List<Square> getAvailablePosition() {
         return availablePosition;
     }
 }

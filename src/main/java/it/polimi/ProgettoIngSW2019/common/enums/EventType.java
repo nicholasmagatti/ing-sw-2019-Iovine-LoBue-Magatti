@@ -14,8 +14,13 @@ public enum EventType {
     REQUEST_SHOOT,                                   //toController: request choice to shoot
     REQUEST_GRAB,                                    //toController: request choice to grab
     REQUEST_GRAB_INFO,                               //toController: request choice to grab info
-    REQUEST_GRAB_WEAPON,
+    REQUEST_GRAB_WEAPON,                             //toController: request choice to grab a weapon
     REQUEST_LOGIN,
+    REQUEST_MOVE_INFO,                              //toController: request info to move
+    REQUEST_MOVE,                                   //toController: request choice to move
+    REQUEST_SETUP,
+    REQUEST_GAME_IS_STARTED,
+
 
 
     //Response Controller to View
@@ -28,6 +33,9 @@ public enum EventType {
     RESPONSE_REQUEST_WEAPON_INFO,                   //toView: response info shoot
     RESPONSE_NEW_LOGIN,
     RESPONSE_RECONNECT,
+    RESPONSE_SETUP,
+    RESPONSE_GAME_IS_STARTED,
+    RESPONSE_REQUEST_MOVE_INFO,                     //toView: response move info
 
 
     //Other things XD
@@ -37,11 +45,13 @@ public enum EventType {
     PLAYER_IN_SPAWN_STATE,                          //toView: move player in spawnState
     WEAPONS_CAN_BUY,                                //toView: send the weapons can buy in the sp
     DISCARD_WEAPON,                                 //toView: send to the player his weapon to choose one to discard before buying another
-    GO_IN_GAME_SETUP,                               //per avvisare i client che devono spostarsi nella fase di setup del gioco
-    CHECK_IS_ALIVE,                                 //per verificare che i client siano attivi
-    CAP_REACHED,                                    //per avvisare che il numero di giocatori per avviare la partita è stato raggiunto
+    GO_IN_GAME_SETUP,                               //toView: to alert clients that they need to move into the game setup state
+    CHECK_IS_ALIVE,                                 //toView: to verify that the clients are active
+    CAP_REACHED,                                    //toView:  warn that the number of players to start the game has been reached
     NOT_ALIVE,                                      //per segnalare che un certo client non è vivo
-    USER_HAS_DISCONNECTED,                          //avvisa gli altri che un utente si è disconnesso
+    USER_HAS_DISCONNECTED,                          //toView: warns other players that a user has logged out
+    START_ACTION_TIMER,
+    STOP_ACTION_TIMER,
 
 
 
@@ -62,4 +72,5 @@ public enum EventType {
     MSG_NEW_TURN,                                   //msg to all players new turn, changed player
     MSG_WEAPON_BUY,                                 //msg to all players, the player bought the weapon
     MSG_WEAPON_SWAP,                                //msg to all players, the player swapped a weapon card and bought another
+    MSG_MY_N_ACTION_LEFT,                           //msg to all player, n action left of the player
 }

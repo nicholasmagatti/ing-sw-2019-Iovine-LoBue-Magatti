@@ -262,7 +262,7 @@ public class GrabController extends Controller {
             }
             else {
                 grabberPlayer.moveTo(squareToGrab);
-                String updateMapLM = getCreateJson().createMapLMLMJson();
+                String updateMapLM = getCreateJson().createMapLMJson();
                 sendInfo(EventType.UPDATE_MAP, updateMapLM, getHostNameCreateList().addAllHostName());
             }
         }
@@ -278,10 +278,19 @@ public class GrabController extends Controller {
 
     public List<Square> consecutiveSquares() {
         List<Square> squares = new ArrayList<>();
-        squares.add(grabberPlayer.getPosition().getEastSquare());
-        squares.add(grabberPlayer.getPosition().getWestSquare());
-        squares.add(grabberPlayer.getPosition().getNorthSquare());
-        squares.add(grabberPlayer.getPosition().getSouthSquare());
+
+        if(!grabberPlayer.getPosition().getIsBlockedAtEast())
+            squares.add(grabberPlayer.getPosition().getEastSquare());
+
+        if(!grabberPlayer.getPosition().getIsBlockedAtWest())
+            squares.add(grabberPlayer.getPosition().getWestSquare());
+
+        if(!grabberPlayer.getPosition().getIsBlockedAtNorth())
+            squares.add(grabberPlayer.getPosition().getNorthSquare());
+
+        if(!grabberPlayer.getPosition().getIsBlockedAtSouth())
+            squares.add(grabberPlayer.getPosition().getSouthSquare());
+
         return squares;
     }
 

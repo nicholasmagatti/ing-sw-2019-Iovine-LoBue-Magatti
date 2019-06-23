@@ -3,45 +3,28 @@ package it.polimi.ProgettoIngSW2019.common.Message.toController;
 /**
  * MoveChoiceRequest class
  * the player decided to move in the square x,y
+ * @author Priscilla Lo Bue
  */
 public class MoveChoiceRequest extends PlayerChoiceRequest {
-    private int x;
-    private int y;
+    private int[] coordinates;
 
 
     /**
      * Constructor
      * @param hostNamePlayer    host name client
      * @param idPlayer          id player
-     * @param x                 coordinate x
-     * @param y                 coordinate y
      */
-    public MoveChoiceRequest(String hostNamePlayer, int idPlayer, int x, int y) {
+    public MoveChoiceRequest(String hostNamePlayer, int idPlayer, int[] coordinates) {
         super(hostNamePlayer, idPlayer);
-        if(x < 0)
-            throw new IllegalArgumentException("the position x cannot be negative");
-        if(y < 0)
-            throw new IllegalArgumentException("the position y cannot be negative");
-        this.x = x;
-        this.y = y;
+
+        if((coordinates[0] < 0) || (coordinates[1] < 0))
+            throw new IllegalArgumentException("the position x or y cannot be negative");
+
+        this.coordinates = coordinates;
     }
 
 
-    /**
-     * get the x coordinate
-     * @return x
-     */
-    public int getX() {
-        return x;
-    }
-
-
-
-    /**
-     * get the Y coordinate
-     * @return  y
-     */
-    public int getY() {
-        return y;
+    public int[] getCoordinates() {
+        return coordinates;
     }
 }

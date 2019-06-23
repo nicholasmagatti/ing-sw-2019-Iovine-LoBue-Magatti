@@ -215,6 +215,17 @@ public abstract class Controller implements Observer<Event> {
 
 
 //CHECK TURN
+    public boolean checkHostNameCorrect(Player player, String hostName) {
+        if(player.getHostname().equals(hostName))
+            return true;
+        else {
+            //TODO: messaggio?
+            return false;
+        }
+    }
+
+
+
     /**
      * check if is the turn of the player
      * if not send a message error

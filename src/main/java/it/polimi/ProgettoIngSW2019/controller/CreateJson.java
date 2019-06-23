@@ -5,6 +5,7 @@ import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+import it.polimi.ProgettoIngSW2019.custom_exception.IllegalAttributeException;
 import it.polimi.ProgettoIngSW2019.model.*;
 
 import java.util.ArrayList;
@@ -345,7 +346,7 @@ public class CreateJson {
      *
      * @return mapLM json
      */
-    public String createMapLMLMJson() {
+    public String createMapLMJson() {
         return new Gson().toJson(createMapLM());
     }
 
@@ -369,20 +370,6 @@ public class CreateJson {
     public String createKillShotTrackLMJson() {
         return new Gson().toJson(createKillShotTrackLM());
     }
-
-
-/*
-    public SpawnPointLM createSpawnPointLM(SpawningPoint spawningPoint) {
-        if(spawningPoint == null)
-            throw new NullPointerException();
-
-        List<Integer> idPlayers
-
-        return new SpawnPointLM(spawningPoint.getPlayerOnSquare())
-    }
-*/
-
-
 
 
 
@@ -498,7 +485,11 @@ public class CreateJson {
     }
 
 
-
+    /**
+     * @param player        player
+     * @param weaponPay     weapon to pay
+     * @return              message enemy weapon to pay
+     */
     public String createMessageEnemyWeaponPay(Player player, WeaponCard weaponPay) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
@@ -511,7 +502,12 @@ public class CreateJson {
     }
 
 
-
+    /**
+     * @param player                player
+     * @param weaponDiscarded       weapon to discard
+     * @param weaponBuy             weapon to buy
+     * @return                      message of the swap weapons in spawning point to all player
+     */
     public String createMessagePlayerSwapWeapons(Player player, WeaponCard weaponDiscarded, WeaponCard weaponBuy) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
@@ -524,5 +520,32 @@ public class CreateJson {
 
         MessagePlayerSwapWeapons messagePlayerSwapWeapons = new MessagePlayerSwapWeapons(player.getIdPlayer(), player.getCharaName(), weaponBuy.getIdCard(), weaponBuy.getName(), createPlayerLM(player), weaponDiscarded.getIdCard(), weaponDiscarded.getName());
         return new Gson().toJson(messagePlayerSwapWeapons);
+    }
+
+
+    /**
+     * @param player        player
+     * @return              Message with number of actions left
+     */
+    public MessageActionLeft createMessageActionsLeft(Player player) {
+        if(player == null)
+            throw new NullPointerException("player cannot be null");
+
+        if(player.getIdPlayer() != turnManager.getCurrentPlayer().getIdPlayer())
+            throw new IllegalAttributeException("This player is not the current one");
+
+        return new MessageActionLeft(player.getIdPlayer(), player.getCharaName(), turnManager.getActionsLeft());
+    }
+
+
+    /**
+     * @param player    player
+     * @return          Message with number of actions left json
+     */
+    public String createMessageActionsLeftJson(Player player) {
+        if(player == null)
+            throw new NullPointerException("player cannot be null");
+
+        return new Gson().toJson(createMessageActionsLeft(player));
     }
 }
