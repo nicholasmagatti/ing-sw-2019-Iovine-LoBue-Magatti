@@ -1,10 +1,7 @@
 package it.polimi.ProgettoIngSW2019.modelTest;
 
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
-import it.polimi.ProgettoIngSW2019.model.GameTable;
-import it.polimi.ProgettoIngSW2019.model.Maps;
-import it.polimi.ProgettoIngSW2019.model.Player;
-import it.polimi.ProgettoIngSW2019.model.Square;
+import it.polimi.ProgettoIngSW2019.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,12 +24,12 @@ public class TestGameTable {
 
         gameTable = new GameTable(maps[2], NR_SKULLS);
 
-        List<String> names = new ArrayList<>();
-        names.add("Carlo");
-        names.add("Giulia");
-        names.add("Alessia");
-        names.add("Ermes");
-        gameTable.setPlayersBeforeStart(names, "host");
+        List<Session> sessions = new ArrayList<>();
+        sessions.add(new Session("Carlo", "abc", "host"));
+        sessions.add(new Session("Giulia", "34c", "host"));
+        sessions.add(new Session("Alessia", "ab345", "host"));
+        sessions.add(new Session("Ermes", "abc3r33", "host"));
+        gameTable.setPlayersBeforeStart(sessions);
         carlo = gameTable.getPlayers()[0];
         giulia = gameTable.getPlayers()[1];
         alessia = gameTable.getPlayers()[2];

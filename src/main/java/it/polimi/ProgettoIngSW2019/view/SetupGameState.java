@@ -1,24 +1,35 @@
 package it.polimi.ProgettoIngSW2019.view;
 
+import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.LightModel.MapLM;
+import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
  * State in which the first user is when he/she is choosing the map to use and the number of skulls for the game
  * @author Nicholas Magatti
  */
-public class SetupGameState extends Observable<Event> implements IState {
+public class SetupGameState extends State {
+    boolean chooseGameSettings;
+    List<MapLM> maps;
+
+
     @Override
-    public void startState(StateManager stateManager) {
+    public void startState() {
+
+
+        /*
         //TODO: remove scanner
         Scanner scanner = new Scanner(System.in);
         int mapChoice;
         int skullChoice;
         boolean checkAnswer = false;
 
-        //TODO: rewrite messages in English
+
 
         System.out.println("###########################################\n");
         System.out.println("Ma che piacevole sorpresa, quindi tu saresti il primo giocatore a connettersi.");
@@ -63,6 +74,32 @@ public class SetupGameState extends Observable<Event> implements IState {
         System.out.println("Waiting for the other players...");
         System.out.println("We are almost ready!");
 
-        stateManager.triggerNextState(new WaitState());
+        stateManager.triggerNextState(new WaitState());*/
+    }
+
+    @Override
+    public void update(Event event) {
+        EventType command = event.getCommand();
+        String jsonMessage = event.getMessageInJsonFormat();
+
+        /*//initialize the boolean youCanChooseGameSettings, then trigger this state as next state
+        if(command == EventType.GO_IN_GAME_SETUP){
+            MessageConnection messageConnection = new Gson().fromJson(jsonMessage, MessageConnection.class);
+            if(messageConnection.getId() == InfoOnView.getMyId()){
+                youCanChooseGameSettings = true;
+            }
+            else{
+                youCanChooseGameSettings = false;
+            }
+            StateManager.triggerNextState(this);
+        }*/
+    }
+
+    void setChooseGameSettings(boolean chooseGameSettings) {
+        this.chooseGameSettings = chooseGameSettings;
+    }
+
+    void setMaps(List<MapLM> maps) {
+        this.maps = maps;
     }
 }

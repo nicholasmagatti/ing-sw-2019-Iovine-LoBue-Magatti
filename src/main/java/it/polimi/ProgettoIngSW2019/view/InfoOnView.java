@@ -1,9 +1,11 @@
 package it.polimi.ProgettoIngSW2019.view;
 
+import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
@@ -17,16 +19,17 @@ import static org.fusesource.jansi.Ansi.ansi;
  * Class that contains what the client can see
  * @author Nicholas Magatti
  */
-public class InfoOnView {
+public class InfoOnView implements Observer<Event> {
 
-    private int myId;
-    private String myNickname;
+    private static int myId;
+    private static String myNickname;
 
     private PlayerDataLM[] players;
     private MyLoadedWeaponsLM myLoadedWeapons;
     private MyPowerUpLM myPowerUps;
     private MapLM map;
     private KillshotTrackLM killshotTrack;
+    private static String hostname;
 
     //to display map in vew
     private final int ROWS_BODY_SQUARE = 4;
@@ -45,30 +48,45 @@ public class InfoOnView {
 
 
 
-    public InfoOnView(int id, String nickname, int numberOfPlayers){
+    public InfoOnView(int id, String nickname, int numberOfPlayers, String hostname){
         myId = id;
         myNickname = nickname;
         players = new PlayerDataLM[numberOfPlayers];
+        this.hostname = hostname;
     }
 
-    public int getMyId() {
+    static int getMyId() {
         return myId;
+    }
+
+    public static String getMyNickname() {
+        return myNickname;
+    }
+
+    static String getHostname() {
+        return hostname;
     }
 
     /**
      * Print the map, line by line (with colors)
      */
-    //TODO: add coordinates (A B ... columns, 1 2 ... rows)
-    void printMap(){
+    void printMapAndKillshotTrack(){
         List<List<List<Ansi>>> mapAnsi = mapLMToAnsi(map.getMap());
-        for(List<List<Ansi>> mapRow : mapAnsi){
-            /*mapRow.get(0) is the first square of the current mapRow,
+        for(int mapRow = 0; mapRow < GeneralInfo.ROWS_MAP; mapRow++){
+            /*mapAnsi.get(mapRow).get(0) is the first square of the current mapRow,
                 assuming the other squares on the same mapRow have the same
                 number of rows (in other words, the same .size())
              */
-            for(int squareRow=0; squareRow < mapRow.get(0).size() ; squareRow++){
-                    for(List<Ansi> square: mapRow){
+            for(int squareRow=0; squareRow < mapAnsi.get(mapRow).get(0).size() ; squareRow++){
+                for(List<Ansi> square: mapAnsi.get(mapRow)){
                     AnsiConsole.out.print(square.get(squareRow));
+                    /*at the last of the square row, at the second row of
+                        the square, print the vertical coordinate
+                     */
+                    if((mapRow == GeneralInfo.ROWS_MAP -1) && squareRow == 1){
+                        //print vertical coordinate coordinate
+                        System.out.print("  " + verticalCoordinateForUser(mapRow));
+                    }
                 }
                 /*after printing the whole  specified line of the map (the specified line of all
                     the squares on the specified row of squares of the map), start a new line
@@ -76,6 +94,19 @@ public class InfoOnView {
                 System.out.print("\n");
             }
         }
+        //print horizontal coordinates
+        System.out.print("\n");
+        for(int i=0; i < GeneralInfo.COLUMNS_MAP; i++){
+            System.out.print("     " + horizontalCoordinateForUser(i) + "     ");
+        }
+        System.out.print("\t");
+        printKillshotTrack();
+        System.out.print("\n\n");
+
+    }
+
+    void printKillshotTrack(){
+        //TODO
     }
 
     List<List<List<Ansi>>> mapLMToAnsi(SquareLM[][] mapLM){
@@ -231,8 +262,9 @@ public class InfoOnView {
     String [] specificInfoAmmoPointToDraw(AmmoPointLM ammoPointLM){
         String[] stringsToReturn = new String[2];
         if(ammoPointLM.getAmmoCard() == null){
-            stringsToReturn[0] = EMPTY_LINE_INSIDE_SQUARE;
-            stringsToReturn[1] = EMPTY_LINE_INSIDE_SQUARE;
+            for(int i=0; i < 2; i++) {
+                stringsToReturn[i] = EMPTY_LINE_INSIDE_SQUARE;
+            }
         }
         else{
             stringsToReturn[0] = lineInsideSquareWithBlankAtTheEnd("AmmoCard:");
@@ -285,16 +317,50 @@ public class InfoOnView {
         return line;
     }
 
+    /**
+     * Translate coordinates for developers in coordinates for users (eg: (0,1) becomes (A,2) ).
+     * @param coordinatesForDeveloper - numeric coordinates as row and column, beginning from 0 (eg: row=0, column=3).
+     * @return coordinates for users (eg: [C, 3]).
+     */
     public static char[] coordinatesForUser(int[]coordinatesForDeveloper){
         if(coordinatesForDeveloper.length != 2){
             throw new RuntimeException("The coordinates should be 2 (row and column), not " + coordinatesForDeveloper.length +".");
         }
-        char[]coordinetesForUser = new char[2];
+        char[]coordinatesForUser = new char[2];
         //row (with letters: A,B,C instead of 0,1,2)
-        coordinetesForUser[0] = (char)((int) 'A' + coordinatesForDeveloper[0]);
+        coordinatesForUser[0] = verticalCoordinateForUser(coordinatesForDeveloper[0]);
         //column (1,2,3 instead of 0,1,2)
-        coordinetesForUser[1] = (char)((int) '1' + coordinatesForDeveloper[1]);
-        return coordinetesForUser;
+        coordinatesForUser[1] = horizontalCoordinateForUser(coordinatesForDeveloper[1]);
+        return coordinatesForUser;
+    }
+
+    /**
+     * Translate vertical coordinates for developers in coordinates for users (eg: from 0 to 1, from 3 to 4).
+     * @param verticalCoordinateForDeveloper
+     * @return the coordinate for the user as a char, starting the count from 1 instead of 0
+     */
+    private static char verticalCoordinateForUser(int verticalCoordinateForDeveloper){
+        //row (with letters: A,B,C instead of 0,1,2)
+        return  (char)((int) 'A' + verticalCoordinateForDeveloper);
+    }
+
+    /**
+     * Translate horizontal coordinates for developers in coordinates for users (eg: from 0 to A, from 3 to D).
+     * @param horizontalCoordinateForDeveloper
+     * @return the coordinate for the user as a capital letter
+     */
+    private static char horizontalCoordinateForUser(int horizontalCoordinateForDeveloper){
+        //column (1,2,3 instead of 0,1,2)
+        return (char)((int) '1' + horizontalCoordinateForDeveloper);
+    }
+
+    /**
+     * Update the objects that can be seen in the view when the controller sends the new versions (of players, cards, map, killshot track)
+     * @param event
+     */
+    @Override
+    public void update(Event event){
+
     }
 
 }

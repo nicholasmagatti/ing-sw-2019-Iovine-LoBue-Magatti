@@ -16,6 +16,8 @@ public abstract class GeneralInfo {
     public static final int DAMAGE_TO_OVERKILL = 12;
     public static final int MIN_SKULLS = 5;
     public static final int MAX_SKULLS = 8;
+    public static final int MIN_NUM_PLAYERS = 3;
+    public static final int MAX_NUM_PLAYERS = 5;
 
     public static final int RED_ROOM_ID = 0;
     public static final int BLUE_ROOM_ID = 1;
@@ -24,9 +26,9 @@ public abstract class GeneralInfo {
     public static final int PURPLE_ROOM_ID = 4;
     public static final int GREEN_ROOM_ID = 5;
 
-    public static final String NO = "no";
-    public static final String EXIT = "exit";
-    public static final String DESCRIPTION_EXIT = "exit from game";
+    public static final String NO_COMMAND = "no";
+    public static final String EXIT_COMMAND = "exit";
+    public static final String EXIT_EXPLANATION = "exit from game";
     public static final String PREFIX_COMMAND_DESCRIPTION = "description ";
-
+    public static final char[] ILLEGAL_CHARACTERS_FOR_USERNAME = {'.', ':', ',', ';'};
 }

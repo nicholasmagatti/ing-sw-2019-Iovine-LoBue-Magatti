@@ -26,12 +26,12 @@ public class TestTurnManager {
     public void setUp(){
         Square[][][] maps = new Maps().getMaps();
         gameTable = new GameTable(maps[3],5);
-        List<String> names = new ArrayList<>();
-        names.add("Nome1");
-        names.add("Nome2");
-        names.add("Nome3");
-        names.add("Nome4");
-        gameTable.setPlayersBeforeStart(names);
+        List<Session> sessions = new ArrayList<>();
+        sessions.add(new Session("Nome1", "abc", "host"));
+        sessions.add(new Session("Nome2", "123", "host"));
+        sessions.add(new Session("Nome3", "3344", "host"));
+        sessions.add(new Session("Nome4", "aaa", "host"));
+        gameTable.setPlayersBeforeStart(sessions);
         turnManager = new TurnManager(gameTable);
 
         player1 = gameTable.getPlayers()[0];

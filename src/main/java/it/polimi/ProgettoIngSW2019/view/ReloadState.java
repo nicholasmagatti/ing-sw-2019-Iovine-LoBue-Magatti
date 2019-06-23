@@ -14,98 +14,82 @@ import java.util.List;
 /**
  * @author Nicholas Magatti
  */
-public class ReloadState extends Observable<Event> implements IState, Observer<Event>{
-    InfoOnView infoOnView;
+public class ReloadState extends State{
     StateManager stateManager;
     SpawnState spawnState;
-    private InputScanner inputScanner = new InputScanner();
-    private boolean exit = false;
-    Event eventToSend;
+    String input;
 
     /**
      * Send a message to the controller that requests the reloadable weapons for this user.
-     * @param stateManager
      */
     @Override
-    public void startState(StateManager stateManager){
-        String jsonMsg = new Gson().toJson(new InfoRequest(infoOnView.getMyId()));
-        eventToSend = new Event(EventType.REQUEST_WEAPONS_CAN_RELOAD, jsonMsg);
-        notify(eventToSend);
+    public void startState(){
+        //notify to controller
+        InfoRequest infoRequest = new InfoRequest(InfoOnView.getHostname(), InfoOnView.getMyId());
+        notifyEvent(infoRequest, EventType.REQUEST_WEAPONS_CAN_RELOAD);
     }
 
-    private void errorAndRestart(String jsonMsg){
-        String s = new Gson().fromJson(jsonMsg, String.class);
-        System.out.println(s);
-        //restart the state from the beginning
-        startState(stateManager);
+    @Override
+    public void update(Event event){
+
+        EventType command = event.getCommand();
+        String jsonMessage = event.getMessageInJsonFormat();
+
+        if(command == EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD){
+            WeaponsCanPayResponse reloadInfo = new Gson().fromJson(jsonMessage, WeaponsCanPayResponse.class);
+            chooseWeaponToReload(reloadInfo);
+        }
     }
 
-    private void chooseWeaponToReload(String jsonMsg){
+    private void chooseWeaponToReload(WeaponsCanPayResponse reloadInfo){
         int chosenOption; //typed by user
         int chosenWeapon; // to send to view
-        WeaponsCanPayResponse reloadInfo = new Gson().fromJson(jsonMsg, WeaponsCanPayResponse.class);
+
         List<WeaponLM>weapons = reloadInfo.getWeaponsCanReload();
         if(weapons.isEmpty()){
             stateManager.triggerNextState(spawnState);
         }
         else {
-            //TODO: make a general method for this IF POSSIBLE
             //options
             System.out.println("Which weapon do you want to reload? Choose an option:");
             for(int i=0; i < weapons.size(); i++) {
                 System.out.println(i + 1 + " : " + weapons.get(i).getName() +
-                        ", cost: " + Payment.costToString(reloadInfo.getListPaymentReload().get(i).getAmmoCost()));
+                        ", cost: " + ToolsView.costToString(reloadInfo.getListPaymentReload().get(i).getAmmoCost()));
             }
-            System.out.println(GeneralInfo.NO + ": don't reload");
-            System.out.println(GeneralInfo.EXIT + ": " + GeneralInfo.DESCRIPTION_EXIT);
+            System.out.println(GeneralInfo.NO_COMMAND + ": don't reload");
+            System.out.println(GeneralInfo.EXIT_COMMAND + ": " + GeneralInfo.EXIT_EXPLANATION);
             /*
             System.out.println("DETAILS WEAPONS: ");
             for(WeaponLM weaponLM : weapons){
                 System.out.println("Name: " + weaponLM.getName());
                 System.out.println("Description: " + weaponLM.getDescription());
             }*/
-            //TODO: make a general method for this IF POSSIBLE
+
             List<String>acceptableInputs = new ArrayList<>();
-            acceptableInputs.add(GeneralInfo.NO);
-            acceptableInputs.add(GeneralInfo.EXIT);
+            acceptableInputs.add(GeneralInfo.NO_COMMAND);
+            acceptableInputs.add(GeneralInfo.EXIT_COMMAND);
             for(int i=0; i <= weapons.size(); i++){
                 acceptableInputs.add(Integer.toString(i));
             }
-            //TODO: make a general method for this IF POSSIBLE
-            do {
-                inputScanner.read();
-                if(acceptableInputs.contains(inputScanner.getInputValue())){
-                    exit = true;
+
+            input = ToolsView.readUserChoice(acceptableInputs, true);
+            if(input != null){ //time NOT expired
+                switch (input){
+                    case GeneralInfo.NO_COMMAND :
+                        //TODO: invia messaggio del fatto che ho finito di ricaricare
+                        break;
+                    case GeneralInfo.EXIT_COMMAND :
+                        //TODO
+                        break;
+                        default: //option as a number
+                            chosenOption = Integer.parseInt(input);
+                            //TODO
+                            break;
                 }
-
-            }while(!exit);
-            inputScanner.close();
-            if(inputScanner.getInputValue().equals(GeneralInfo.NO)){
-                stateManager.triggerNextState(spawnState);
             }
-            if(inputScanner.getInputValue().equals(GeneralInfo.EXIT)){
-                //TODO
-            }
-            chosenOption = Integer.parseInt(inputScanner.getInputValue());
-
         }
     }
 
-    @Override
-    public void update(Event message){
-
-        EventType command = message.getCommand();
-        String jsonMessage = message.getMessageInJsonFormat();
-
-        if(command == EventType.ERROR){
-            errorAndRestart(jsonMessage);
-        }
-
-        if(command == EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD){
-            chooseWeaponToReload(jsonMessage);
-        }
-
-    }
 }
 
 

@@ -62,15 +62,16 @@ public class GameTable{
 
     /**
      * Set the players for the game, before its begin
-     * @param listOfNames - ordered list of names of the players to create
-     * @param hostname
+     * @param sessions - list of objects that contain the data to insert in the players to create (name and hostname)
      */
-    public void setPlayersBeforeStart(List<String> listOfNames, String hostname) {
-        int numberOfPlayers = listOfNames.size();
+    public void setPlayersBeforeStart(List<Session> sessions) {
+        int numberOfPlayers = sessions.size();
         activePlayers = numberOfPlayers;
         players = new Player[numberOfPlayers];
         for(int i=0; i < numberOfPlayers; i++){
-            players[i] = new Player(i, listOfNames.get(i), this, hostname);
+            String username = sessions.get(i).getUsername();
+            String hostname = sessions.get(i).gethostname();
+            players[i] = new Player(i, username, this, hostname);
         }
     }
 

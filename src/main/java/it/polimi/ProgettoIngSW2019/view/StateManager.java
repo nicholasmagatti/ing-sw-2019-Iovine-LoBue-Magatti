@@ -1,28 +1,37 @@
 package it.polimi.ProgettoIngSW2019.view;
 
+import com.google.gson.Gson;
+import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.enums.EventType;
+
 /**
  * @author Nicholas Magatti
  */
 public class StateManager {
-    private IState currentState;
+    private static State currentState;
 
-    public StateManager(){
-        currentState = new LoginState();
+    public StateManager(LoginState loginState){
         //TODO: evaluate if I should create all here or not
-        //TODO: evaulate if I should observers here or not
-        startMenu();
+        currentState = loginState;
+        //TODO: evaluate if I should observers here or not
+        currentState.startState();
     }
 
-    public void triggerNextState(IState nextState){
+    protected static void restartCurrentState(){
+        currentState.startState();
+    }
+
+    static void triggerNextState(State nextState){
         currentState = nextState;
-        startMenu();
+        currentState.startState();
     }
 
-    public IState getCurrentState() {
+    /**
+     * @deprecated
+     * @return
+     */
+    public static State getCurrentState() {
         return currentState;
     }
 
-    private void startMenu(){
-        currentState.startState(this);
-    }
 }

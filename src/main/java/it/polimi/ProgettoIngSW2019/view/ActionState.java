@@ -10,12 +10,9 @@ import java.util.Scanner;
 /**
  * @author Nicholas Magatti
  */
-public class MyActionsState extends Observable<Event> implements IState {
+public class ActionState extends State {
 
     private ReloadState reloadState;
-    InputScanner inputScanner = new InputScanner();
-    //TODO: remove scanner
-    Scanner scanner;
     int nrOfAction;
     int actionChoice;
     boolean checkAnswer = false;
@@ -36,39 +33,8 @@ public class MyActionsState extends Observable<Event> implements IState {
     //Variable to handle infoItem statement
     int infoChoice;
 
-    //I'm NOT SURE if it's updated with the latest version of inputScanner
-    /*
-    NOTES ABOUT HOW INPUTSCANNER WORKS:
-    boolean gotAcceptableResult = null;
-    while(gotAcceptableResult == null){
-        inputScanner.read();
-        if(inputScanner.isTimeExpired()) {
-            gotAcceptableResult = false;
-        }
-        else{
-            name = inputScanner.getInputValue();
-            if (the input is acceptable):
-                gotAcceptableResult = true;
-        }
-    }
-    inputScanner.close();
-    if(gotAcceptableResult){
-        //TODO
-    }
-    else{
-        //TODO
-    }
-     */
-
-
-    //TODO: remove this (the controller tells me the number of actions left)
-    public MyActionsState(){
-        nrOfAction = 2;
-    }
-
     @Override
-    public void startState(StateManager stateManager) {
-        scanner = new Scanner(System.in);
+    public void startState() {
 
 
         while(nrOfAction != 0) {
@@ -83,7 +49,7 @@ public class MyActionsState extends Observable<Event> implements IState {
 
             while (!checkAnswer) {
                 System.out.print("Scegli [1 - 3] la mossa che vuoi fare: ");
-                actionChoice = scanner.nextInt();
+                //actionChoice = scanner.nextInt();
 
                 if (actionChoice >= 1 && actionChoice <= 3)
                     checkAnswer = true;
@@ -110,7 +76,12 @@ public class MyActionsState extends Observable<Event> implements IState {
             nrOfAction--;
         }
 
-        stateManager.triggerNextState(reloadState);
+        StateManager.triggerNextState(reloadState);
+    }
+
+    @Override
+    public void update(Event event) {
+
     }
 
     private void move(){
@@ -121,7 +92,7 @@ public class MyActionsState extends Observable<Event> implements IState {
             System.out.print("Di quanti movimenti vuoi spostarti?\n");
             System.out.println("Numero di movimenti: ");
 
-            nrOfMove = scanner.nextInt();
+            //nrOfMove = scanner.nextInt();
 
             if(nrOfMove >= 1 && nrOfMove <= 3)
                 checkAnswer = true;
@@ -138,7 +109,7 @@ public class MyActionsState extends Observable<Event> implements IState {
             System.out.println(ammoCardValue);
             while (!checkAnswer) {
                 System.out.print("Scegli la risposta (y/n): ");
-                yesnoValue = scanner.nextLine();
+                //yesnoValue = scanner.nextLine();
                 if (yesnoValue.equalsIgnoreCase("y")) {
                     //TODO
                     checkAnswer = true;
@@ -170,7 +141,7 @@ public class MyActionsState extends Observable<Event> implements IState {
         else {
             for (int i = 0; i < nrOfTarget; i++) {
                 System.out.print("\nScegli il quadrato dove risiede il target che vuoi colpire: ");
-                squareNumber = scanner.nextInt();
+                //squareNumber = scanner.nextInt();
 
                 switch (targetPerSquare) {
                     case "one_for_square":
@@ -179,7 +150,7 @@ public class MyActionsState extends Observable<Event> implements IState {
                         for (int j = 0; j < targetIdList.get(squareNumber - 1).size(); j++) {
                             System.out.println((j + 1) + ". " + targetIdList.get(squareNumber - 1).get(j));
                         }
-                        targetChoice = scanner.nextInt();
+                        //targetChoice = scanner.nextInt();
                         //TODO:
                         targetIdList.remove(squareNumber - 1);
                         break;
@@ -188,7 +159,7 @@ public class MyActionsState extends Observable<Event> implements IState {
                         for (int j = 0; j < targetIdList.get(squareNumber - 1).size(); j++) {
                             System.out.println((j + 1) + ". " + targetIdList.get(squareNumber - 1).get(j));
                         }
-                        targetChoice = scanner.nextInt();
+                        //targetChoice = scanner.nextInt();
                         //TODO:
                         targetIdList.get(squareNumber - 1).remove(targetChoice);
                 }
@@ -207,7 +178,7 @@ public class MyActionsState extends Observable<Event> implements IState {
         System.out.println("5. I punti ferita dei tuoi avversari\n");
         System.out.print("Scelta: ");
 
-        infoChoice = scanner.nextInt();
+        //infoChoice = scanner.nextInt();
 
         switch(infoChoice){
             case 1:
