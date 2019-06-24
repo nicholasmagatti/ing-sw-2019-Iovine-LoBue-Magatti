@@ -9,7 +9,6 @@ import it.polimi.ProgettoIngSW2019.common.LightModel.PlayerDataLM;
 public class MessageWeaponPay extends Message{
     private int idWeapon;
     private String nameWeapon;
-    private PlayerDataLM playerLM;
 
 
     /**
@@ -18,9 +17,8 @@ public class MessageWeaponPay extends Message{
      * @param namePlayer        name player reload
      * @param idWeapon          id weapon reload
      * @param nameWeapon        name weapon reload
-     * @param playerLM          player reload LM updated
      */
-    public MessageWeaponPay(int idPlayer, String namePlayer, int idWeapon, String nameWeapon, PlayerDataLM playerLM) {
+    public MessageWeaponPay(int idPlayer, String namePlayer, int idWeapon, String nameWeapon) {
         super(idPlayer, namePlayer);
 
         if(namePlayer == null)
@@ -29,12 +27,8 @@ public class MessageWeaponPay extends Message{
         if(idWeapon < 0)
             throw new IllegalArgumentException("Id weapon cannot be negative");
 
-        if(playerLM == null)
-            throw new NullPointerException("The player cannot be null");
-
         this.idWeapon = idWeapon;
         this.nameWeapon = nameWeapon;
-        this.playerLM = playerLM;
     }
 
 
@@ -44,15 +38,6 @@ public class MessageWeaponPay extends Message{
      */
     public String getNameWeapon() {
         return nameWeapon;
-    }
-
-
-    /**
-     *
-     * @return  playerLM reload
-     */
-    public PlayerDataLM getPlayerLM() {
-        return playerLM;
     }
 
 

@@ -219,7 +219,19 @@ public abstract class Controller implements Observer<Event> {
         if(player.getHostname().equals(hostName))
             return true;
         else {
-            //TODO: messaggio?
+            String messageError = "ERROR: Non è il tuo turno";
+            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
+            return false;
+        }
+    }
+
+
+    public boolean checkIdCorrect(Player player, int idPlayer, String hostName) {
+        if(player.getIdPlayer() == idPlayer)
+            return true;
+        else {
+            String messageError = "ERROR: Qualcosa è andato storto";
+            sendInfo(EventType.ERROR, messageError, Arrays.asList(hostName));
             return false;
         }
     }

@@ -70,9 +70,10 @@ public class ReloadController extends Controller {
         ownerPlayer = convertPlayer(infoRequest.getIdPlayer(), infoRequest.getHostNamePlayer());
 
         if(ownerPlayer != null) {
-            if(checkCurrentPlayer(ownerPlayer)) {
-                if(checkNoActionLeft(ownerPlayer))
+            if(checkHostNameCorrect(ownerPlayer, infoRequest.getHostNamePlayer())) {
+                if (checkCurrentPlayer(ownerPlayer) && (checkNoActionLeft(ownerPlayer))) {
                     reloadInfo();
+                }
             }
         }
     }
@@ -130,7 +131,7 @@ public class ReloadController extends Controller {
     public void checkReloadFromView(String messageJson) {
         ReloadChoiceRequest reloadChoice = new Gson().fromJson(messageJson, ReloadChoiceRequest.class);
 
-        if(ownerPlayer.getIdPlayer() == reloadChoice.getIdPlayer()) {
+        if(checkIdCorrect(ownerPlayer, reloadChoice.getIdPlayer(), reloadChoice.getHostNamePlayer()) && (checkHostNameCorrect(ownerPlayer, reloadChoice.getHostNamePlayer()))) {
             weaponToReload = convertWeapon(ownerPlayer, reloadChoice.getIdWeaponToReload(), true);
 
             if (weaponToReload != null) {
@@ -167,6 +168,7 @@ public class ReloadController extends Controller {
         }
     }
 
+
     /**
      * reload
      * discard powerUp
@@ -193,6 +195,9 @@ public class ReloadController extends Controller {
         String messageEnemyWeaponReloadedJson = createMessageWeaponReloadedJson();
         sendInfo(EventType.MSG_ALL_RELOAD_WEAPON, messageEnemyWeaponReloadedJson, getHostNameCreateList().addAllHostName());
 
+        String updatePlayerLMJson = getCreateJson().createPlayerLMJson(ownerPlayer);
+        sendInfo(EventType.UPDATE_PLAYER_INFO, updatePlayerLMJson, getHostNameCreateList().addAllHostName());
+
         //send to the player the new loaded weapons
         String updateMyLoadedWeapons = getCreateJson().createMyLoadedWeaponsListLMJson(ownerPlayer);
         sendInfo(EventType.UPDATE_MY_LOADED_WEAPONS, updateMyLoadedWeapons, getHostNameCreateList().addOneHostName(ownerPlayer));
@@ -206,7 +211,7 @@ public class ReloadController extends Controller {
      * @return  message json for enemies
      */
     public String createMessageWeaponReloadedJson() {
-        MessageWeaponPay message = new MessageWeaponPay(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), weaponToReload.getIdCard(), weaponToReload.getName(), getCreateJson().createPlayerLM(ownerPlayer));
+        MessageWeaponPay message = new MessageWeaponPay(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), weaponToReload.getIdCard(), weaponToReload.getName());
         return new Gson().toJson(message);
     }
 

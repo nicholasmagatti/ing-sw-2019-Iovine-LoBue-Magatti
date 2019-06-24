@@ -49,7 +49,7 @@ public class MoveController extends Controller {
         ownerPlayer = convertPlayer(infoRequest.getIdPlayer(), infoRequest.getHostNamePlayer());
 
         if(ownerPlayer != null) {
-            if (checkHostNameCorrect(ownerPlayer, infoRequest.getHostNamePlayer())) {
+            if(checkHostNameCorrect(ownerPlayer, infoRequest.getHostNamePlayer())) {
                 if(checkCurrentPlayer(ownerPlayer) && checkHasActionLeft(ownerPlayer)) {
                     getSquaresToGo();
                 }
@@ -61,7 +61,7 @@ public class MoveController extends Controller {
     private void movePlayer(String messageJson) {
         MoveChoiceRequest moveChoiceRequest = new Gson().fromJson(messageJson, MoveChoiceRequest.class);
 
-        if(ownerPlayer.getIdPlayer() == moveChoiceRequest.getIdPlayer()) {
+        if(ownerPlayer.getIdPlayer() == moveChoiceRequest.getIdPlayer() && ownerPlayer.getHostname().equals(moveChoiceRequest.getHostNamePlayer())) {
             squareToGrab = convertSquare(ownerPlayer, moveChoiceRequest.getCoordinates());
 
             if((squareToGrab != null) && (squaresAvailable.contains(squareToGrab))) {
