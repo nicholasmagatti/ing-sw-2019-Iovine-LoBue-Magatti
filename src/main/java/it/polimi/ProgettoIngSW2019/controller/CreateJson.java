@@ -497,7 +497,7 @@ public class CreateJson {
         if(weaponPay == null)
             throw new NullPointerException("weapon cannot be null");
 
-        MessageWeaponPay messageWeaponPay = new MessageWeaponPay(player.getIdPlayer(), player.getCharaName(), weaponPay.getIdCard(), weaponPay.getName(), createPlayerLM(player));
+        MessageWeaponPay messageWeaponPay = new MessageWeaponPay(player.getIdPlayer(), player.getCharaName(), weaponPay.getIdCard(), weaponPay.getName());
         return new Gson().toJson(messageWeaponPay);
     }
 

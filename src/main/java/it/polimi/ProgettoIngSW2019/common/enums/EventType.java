@@ -73,4 +73,5 @@ public enum EventType {
     MSG_WEAPON_BUY,                                 //msg to all players, the player bought the weapon
     MSG_WEAPON_SWAP,                                //msg to all players, the player swapped a weapon card and bought another
     MSG_MY_N_ACTION_LEFT,                           //msg to all player, n action left of the player
+    MSG_FIRST_TURN_PLAYER,                          //msg to the player who had to spawn for the first time
 }

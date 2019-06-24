@@ -64,14 +64,19 @@ public class EndTurnController extends Controller {
         ownerPlayer = convertPlayer(infoRequest.getIdPlayer(), infoRequest.getHostNamePlayer());
 
         if(ownerPlayer != null) {
-            if(checkCurrentPlayer(ownerPlayer)) {
-                if(checkNoActionLeft(ownerPlayer)) {
-                    checkScore();
-                    resetMap();
-                    sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMLMJson(), getHostNameCreateList().addAllHostName());
-                    sendInfo(EventType.UPDATE_KILLSHOTTRACK, getCreateJson().createKillShotTrackLMJson(), getHostNameCreateList().addAllHostName());
-                    getTurnManager().changeCurrentPlayer();
-                    sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(getTurnManager().getCurrentPlayer()), getHostNameCreateList().addAllHostName());
+            if(checkHostNameCorrect(ownerPlayer, infoRequest.getHostNamePlayer())) {
+                if (checkCurrentPlayer(ownerPlayer)) {
+                    if (checkNoActionLeft(ownerPlayer)) {
+                        checkScore();
+                        resetMap();
+                        getTurnManager().changeCurrentPlayer();
+
+                        Player player = getTurnManager().getCurrentPlayer();
+                        sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(player), getHostNameCreateList().addAllHostName());
+
+                        if(player.getPosition() == null)
+                            sendInfo(EventType.MSG_FIRST_TURN_PLAYER, getCreateJson().createMessageJson(player), getHostNameCreateList().addOneHostName(player));
+                    }
                 }
             }
         }
@@ -81,9 +86,6 @@ public class EndTurnController extends Controller {
 
     public void checkScore() {
         List<Player> deadPlayers = getTurnManager().checkDeadPlayers();
-
-        if(deadPlayers == null)
-            throw new IllegalAttributeException("something wrong, deadPlayer cannot be null");
 
         if(!deadPlayers.isEmpty()) {
             boolean doubleKill;
@@ -110,6 +112,9 @@ public class EndTurnController extends Controller {
             //send the scores infoRequest to all players
             String messageScorePlayerListJson = new Gson().toJson(messageScorePlayerList);
             sendInfo(EventType.SCORE_DEAD_PLAYERS, messageScorePlayerListJson, getHostNameCreateList().addAllHostName());
+
+            sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
+            sendInfo(EventType.UPDATE_KILLSHOTTRACK, getCreateJson().createKillShotTrackLMJson(), getHostNameCreateList().addAllHostName());
         }
     }
 
