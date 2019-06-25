@@ -118,13 +118,22 @@ public class InfoOnView implements Observer<Event> {
     }
 
     void printListOfWeapons(List<WeaponLM> weapons){
-
+        for(WeaponLM weapon : weapons){
+            System.out.print(weapon.getName());
+            if(weapons.indexOf(weapon) != weapons.size()-1){
+                System.out.print(", ");
+            }
+        }
     }
 
-    void printListOfPowerups(List<PowerUpLM> powerUps){
-
+    void printListOfPowerups(List<PowerUpLM> powerUps) {
+        for(PowerUpLM pu : powerUps){
+            System.out.print(pu.getName() + "(" + ToolsView.ammoTypeToString(pu.getGainAmmoColor()) + ")");
+            if(powerUps.indexOf(pu) != powerUps.size()-1){
+                System.out.print(", ");
+            }
+        }
     }
-
 
 
 

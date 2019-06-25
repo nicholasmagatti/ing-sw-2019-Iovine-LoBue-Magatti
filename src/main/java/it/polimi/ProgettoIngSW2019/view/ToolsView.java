@@ -60,6 +60,29 @@ public abstract class ToolsView {
                 cost[AmmoType.intFromAmmoType(AmmoType.YELLOW)] + " yellow";
     }
 
+    /**
+     * From an ammo type get the string of the respective color in lowercase.
+     * @param ammoType
+     * @return
+     */
+    static String ammoTypeToString(AmmoType ammoType){
+        String color;
+        switch (ammoType) {
+            case BLUE:
+                color = "blue";
+                break;
+            case YELLOW:
+                color = "yellow";
+                break;
+            case RED:
+                color = "red";
+                break;
+                default:
+                    throw new IllegalArgumentException("This ammo type is neither blue, yellow or red.");
+        }
+        return color;
+    }
+
     static void printGeneralOptions(){
         System.out.println(GeneralInfo.EXIT_COMMAND + ": exit from game");
         System.out.println(GeneralInfo.PREFIX_COMMAND_DESCRIPTION + "NameWeapon/Powerup: read the description of that weapon/powerup");

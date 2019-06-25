@@ -6,7 +6,6 @@ import it.polimi.ProgettoIngSW2019.common.utilities.*;
 import it.polimi.ProgettoIngSW2019.model.GameTable;
 
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * @author Nicholas Magatti
