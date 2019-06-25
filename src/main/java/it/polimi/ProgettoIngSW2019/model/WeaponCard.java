@@ -185,7 +185,7 @@ public class WeaponCard extends Card {
      * @author: Luca Iovine
      */
     //NOT TO BE TESTED
-    public void activateBaseEff(Player weaponUser, List<Player> enemyList) throws SizeLimitExceededException {
+    public void activateBaseEff(Player weaponUser, List<Player> enemyList) throws EnemySizeLimitExceededException {
         baseEffect.activateEffect(weaponUser, enemyList);
     }
 

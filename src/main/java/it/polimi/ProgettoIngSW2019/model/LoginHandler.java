@@ -7,7 +7,7 @@ import it.polimi.ProgettoIngSW2019.common.LightModel.MapLM;
 import it.polimi.ProgettoIngSW2019.common.LightModel.SpawnPointLM;
 import it.polimi.ProgettoIngSW2019.common.LightModel.SquareLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageConnection;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupChoiceResponse;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupInfo;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
@@ -152,14 +152,14 @@ public class LoginHandler extends Observable<Event> {
      * @author: Luca Iovine
      */
     //NOT TO BE TESTED
-    private void goInSetup(){
+    void goInSetup(){
         gameStarted = true;
         String username = entryIterator.next().getValue().getUsername();
 
         for( Map.Entry<String, Session> entry: sessions.entrySet()){
             String hostname = entry.getValue().gethostname();
             List<MapLM> mapLMList = generateMapLMListForGameSetup();
-            SetupChoiceResponse msg = new SetupChoiceResponse(username, hostname, mapLMList);
+            SetupInfo msg = new SetupInfo(username, hostname, mapLMList);
 
             notify(new Event(EventType.GO_IN_GAME_SETUP, serialize(msg)));
         }
@@ -192,21 +192,6 @@ public class LoginHandler extends Observable<Event> {
     }
 
     /**
-     * To serialize information of the event
-     *
-     * @param objToSerialize object that needs to be serialized
-     * @return object serialized
-     * @author: Luca Iovine
-     */
-    //NOT TO BE TESTED
-    private String serialize(Object objToSerialize){
-        Gson gsonReader = new Gson();
-        String serializedObj = gsonReader.toJson(objToSerialize, objToSerialize.getClass());
-
-        return serializedObj;
-    }
-
-    /**
      * Decrease the number of the active player.
      * In case the game is not started yet, it removes the association hostname/session so that the user is not
      * validated anymore.
@@ -218,7 +203,7 @@ public class LoginHandler extends Observable<Event> {
     //TESTED --> disconnectBeforeGameStart
     public void disconnectPlayer(String hostname){
         nrOfPlayerConnected--;
-        if(!gameStarted){
+        if(!isGameStarted()){
             usernameConnected.remove(sessions.get(hostname).getUsername());
             sessions.remove(hostname);
         }
@@ -259,7 +244,7 @@ public class LoginHandler extends Observable<Event> {
      * @return the list of light model maps to send to the view
      * @author: Luca Iovine
      */
-    //TODO: TEST
+    //NOT TO BE TESTED
     private List<MapLM> generateMapLMListForGameSetup(){
         int rowCounter;
         int colCounter;
@@ -347,5 +332,31 @@ public class LoginHandler extends Observable<Event> {
     //NOT TO BE TESTED
     public void setTurnManager(TurnManager turnManager){
         this.turnManager = turnManager;
+    }
+
+    /**
+     * Set if the player are in setup state or are alredy in game.
+     *
+     * @param inSetupState boolean value
+     * @author: Luca Iovine
+     */
+    //NOT TO BE TESTED
+    public void setInSetupState(boolean inSetupState) {
+        this.inSetupState = inSetupState;
+    }
+
+    /**
+     * To serialize information of the event
+     *
+     * @param objToSerialize object that needs to be serialized
+     * @return object serialized
+     * @author: Luca Iovine
+     */
+    //NOT TO BE TESTED
+    private String serialize(Object objToSerialize){
+        Gson gsonReader = new Gson();
+        String serializedObj = gsonReader.toJson(objToSerialize, objToSerialize.getClass());
+
+        return serializedObj;
     }
 }

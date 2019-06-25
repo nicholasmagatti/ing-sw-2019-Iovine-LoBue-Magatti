@@ -14,10 +14,8 @@ import java.util.List;
  */
 public class IdConverter {
     private GameTable gameTable;
-    private final int START_ID_POWERUP = 36;
-    private final int END_ID_POWERUP = 59;
-    private final int START_ID_WEAPON = 60;
-    private final int END_ID_WEAPON = 80;
+    private final int NR_OF_POWERUP = 24;
+    private final int NR_OF_WEAPON = 21;
 
     public IdConverter (GameTable gameTable){
         this.gameTable = gameTable;
@@ -69,7 +67,7 @@ public class IdConverter {
     public WeaponCard getLoadedWeaponById(int idPlayer, int idWeapon) throws IllegalIdException{
         WeaponCard weaponCardLoaded = null;
 
-        if(idWeapon >= START_ID_WEAPON && idWeapon <= END_ID_WEAPON) {
+        if(idWeapon >= DeckFactory.getFirstIdWeapon() && idWeapon <= DeckFactory.getFirstIdWeapon() + NR_OF_WEAPON - 1) {
             List<WeaponCard> weaponCardLoadedList = gameTable.getPlayers()[idPlayer].getUnloadedWeapons();
 
             for (WeaponCard wl : weaponCardLoadedList) {
@@ -94,7 +92,7 @@ public class IdConverter {
     public WeaponCard getUnloadedWeaponById(int idPlayer, int idWeapon) throws IllegalIdException{
         WeaponCard weaponCardUnloaded = null;
 
-        if(idWeapon >= START_ID_WEAPON && idWeapon <= END_ID_WEAPON) {
+        if(idWeapon >= DeckFactory.getFirstIdWeapon() && idWeapon <= DeckFactory.getFirstIdWeapon() + NR_OF_WEAPON - 1) {
             List<WeaponCard> weaponUnloadedList = gameTable.getPlayers()[idPlayer].getUnloadedWeapons();
 
             for (WeaponCard wu : weaponUnloadedList) {
@@ -117,7 +115,7 @@ public class IdConverter {
     public PowerUp getPowerUpCardById(int idPlayer, int idPowerUp) throws IllegalIdException{
         PowerUp powerUp = null;
 
-        if(idPowerUp >= START_ID_POWERUP && idPowerUp <= END_ID_POWERUP) {
+        if(idPowerUp >= DeckFactory.getFirstIdPowerUp() && idPowerUp <= DeckFactory.getFirstIdPowerUp() + NR_OF_POWERUP - 1) {
             List<PowerUp> powerUpInHand = gameTable.getPlayers()[idPlayer].getPowerUps();
 
 

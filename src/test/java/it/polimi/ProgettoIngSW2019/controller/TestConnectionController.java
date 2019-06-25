@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.LoginRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.LoginResponse;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageConnection;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.ClientMessageReceiver;
 import it.polimi.ProgettoIngSW2019.model.LoginHandler;
@@ -210,8 +211,7 @@ public class TestConnectionController {
         testEventRequest = new Event(EventType.REQUEST_LOGIN, serialize(testLoginRequest));
         testVW.forwardEvent(testEventRequest);
 
-        reset(loginHandler, testVW);
-        when(loginHandler.isGameStarted()).thenReturn(true);
+        reset(testVW);
 
         //Sesto --> ecceessivo
         testLoginRequest = new LoginRequest("f", "f", "f");
@@ -222,6 +222,42 @@ public class TestConnectionController {
         verify(testVW).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
 
         assertEquals(EventType.CAP_REACHED, eventCapture.getValue().getCommand());
+    }
+
+    @Test
+    public void notAliveBeforeStartTest(){
+        //Primo Inserimento
+        Event testEventRequest = new Event(EventType.REQUEST_LOGIN, serialize(testLoginRequest));
+        when(loginHandler.isGameStarted()).thenReturn(false);
+        testVW.forwardEvent(testEventRequest);
+
+        assertEquals(1, loginHandler.getNrOfPlayerConnected());
+
+        MessageConnection msg = new MessageConnection(username, hostname);
+        testEventRequest = new Event(EventType.NOT_ALIVE, serialize(msg));
+        testVW.forwardEvent(testEventRequest);
+
+        assertEquals(0, loginHandler.getNrOfPlayerConnected());
+        assertEquals(0, loginHandler.getSessions().size());
+    }
+
+    @Test
+    public void notAliveAfterStartTest(){
+        //Primo Inserimento
+        Event testEventRequest = new Event(EventType.REQUEST_LOGIN, serialize(testLoginRequest));
+        when(loginHandler.isGameStarted()).thenReturn(false);
+        testVW.forwardEvent(testEventRequest);
+
+        assertEquals(1, loginHandler.getNrOfPlayerConnected());
+        assertEquals(1, loginHandler.getSessions().size());
+
+        MessageConnection msg = new MessageConnection(username, hostname);
+        testEventRequest = new Event(EventType.NOT_ALIVE, serialize(msg));
+        when(loginHandler.isGameStarted()).thenReturn(true);
+        testVW.forwardEvent(testEventRequest);
+
+        assertEquals(0, loginHandler.getNrOfPlayerConnected());
+        assertEquals(1, loginHandler.getSessions().size());
     }
 
     private String serialize(Object objToSerialize){

@@ -35,16 +35,13 @@ public class ShiftOneMovementEffect extends WeaponEffect {
      */
     //NOT TO BE TESTED
     @Override
-    public void activateEffect(Player player, List<Player> enemyList) throws SizeLimitExceededException{
+    public void activateEffect(Player player, List<Player> enemyList) throws EnemySizeLimitExceededException{
         if(enemyList.size() <= 1) {
-            try {
-                super.activateEffect(player, enemyList);
-                enemyList.get(0).moveTo(chosenPosition);
-            }catch(SizeLimitExceededException e){
-                throw e;
-            }
+            super.activateEffect(player, enemyList);
+            enemyList.get(0).moveTo(chosenPosition);
+
         }else{
-            throw new SizeLimitExceededException();
+            throw new EnemySizeLimitExceededException();
         }
     }
 

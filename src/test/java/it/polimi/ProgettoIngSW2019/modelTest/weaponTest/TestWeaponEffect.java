@@ -160,7 +160,7 @@ public class TestWeaponEffect {
         try {
             weaponEffect.activateEffect(player, enemyList);
             fail();
-        } catch (SizeLimitExceededException e) {
+        } catch (EnemySizeLimitExceededException e) {
         }
     }
 

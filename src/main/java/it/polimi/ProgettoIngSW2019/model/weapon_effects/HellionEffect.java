@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.model.weapon_effects;
 
 import com.google.gson.JsonObject;
+import it.polimi.ProgettoIngSW2019.custom_exception.EnemySizeLimitExceededException;
 import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 
@@ -33,7 +34,7 @@ public class HellionEffect extends  WeaponEffect {
      */
     //NOT TO BE TESTED
     @Override
-    public void activateEffect(Player weaponUser, List<Player> enemyChosenList) throws SizeLimitExceededException {
+    public void activateEffect(Player weaponUser, List<Player> enemyChosenList) throws EnemySizeLimitExceededException {
         super.activateEffect(weaponUser, enemyChosenList);
         for(Player target: enemyChosenList.get(0).getPosition().getPlayerOnSquare()){
             target.markPlayer(nrOfMarkToGiveAfterEffect, target);

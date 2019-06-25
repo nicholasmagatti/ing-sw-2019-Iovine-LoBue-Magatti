@@ -78,7 +78,8 @@ public class ConnectionController implements Observer<Event> {
         }
 
         /*
-            -->
+            --> notAliveBeforeStartTest
+                notAliveAfterStartTest
          */
         if(event.getCommand().equals(EventType.NOT_ALIVE)){
             MessageConnection msg = (MessageConnection) deserialize(event.getMessageInJsonFormat(), MessageConnection.class);

@@ -115,11 +115,11 @@ public class WeaponEffect {
      *
      * @param player user player
      * @param enemyList list of the enemy chosen from the user
-     * @throws SizeLimitExceededException whenever the enemy size list is greater than expected
+     * @throws EnemySizeLimitExceededException whenever the enemy size list is greater than expected
      * @suthor: Luca Iovine
      */
     //TESTED --> generalActivateEffectFailsTooManyPlayersTest
-    public void activateEffect(Player player, List<Player> enemyList) throws SizeLimitExceededException{
+    public void activateEffect(Player player, List<Player> enemyList) throws EnemySizeLimitExceededException{
         if(enemyList.size() <= effect.getNrTarget()) {
             for (Player enemy: enemyList) {
                 player.dealDamage(effect.getDmg(), enemy);
@@ -127,7 +127,7 @@ public class WeaponEffect {
             }
         }
         else{
-            throw new SizeLimitExceededException();
+            throw new EnemySizeLimitExceededException();
         }
     }
 
