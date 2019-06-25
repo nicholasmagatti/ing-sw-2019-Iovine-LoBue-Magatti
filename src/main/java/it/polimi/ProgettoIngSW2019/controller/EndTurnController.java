@@ -33,9 +33,11 @@ public class EndTurnController extends Controller {
 
     /**
      * Constructor
-     *
-     * @param turnManager turnManager
-     * @param virtualView virtualView
+     * @param turnManager               TurnManager
+     * @param virtualView               VirtualView
+     * @param idConverter               IdConverter
+     * @param createJson                CreateJson
+     * @param hostNameCreateList        HostNameCreateList
      */
     public EndTurnController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList) {
         super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
@@ -58,7 +60,11 @@ public class EndTurnController extends Controller {
     }
 
 
-    public void checkInfoFromView(String messageJson) {
+    /**
+     * check if the data from view are correct
+     * @param messageJson       message from view json
+     */
+    private void checkInfoFromView(String messageJson) {
         InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
 
         ownerPlayer = convertPlayer(infoRequest.getIdPlayer(), infoRequest.getHostNamePlayer());
@@ -70,6 +76,8 @@ public class EndTurnController extends Controller {
                         checkScore();
                         resetMap();
                         getTurnManager().changeCurrentPlayer();
+
+                        sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
 
                         Player player = getTurnManager().getCurrentPlayer();
                         sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(player), getHostNameCreateList().addAllHostName());
@@ -83,8 +91,12 @@ public class EndTurnController extends Controller {
     }
 
 
-
-    public void checkScore() {
+    /**
+     * check if there is a player dead
+     * and some double kill
+     *
+     */
+    private void checkScore() {
         List<Player> deadPlayers = getTurnManager().checkDeadPlayers();
 
         if(!deadPlayers.isEmpty()) {
@@ -113,15 +125,17 @@ public class EndTurnController extends Controller {
             String messageScorePlayerListJson = new Gson().toJson(messageScorePlayerList);
             sendInfo(EventType.SCORE_DEAD_PLAYERS, messageScorePlayerListJson, getHostNameCreateList().addAllHostName());
 
-            sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
             sendInfo(EventType.UPDATE_KILLSHOTTRACK, getCreateJson().createKillShotTrackLMJson(), getHostNameCreateList().addAllHostName());
         }
     }
 
 
 
-
-    public void scoreDeadPlayers(List<Player> deadPlayers) {
+    /**
+     * if there is a player dead count the score of each player who damage the dead ones
+     * @param deadPlayers      dead player list
+     */
+    private void scoreDeadPlayers(List<Player> deadPlayers) {
         if(deadPlayers == null)
             throw new NullPointerException("Something wrong, deadPlayers cannot be null");
 
@@ -177,7 +191,7 @@ public class EndTurnController extends Controller {
      * reset map
      * add cards missed in the map
      */
-    public void resetMap() {
+    private void resetMap() {
         for(Square[] squareLine: getTurnManager().getGameTable().getMap()) {
             for (Square square : squareLine) {
                 if (square != null) {

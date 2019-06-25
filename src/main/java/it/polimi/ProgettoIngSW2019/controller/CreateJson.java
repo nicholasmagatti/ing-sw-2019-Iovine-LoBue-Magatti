@@ -110,14 +110,19 @@ public class CreateJson {
     /**
      * Creates Json of List of WeaponLM
      * @param weaponsList   weapons list to convert
+     * @param player        player
      * @return              json of WeaponsLM list
      */
-    public String createWeaponsListLMJson(List<WeaponCard> weaponsList) {
+    public String createWeaponsListLMJson(Player player, List<WeaponCard> weaponsList) {
+        if(player == null)
+            throw new NullPointerException("Player cannot be null");
+
         if(weaponsList == null)
             throw new NullPointerException("WeaponList cannot be null");
 
         List<WeaponLM> weaponsListLM = createWeaponsListLM(weaponsList);
-        return new Gson().toJson(weaponsListLM);
+        GrabWeaponSwap grabWeaponSwap = new GrabWeaponSwap(player.getIdPlayer(), weaponsListLM);
+        return new Gson().toJson(grabWeaponSwap);
     }
 
 
@@ -381,11 +386,14 @@ public class CreateJson {
      * @param player        spawn player
      * @return              json
      */
-    public String createDrawCardsInfoJson(Player player) {
+    public String createDrawCardsInfoJson(Player player, List<PowerUp> powerUps) {
         if(player == null)
             throw new NullPointerException("Player cannot be null");
 
-        DrawCardsInfoResponse drawCardsInfoResponse = new DrawCardsInfoResponse(player.getIdPlayer(), createPlayerLM(player), createMyPowerUpsLM(player));
+        if(powerUps == null)
+            throw new NullPointerException("powerUps cannot be null");
+
+        DrawCardsInfoResponse drawCardsInfoResponse = new DrawCardsInfoResponse(player.getIdPlayer(), createPowerUpsListLM(powerUps));
         return new Gson().toJson(drawCardsInfoResponse);
     }
 
@@ -402,6 +410,19 @@ public class CreateJson {
 
         List<WeaponLM> weaponLMs = createWeaponsListLM(weaponCards);
         return new Gson().toJson(new WeaponsCanPayResponse(player.getIdPlayer(), weaponLMs, payment));
+    }
+
+
+
+    public String createMessagePowerUpsDiscardedJson(Player player, List<PowerUp> powerUps) {
+        if(player == null)
+            throw new NullPointerException("Player cannot be null");
+
+        if(powerUps == null)
+            throw new NullPointerException("PowerUps cards cannot be null");
+
+        List<PowerUpLM> powerUpLMS = createPowerUpsListLM(powerUps);
+        return new Gson().toJson(new MessagePowerUpsDiscarded(player.getIdPlayer(), player.getCharaName(), powerUpLMS));
     }
 
 
@@ -518,7 +539,7 @@ public class CreateJson {
         if(weaponBuy == null)
             throw new NullPointerException("weapon cannot be null");
 
-        MessagePlayerSwapWeapons messagePlayerSwapWeapons = new MessagePlayerSwapWeapons(player.getIdPlayer(), player.getCharaName(), weaponBuy.getIdCard(), weaponBuy.getName(), createPlayerLM(player), weaponDiscarded.getIdCard(), weaponDiscarded.getName());
+        MessagePlayerSwapWeapons messagePlayerSwapWeapons = new MessagePlayerSwapWeapons(player.getIdPlayer(), player.getCharaName(), weaponBuy.getIdCard(), weaponBuy.getName(), weaponDiscarded.getIdCard(), weaponDiscarded.getName());
         return new Gson().toJson(messagePlayerSwapWeapons);
     }
 
@@ -527,14 +548,19 @@ public class CreateJson {
      * @param player        player
      * @return              Message with number of actions left
      */
-    public MessageActionLeft createMessageActionsLeft(Player player) {
+    public MessageActionLeft createMessageActionsLeft(Player player, List<PowerUp> powerUpsCanUse) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
         if(player.getIdPlayer() != turnManager.getCurrentPlayer().getIdPlayer())
             throw new IllegalAttributeException("This player is not the current one");
 
-        return new MessageActionLeft(player.getIdPlayer(), player.getCharaName(), turnManager.getActionsLeft());
+        if(powerUpsCanUse == null)
+            throw new NullPointerException("powerUpsCanUse cannot be null");
+
+        List<PowerUpLM> powerUpsCanUseLM = createPowerUpsListLM(powerUpsCanUse);
+
+        return new MessageActionLeft(player.getIdPlayer(), player.getCharaName(), turnManager.getActionsLeft(), powerUpsCanUseLM);
     }
 
 
@@ -542,10 +568,10 @@ public class CreateJson {
      * @param player    player
      * @return          Message with number of actions left json
      */
-    public String createMessageActionsLeftJson(Player player) {
+    public String createMessageActionsLeftJson(Player player, List<PowerUp> powerUpsCanUse) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
-        return new Gson().toJson(createMessageActionsLeft(player));
+        return new Gson().toJson(createMessageActionsLeft(player, powerUpsCanUse));
     }
 }

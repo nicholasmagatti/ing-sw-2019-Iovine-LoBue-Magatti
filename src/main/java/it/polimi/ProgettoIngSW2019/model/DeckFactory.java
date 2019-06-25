@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.model;
 
 import it.polimi.ProgettoIngSW2019.common.enums.*;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.model.id_generators.IdCardGenerator;
 import it.polimi.ProgettoIngSW2019.model.powerup_effects.NewtonEff;
 import it.polimi.ProgettoIngSW2019.model.powerup_effects.TagbackGrenadeEff;
@@ -27,15 +28,8 @@ public class DeckFactory {
     private static int firstIdWeapon = 0;
     private static int lastIdWeapon = 0;
 
-    private static final String TAGBACK_GRENADE = "TAGBACK GRENADE";
-    private static final String NEWTON = "NEWTON";
-    private static final String TARGETING_SCOPE = "TARGETING SCOPE";
-    private static final String TELEPORTER = "TELEPORTER";
-
-    private static final String descrTargetingScope = "You may play this card when you are dealing damage to one or more targets. " +
-            "\nPay 1 ammo cube of any color. Choose 1 of those targets and give it an extra point of damage." +
-            "\nNote: You cannot use this to do 1 damage to a target that is receiving only marks.";
     //tutte le descrizioni
+    private static final String descrTargetingScope = "";
     private static final String descrNewton = "";
     private static final String descrTagbackGrenade = "";
     private static final String descrTeleporter = "";
@@ -103,36 +97,36 @@ public class DeckFactory {
                 //24 powerUps cards, 4 PowerUps, 4 color x2
                 //6 TagBack grenade
                 firstIdPowerUp = idCardGenerator.getId();
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, GeneralInfo.TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, GeneralInfo.TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, GeneralInfo.TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, GeneralInfo.TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, GeneralInfo.TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, GeneralInfo.TAGBACK_GRENADE, descrTagbackGrenade, new TagbackGrenadeEff()));
 
                 //6 Newton
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, NEWTON, descrNewton, new NewtonEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, NEWTON, descrNewton, new NewtonEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, NEWTON, descrNewton, new NewtonEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, NEWTON, descrNewton, new NewtonEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, NEWTON, descrNewton, new NewtonEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, NEWTON, descrNewton, new NewtonEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, GeneralInfo.NEWTON, descrNewton, new NewtonEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, GeneralInfo.NEWTON, descrNewton, new NewtonEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, GeneralInfo.NEWTON, descrNewton, new NewtonEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, GeneralInfo.NEWTON, descrNewton, new NewtonEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, GeneralInfo.NEWTON, descrNewton, new NewtonEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, GeneralInfo.NEWTON, descrNewton, new NewtonEff()));
 
                 //6 Targeting Scope
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, GeneralInfo.TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, GeneralInfo.TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, GeneralInfo.TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, GeneralInfo.TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, GeneralInfo.TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, GeneralInfo.TARGETING_SCOPE, descrTargetingScope, new TargetingScopeEff()));
 
                 //6 Teleporter
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, TELEPORTER, descrTeleporter, new TeleporterEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, TELEPORTER, descrTeleporter, new TeleporterEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, TELEPORTER, descrTeleporter, new TeleporterEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, TELEPORTER, descrTeleporter, new TeleporterEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, TELEPORTER, descrTeleporter, new TeleporterEff()));
-                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, TELEPORTER, descrTeleporter, new TeleporterEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, GeneralInfo.TELEPORTER, descrTeleporter, new TeleporterEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, GeneralInfo.TELEPORTER, descrTeleporter, new TeleporterEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, GeneralInfo.TELEPORTER, descrTeleporter, new TeleporterEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.YELLOW, GeneralInfo.TELEPORTER, descrTeleporter, new TeleporterEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.RED, GeneralInfo.TELEPORTER, descrTeleporter, new TeleporterEff()));
+                deck.add(new PowerUp(idCardGenerator.generateId(), DeckType.POWERUP_CARD, AmmoType.BLUE, GeneralInfo.TELEPORTER, descrTeleporter, new TeleporterEff()));
                 lastIdPowerUp = idCardGenerator.getId() - 1;
                 break;
 

@@ -1,6 +1,5 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
-import it.polimi.ProgettoIngSW2019.common.LightModel.PlayerDataLM;
 
 /**
  * message to enemy player with reload info

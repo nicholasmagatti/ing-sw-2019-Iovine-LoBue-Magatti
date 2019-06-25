@@ -17,21 +17,28 @@ public class MessagePlayerSwapWeapons extends MessageWeaponPay {
      * @param namePlayer        name player reload
      * @param idWeapon          id weapon reload
      * @param nameWeapon        name weapon reload
-     * @param playerLM          player reload LM updated
      */
-    public MessagePlayerSwapWeapons(int idPlayer, String namePlayer, int idWeapon, String nameWeapon, PlayerDataLM playerLM, int idWeaponDiscarded, String nameWeaponDiscarded) {
-        super(idPlayer, namePlayer, idWeapon, nameWeapon, playerLM);
+    public MessagePlayerSwapWeapons(int idPlayer, String namePlayer, int idWeapon, String nameWeapon, int idWeaponDiscarded, String nameWeaponDiscarded) {
+        super(idPlayer, namePlayer, idWeapon, nameWeapon);
 
         this.idWeaponDiscarded = idWeaponDiscarded;
         this.nameWeaponDiscarded = nameWeaponDiscarded;
     }
 
 
+    /**
+     * get id of the weapon to discard
+     * @return          id weapon to discard
+     */
     public int getIdWeaponDiscarded() {
         return idWeaponDiscarded;
     }
 
 
+    /**
+     * get name of the weapon to discard
+     * @return      name of the weapon to discard
+     */
     public String getNameWeaponDiscarded() {
         return nameWeaponDiscarded;
     }

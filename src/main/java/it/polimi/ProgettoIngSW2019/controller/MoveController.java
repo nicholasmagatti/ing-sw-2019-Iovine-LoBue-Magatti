@@ -6,11 +6,9 @@ import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.MoveChoiceRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MoveInfoResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
-import it.polimi.ProgettoIngSW2019.model.GameTable;
-import it.polimi.ProgettoIngSW2019.model.Square;
-import it.polimi.ProgettoIngSW2019.model.TurnManager;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
-import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 
 import java.lang.reflect.Array;
@@ -23,7 +21,7 @@ import java.util.List;
 public class MoveController extends Controller {
     private Player ownerPlayer;
     private List<Square> squaresAvailable = new ArrayList<>();
-    private Square squareToGrab;
+    private Square squareToMove;
 
 
 
@@ -38,7 +36,7 @@ public class MoveController extends Controller {
         }
 
         if (event.getCommand().equals(EventType.REQUEST_MOVE)) {
-            movePlayer(event.getMessageInJsonFormat());
+            checkMoveFromView(event.getMessageInJsonFormat());
         }
     }
 
@@ -58,30 +56,42 @@ public class MoveController extends Controller {
     }
 
 
-    private void movePlayer(String messageJson) {
+    private void checkMoveFromView(String messageJson) {
         MoveChoiceRequest moveChoiceRequest = new Gson().fromJson(messageJson, MoveChoiceRequest.class);
 
         if(ownerPlayer.getIdPlayer() == moveChoiceRequest.getIdPlayer() && ownerPlayer.getHostname().equals(moveChoiceRequest.getHostNamePlayer())) {
-            squareToGrab = convertSquare(ownerPlayer, moveChoiceRequest.getCoordinates());
+            squareToMove = convertSquare(ownerPlayer, moveChoiceRequest.getCoordinates());
 
-            if((squareToGrab != null) && (squaresAvailable.contains(squareToGrab))) {
-                ownerPlayer.moveTo(squareToGrab);
-                getTurnManager().decreaseActionsLeft();
-
-                String updatePlayer = getCreateJson().createPlayerLMJson(ownerPlayer);
-                sendInfo(EventType.UPDATE_PLAYER_INFO, updatePlayer, getHostNameCreateList().addAllHostName());
-
-                String updateMap = getCreateJson().createMapLMJson();
-                sendInfo(EventType.UPDATE_MAP, updateMap, getHostNameCreateList().addAllHostName());
-
-                String messageActionsLeftJson = getCreateJson().createMessageActionsLeftJson(ownerPlayer);
-                sendInfo(EventType.MSG_MY_N_ACTION_LEFT, messageActionsLeftJson, getHostNameCreateList().addOneHostName(ownerPlayer));
+            if((squareToMove != null) && (squaresAvailable.contains(squareToMove))) {
+                movePlayer();
             }
         }
-        else {
-            String message = "ERROR: Qualcosa è andato storto!";
-            sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(ownerPlayer));
+    }
+
+
+
+    private void movePlayer() {
+        ownerPlayer.moveTo(squareToMove);
+        getTurnManager().decreaseActionsLeft();
+
+        String updatePlayer = getCreateJson().createPlayerLMJson(ownerPlayer);
+        sendInfo(EventType.UPDATE_PLAYER_INFO, updatePlayer, getHostNameCreateList().addAllHostName());
+
+        String updateMap = getCreateJson().createMapLMJson();
+        sendInfo(EventType.UPDATE_MAP, updateMap, getHostNameCreateList().addAllHostName());
+
+
+        List<PowerUp> powerUpsCanUse = new ArrayList<>();
+
+        if(!ownerPlayer.getPowerUps().isEmpty()) {
+            for(PowerUp p:ownerPlayer.getPowerUps()) {
+                if(p.getName() != GeneralInfo.TAGBACK_GRENADE || p.getName() != GeneralInfo.TARGETING_SCOPE)
+                    powerUpsCanUse.add(p);
+            }
         }
+
+        String messageActionLeftJson = getCreateJson().createMessageActionsLeftJson(ownerPlayer, powerUpsCanUse);
+        sendInfo(EventType.MSG_MY_N_ACTION_LEFT, messageActionLeftJson, getHostNameCreateList().addOneHostName(ownerPlayer));
     }
 
 

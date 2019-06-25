@@ -3,7 +3,6 @@ package it.polimi.ProgettoIngSW2019.common.enums;
 public enum EventType {
     //Request View to Controller
     REQUEST_USE_POWERUP,
-    REQUEST_POWERUP_AMMO,
     REQUEST_SPAWN_CARDS,                             //toController: request draw 1 card to spawn
     REQUEST_SPAWN,                                   //toController: request spawn
     REQUEST_INITIAL_SPAWN_CARDS,                     //toController: request draw 2 card to spawn
@@ -25,12 +24,11 @@ public enum EventType {
 
     //Response Controller to View
     RESPONSE_REQUEST_USE_POWERUP,
-    RESPONSE_REQUEST_POWERUP_AMMO,
     RESPONSE_REQUEST_SPAWN_CARDS,                   //toView: response draw card to spawn
-    RESPONSE_REQUEST_SPAWN,                         //toView: response spawn (new map changed)
     RESPONSE_REQUEST_INITIAL_SPAWN_CARDS,           //toView: response draw 2 cards to spawn
     RESPONSE_REQUEST_WEAPONS_CAN_RELOAD,            //toView: response with a list of weapons can be reloaded
     RESPONSE_REQUEST_WEAPON_INFO,                   //toView: response info shoot
+    RESPONSE_REQUEST_GRAB_INFO,
     RESPONSE_NEW_LOGIN,
     RESPONSE_RECONNECT,
     RESPONSE_SETUP,
@@ -66,7 +64,7 @@ public enum EventType {
     MSG_ENEMY_DRAW_POWERUP,                         //msg to send to enemies: player draw cards
     MSG_DRAW_MY_POWERUP,                            //msg to send to the player: draw card
     MSG_POWERUPS_DISCARDED_AS_AMMO,                 //msg to send to all with the powerUps discarded for ammo
-    MSG_ENEMY_SPAWN,                                //msg to send with all enemy spawn info
+    MSG_POWERUP_DISCARDED_TO_SPAWN,
     MSG_ALL_RELOAD_WEAPON,                          //msg to send to all enemy info reload
     MSG_DOUBLEKILL,                                 //msg to send to all players doubleKill
     MSG_NEW_TURN,                                   //msg to all players new turn, changed player

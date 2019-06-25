@@ -63,7 +63,7 @@ public class ReloadController extends Controller {
      * extract the info from the message to generate the player
      * @param messageJson   message from view
      */
-    public void checkInfoFromView(String messageJson) {
+    private void checkInfoFromView(String messageJson) {
         //extract the json message in class with his data
         InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
 
@@ -128,7 +128,7 @@ public class ReloadController extends Controller {
      * check if reload info from view are correct
      * @param messageJson       json message
      */
-    public void checkReloadFromView(String messageJson) {
+    private void checkReloadFromView(String messageJson) {
         ReloadChoiceRequest reloadChoice = new Gson().fromJson(messageJson, ReloadChoiceRequest.class);
 
         if(checkIdCorrect(ownerPlayer, reloadChoice.getIdPlayer(), reloadChoice.getHostNamePlayer()) && (checkHostNameCorrect(ownerPlayer, reloadChoice.getHostNamePlayer()))) {
@@ -185,8 +185,8 @@ public class ReloadController extends Controller {
         ownerPlayer.pay(ammoToPay, powerUpsToDiscard);
 
         if(!powerUpsToDiscard.isEmpty()) {
-            String messagePowerUpDiscarded = getCreateJson().createPowerUpsListLMJson(powerUpsToDiscard);
-            sendInfo(EventType.MSG_POWERUPS_DISCARDED_AS_AMMO, messagePowerUpDiscarded, getHostNameCreateList().addAllHostName());
+            String messagePowerUpDiscardedJson = getCreateJson().createMessagePowerUpsDiscardedJson(ownerPlayer, powerUpsToDiscard);
+            sendInfo(EventType.MSG_POWERUPS_DISCARDED_AS_AMMO, messagePowerUpDiscardedJson, getHostNameCreateList().addAllHostName());
             String myPowerUpsJson = getCreateJson().createMyPowerUpsLMJson(ownerPlayer);
             sendInfo(EventType.UPDATE_MY_POWERUPS, myPowerUpsJson, getHostNameCreateList().addOneHostName(ownerPlayer));
         }
@@ -210,7 +210,7 @@ public class ReloadController extends Controller {
      * creates the message for the enemies with reload info
      * @return  message json for enemies
      */
-    public String createMessageWeaponReloadedJson() {
+    private String createMessageWeaponReloadedJson() {
         MessageWeaponPay message = new MessageWeaponPay(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), weaponToReload.getIdCard(), weaponToReload.getName());
         return new Gson().toJson(message);
     }

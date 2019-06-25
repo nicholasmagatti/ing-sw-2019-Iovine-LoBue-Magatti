@@ -1,50 +1,40 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
-import it.polimi.ProgettoIngSW2019.common.LightModel.MyPowerUpLM;
-import it.polimi.ProgettoIngSW2019.common.LightModel.PlayerDataLM;
+
+import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
+import it.polimi.ProgettoIngSW2019.model.PowerUp;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Spawn Draw Cards Response
  */
 public class DrawCardsInfoResponse extends InfoResponse {
-    private PlayerDataLM playerLM;
-    private MyPowerUpLM myPowerUpLM;
+    private List<PowerUpLM> powerUps;
 
 
     /**
      * Constructor
      * @param idPlayer          id spawn player
-     * @param playerLM     spawn playerLM
-     * @param myPowerUpLM       powerUps LM spawn Player
      */
-    public DrawCardsInfoResponse(int idPlayer, PlayerDataLM playerLM, MyPowerUpLM myPowerUpLM) {
+    public DrawCardsInfoResponse(int idPlayer, List<PowerUpLM> powerUps) {
         super(idPlayer);
 
-        if(playerLM == null)
-            throw new NullPointerException("Player cannot be null");
+        if(powerUps == null)
+            throw new NullPointerException("powerUps cannot be null");
 
-        if(myPowerUpLM == null)
-            throw new NullPointerException("myPowerUpLM cannot be null");
-
-        this.playerLM = playerLM;
-        this.myPowerUpLM = myPowerUpLM;
+        this.powerUps = powerUps;
     }
 
 
     /**
-     * get Spawn Player LM
-     * @return  spawn Player
+     * get list of powerUps the player has in hand
+     * the player must choose one to spawn
+     * @return  list of powerUps
      */
-    public PlayerDataLM getSpawnPlayerLM() {
-        return playerLM;
+    public List<PowerUpLM>  getSpawnPlayerLM() {
+        return powerUps;
     }
 
-
-    /**
-     * get The powerUps list LM spawn Player LM
-     * @return  powerUps list LM spawn Player LM
-     */
-    public MyPowerUpLM getMyPowerUpLM() {
-        return myPowerUpLM;
-    }
 }
