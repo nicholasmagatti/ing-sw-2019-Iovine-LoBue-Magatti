@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.LoginRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.LoginResponse;
-import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupChoiceResponse;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupInfo;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
 
@@ -18,17 +18,18 @@ import java.util.Set;
  */
 public class LoginState extends State{
 
+    private boolean ongoingGame;
     private String name;
     private String password;
     private String hostname;
 
-    SetupGameState setupGameState;
+    private SetupGameState setupGameState;
 
     /**
      *  Constructor
      * @param setupGameState
      */
-    LoginState(SetupGameState setupGameState){
+    public LoginState(SetupGameState setupGameState){
         this.setupGameState = setupGameState;
     }
 
@@ -70,13 +71,26 @@ public class LoginState extends State{
             }
             else{
                 System.out.println("This name has already been taken. Choose another one.");
-                name = "";
-                askCredentials();
+
+                askCredentialsAgain();
             }
         }
 
         if (command == EventType.RESPONSE_RECONNECT) {
-            //TODO
+            LoginResponse loginResponse = new Gson().fromJson(jsonMessage, LoginResponse.class);
+            if(loginResponse.isLoginSuccessfull()){
+                System.out.println("You successfully logged in. Welcome back!");
+                //inform the SetupGameState that this is a reconnection in an ongoing game
+                setupGameState.setInfoForReconnection(name, hostname);
+                //ask the server to send me the light model
+                LoginRequest msg = new LoginRequest("", "", hostname);
+                notifyEvent(msg, EventType.REQUEST_GAME_DATA);
+            }
+            else{
+                System.out.println("Wrong name or password. Write them again.");
+
+                askCredentialsAgain();
+            }
         }
 
         if (command == EventType.CAP_REACHED) {
@@ -85,21 +99,29 @@ public class LoginState extends State{
         }
 
         if (command == EventType.GO_IN_GAME_SETUP) {
-            SetupChoiceResponse setupInfo = new Gson().fromJson(jsonMessage, SetupChoiceResponse.class);
+            SetupInfo setupInfo = new Gson().fromJson(jsonMessage, SetupInfo.class);
             goToGameSetup(setupInfo);
         }
     }
 
-    void goToGameSetup(SetupChoiceResponse setupInfo){
-        boolean chooseGameSettings;
-        if (setupInfo.getUsername().equals(name)){
-            chooseGameSettings = true;
-        }
-        else{
-            chooseGameSettings = false;
-        }
-        setupGameState.setChooseGameSettings(chooseGameSettings);
-        setupGameState.setMaps(setupInfo.getMapLMList());
+    /**
+     * Erase previous values of name and password and ask credentials again.
+     */
+    private void askCredentialsAgain(){
+        cleanNameAndPassword();
+        askCredentials();
+    }
+
+    /**
+     * Clean name and password from previous values.
+     */
+    private void cleanNameAndPassword(){
+        name = "";
+        password = "";
+    }
+
+    void goToGameSetup(SetupInfo setupInfo){
+        setupGameState.setInfoBeforeStartGame(name, hostname, setupInfo.getMapLMList(), setupInfo.getUsername());
         StateManager.triggerNextState(setupGameState);
     }
 
@@ -108,9 +130,10 @@ public class LoginState extends State{
      * @param ongoingGame - boolean that tells if there is an ongoing game
      */
     private void login(boolean ongoingGame){
+        this.ongoingGame = ongoingGame;
         if(ongoingGame){
             System.out.println(
-                    "There is an ongoing game. Login if you are reconnecting to the game. If not, wait until the game ends.");
+                    "There is an ongoing game. Login if you are reconnecting to the game. If not, wait until this game ends.");
         }
         else{
             System.out.println("The game hasn't started yet.");
@@ -119,7 +142,7 @@ public class LoginState extends State{
     }
 
     /**
-     * Ask username an password to the user and send them to the server.
+     * Ask username and password to the user and send them to the server.
      */
     private void askCredentials(){
         System.out.print("Write the name of your character: ");

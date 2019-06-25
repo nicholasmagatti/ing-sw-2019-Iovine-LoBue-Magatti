@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.view;
 
 import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
 import it.polimi.ProgettoIngSW2019.model.GameTable;
 
@@ -12,31 +13,72 @@ import java.util.Scanner;
  */
 public class ActionState extends State {
 
+    /**
+     * @deprecated
+     */
+    private boolean moveGrabShootLinked = false;
+
+    private ShootState shootState;
+    private GrabState grabState;
+    private MoveState moveState;
     private ReloadState reloadState;
-    int nrOfAction;
-    int actionChoice;
-    boolean checkAnswer = false;
-    //Variable used to handle the move statement
-    int x;
-    int y;
-    int nrOfMove;
-    //Variable used to handle shoot statement
-    int squareNumber;
-    List<List<Integer>> targetIdList;
-    int nrOfTarget;
-    String targetPerSquare;
-    int targetChoice;
-    //Variable used to handle grab statement
-    boolean isOnAmmoPoint;
-    List<String> ammoCardValue;
-    String yesnoValue;
-    //Variable to handle infoItem statement
-    int infoChoice;
+
+    /**
+     * Constructor
+     * @param reloadState
+     * @param moveState
+     * @param grabState
+     * @param shootState
+     */
+    public ActionState(ReloadState reloadState, MoveState moveState, GrabState grabState, ShootState shootState){
+        this.reloadState = reloadState;
+        this.moveState = moveState;
+        this.grabState = grabState;
+        this.shootState = shootState;
+    }
+
+    /**
+     * Constructor
+     * @param reloadState
+     * @deprecated
+     */
+    public ActionState(ReloadState reloadState){
+        this.reloadState = reloadState;
+    }
+
+    /**
+     * Used after the creation of the parameters to link them to this state.
+     * @param moveState
+     * @param grabState
+     * @param shootState
+     * @deprecated
+     */
+    public void linkToMoveGrabShoot(MoveState moveState, GrabState grabState, ShootState shootState){
+        this.moveState = moveState;
+        this.grabState = grabState;
+        this.shootState = shootState;
+        moveGrabShootLinked = true;
+    }
 
     @Override
     public void startState() {
+        if(!moveGrabShootLinked){
+            throw new RuntimeException("The attributes moveState, grabState and ShootState have not been assigned.");
+        }
+        //TODO
 
+    }
 
+    @Override
+    public void update(Event event) {
+
+        EventType command = event.getCommand();
+        String jsonMessage = event.getMessageInJsonFormat();
+
+        //TODO: if (command == EventType.nomechenonso) triggerNextState(this)
+
+    }
+/*
         while(nrOfAction != 0) {
             System.out.println("Hai ancora a disposzione " + nrOfAction + " azioni.");
             System.out.println("Che cosa vuoi fare: ");
@@ -79,10 +121,8 @@ public class ActionState extends State {
         StateManager.triggerNextState(reloadState);
     }
 
-    @Override
-    public void update(Event event) {
 
-    }
+
 
     private void move(){
         System.out.println("Reminder: un movimento corrisponde a spostarsi di un quadrato escludendo la diagonale");
@@ -218,5 +258,5 @@ public class ActionState extends State {
 
     private void showEnemyDamageLine(){
 
-    }
+    }*/
 }

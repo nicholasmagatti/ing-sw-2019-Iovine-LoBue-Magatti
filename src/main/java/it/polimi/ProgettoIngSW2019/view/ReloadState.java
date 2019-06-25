@@ -15,9 +15,8 @@ import java.util.List;
  * @author Nicholas Magatti
  */
 public class ReloadState extends State{
-    StateManager stateManager;
-    SpawnState spawnState;
-    String input;
+
+    private String input;
 
     /**
      * Send a message to the controller that requests the reloadable weapons for this user.
@@ -47,27 +46,19 @@ public class ReloadState extends State{
 
         List<WeaponLM>weapons = reloadInfo.getWeaponsCanReload();
         if(weapons.isEmpty()){
-            stateManager.triggerNextState(spawnState);
+            //TODO
         }
         else {
             //options
             System.out.println("Which weapon do you want to reload? Choose an option:");
             for(int i=0; i < weapons.size(); i++) {
-                System.out.println(i + 1 + " : " + weapons.get(i).getName() +
+                System.out.println(i + 1 + ": " + weapons.get(i).getName() +
                         ", cost: " + ToolsView.costToString(reloadInfo.getListPaymentReload().get(i).getAmmoCost()));
             }
             System.out.println(GeneralInfo.NO_COMMAND + ": don't reload");
-            System.out.println(GeneralInfo.EXIT_COMMAND + ": " + GeneralInfo.EXIT_EXPLANATION);
-            /*
-            System.out.println("DETAILS WEAPONS: ");
-            for(WeaponLM weaponLM : weapons){
-                System.out.println("Name: " + weaponLM.getName());
-                System.out.println("Description: " + weaponLM.getDescription());
-            }*/
-
+            ToolsView.printGeneralOptions();
             List<String>acceptableInputs = new ArrayList<>();
             acceptableInputs.add(GeneralInfo.NO_COMMAND);
-            acceptableInputs.add(GeneralInfo.EXIT_COMMAND);
             for(int i=0; i <= weapons.size(); i++){
                 acceptableInputs.add(Integer.toString(i));
             }
@@ -76,10 +67,7 @@ public class ReloadState extends State{
             if(input != null){ //time NOT expired
                 switch (input){
                     case GeneralInfo.NO_COMMAND :
-                        //TODO: invia messaggio del fatto che ho finito di ricaricare
-                        break;
-                    case GeneralInfo.EXIT_COMMAND :
-                        //TODO
+                        //TODO: invia messaggio al controller del fatto che ho finito di ricaricare
                         break;
                         default: //option as a number
                             chosenOption = Integer.parseInt(input);

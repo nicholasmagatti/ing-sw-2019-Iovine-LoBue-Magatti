@@ -3,78 +3,61 @@ package it.polimi.ProgettoIngSW2019.view;
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.MapLM;
+import it.polimi.ProgettoIngSW2019.common.Message.toController.SetupRequest;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * State in which the first user is when he/she is choosing the map to use and the number of skulls for the game
  * @author Nicholas Magatti
  */
 public class SetupGameState extends State {
-    boolean chooseGameSettings;
-    List<MapLM> maps;
+
+    private boolean gotInfoBeforeStartGame = false;
+    private boolean isReconnection = false;
+    private String myName;
+    private String hostname;
+    private String playerWhoSetsTheGame;
+    private List<MapLM> maps;
+
+
+    void setInfoBeforeStartGame(String myName, String hostname, List<MapLM> maps, String playerWhoSetsTheGame){
+        this.myName = myName;
+        this.hostname = hostname;
+        this.maps = maps;
+        this.playerWhoSetsTheGame = playerWhoSetsTheGame;
+        gotInfoBeforeStartGame = true;
+    }
+
+    void setInfoForReconnection(String myName, String hostname){
+        this.myName = myName;
+        this.hostname = hostname;
+        //gotInfoForReconnection = true;
+        isReconnection = true;
+    }
 
 
     @Override
     public void startState() {
+        if(!gotInfoBeforeStartGame){
+            throw new RuntimeException("You did not set the required information before the start of the state, with " +
+                    "the method setInfoBeforeStart(...).");
+        }
+        //set beck to false in case the startState is called again without setting the new information of that new context:
+        gotInfoBeforeStartGame = false;
 
-
-        /*
-        //TODO: remove scanner
-        Scanner scanner = new Scanner(System.in);
-        int mapChoice;
-        int skullChoice;
-        boolean checkAnswer = false;
-
-
-
-        System.out.println("###########################################\n");
-        System.out.println("Ma che piacevole sorpresa, quindi tu saresti il primo giocatore a connettersi.");
-        System.out.println("Per te ho un compito importante, mi dovrai dire con che mappa vorrai giocare e con quali regole");
-        System.out.println("Which map do you choose?");
-
-        //TODO: in futuro farà notify con un messaggio di tipo "RequestMap" per fargli vedere le mappe prima di scegliere
-        //TODO: do this with a for loop instead(so that it is scalable if the number of maps changes)
-        System.out.println("1 - Mappa A");
-        System.out.println("2 - Mappa B");
-        System.out.println("3 - Mappa C");
-        System.out.println("4 - Mappa D");
-
-        System.out.println("Which map do you choose?");
-
-        while(!checkAnswer) {
-            System.out.print("Scegli [1 - 4] per selezionare la mappa: ");
-            mapChoice = scanner.nextInt();
-            //TODO: write maps.size() instead of 4
-            if(mapChoice >= 1 && mapChoice <= 4)
-                checkAnswer = true;
-            else
-                System.out.println("La scelta fatta non è ammissibile. Ritenta, sarai più fortunato.\n");
+        if(playerWhoSetsTheGame.equals(myName)){
+            chooseSetting();
+        }
+        else{
+            System.out.println(playerWhoSetsTheGame + " is setting the game. Wait...");
         }
 
-        checkAnswer = false;
-
-        System.out.println("Great! How many skulls do you want to use for this game? Choose a number between 5 and 8.");
-        System.out.println("Remember: more skulls mean longer game.");
-        while(!checkAnswer) {
-            System.out.println("Number of skulls: ");
-            skullChoice = scanner.nextInt();
-            if(skullChoice >= 5 && skullChoice <= 8)
-                checkAnswer = true;
-            else
-                System.out.println("Wrong input. Please: choose a number between 5 and 8.");
-        }
-
-        System.out.println("Setting the game...");
-        //TODO
-
-        System.out.println("Waiting for the other players...");
-        System.out.println("We are almost ready!");
-
-        stateManager.triggerNextState(new WaitState());*/
     }
 
     @Override
@@ -82,24 +65,90 @@ public class SetupGameState extends State {
         EventType command = event.getCommand();
         String jsonMessage = event.getMessageInJsonFormat();
 
-        /*//initialize the boolean youCanChooseGameSettings, then trigger this state as next state
-        if(command == EventType.GO_IN_GAME_SETUP){
-            MessageConnection messageConnection = new Gson().fromJson(jsonMessage, MessageConnection.class);
-            if(messageConnection.getId() == InfoOnView.getMyId()){
-                youCanChooseGameSettings = true;
-            }
-            else{
-                youCanChooseGameSettings = false;
-            }
-            StateManager.triggerNextState(this);
-        }*/
+        if(command == EventType.RESPONSE_GAME_DATA){
+            SetupResponse setupResponse = new Gson().fromJson(jsonMessage, SetupResponse.class);
+            createLocalLightModelAndStart(setupResponse);
+        }
+
     }
 
-    void setChooseGameSettings(boolean chooseGameSettings) {
-        this.chooseGameSettings = chooseGameSettings;
+    /**
+     * Set number map and number of skulls and send that to the controller, if the timer does not expire first.
+     */
+    void chooseSetting(){
+        System.out.println("Choose the setting of the game: the map and the number of skulls to use.");
+        int map, skulls;
+        String inputFromUser;
+        inputFromUser = chooseMap();
+
+        if(inputFromUser != null){ //time not expired
+            map = Integer.parseInt(inputFromUser);
+
+            inputFromUser = chooseNrSkulls();
+
+            if(inputFromUser != null){ //time not expired
+                skulls = Integer.parseInt(inputFromUser);
+
+                //after the player set everything
+                System.out.println("Wait a few seconds...");
+
+                //notify choice to server
+                SetupRequest setupRequest = new SetupRequest(hostname, map, skulls);
+                notifyEvent(setupRequest, EventType.REQUEST_SETUP);
+            }
+        }
     }
 
-    void setMaps(List<MapLM> maps) {
-        this.maps = maps;
+    private String chooseMap(){
+        //print maps
+        List<String> allowedAnswers = new ArrayList<>();
+        for(int i=0; i < maps.size(); i++){
+            System.out.println("MAP NUMBER " + (i+1) + ":");
+            System.out.println();
+            ToolsView.printTheSpecifiedMap(maps.get(i));
+            System.out.println("\n");
+            allowedAnswers.add(Integer.toString(i+1));
+        }
+
+        System.out.print("Type the number of the chosen map: ");
+        return ToolsView.readUserChoice(allowedAnswers, false);
     }
+
+    private String chooseNrSkulls(){
+        System.out.println("Choose a number of skulls for the killsho track between " +
+                GeneralInfo.MIN_SKULLS + " and " + GeneralInfo.MAX_SKULLS +".");
+        System.out.println("The skulls represent the number of kills to get to the end of the game.");
+        System.out.println("Number of skulls: ");
+        List<String> allowedAnswers = new ArrayList<>();
+        for(int nSkulls = GeneralInfo.MIN_SKULLS; nSkulls <= GeneralInfo.MAX_SKULLS; nSkulls++){
+            allowedAnswers.add(Integer.toString(nSkulls));
+        }
+        return ToolsView.readUserChoice(allowedAnswers, false);
+    }
+
+    /**
+     * Create first version of light model, then start the game, acting differently based on
+     * the fact this is a reconnection or a normal connection before the game starts.
+     * @param setupResponse - the object that contains all the information about the light model and the first player
+     */
+    void createLocalLightModelAndStart(SetupResponse setupResponse){
+
+        InfoOnView.createFirstLightModel(
+                setupResponse.getMyId(), myName, setupResponse.getMyHostname(),
+                setupResponse.getPlayers(), setupResponse.getMyLoadedWeaponsLM(),
+                setupResponse.myPowerUpLM(), setupResponse.getMap(), setupResponse.getKillshotTrack());
+
+        if(isReconnection){ //if the palyer is reconnecting to the ongoing game
+            InfoOnView.printEverything();
+            StateManager.setNullState();
+        }
+        else { //if the game is starting now
+            System.out.println("The game starts now. Good luck!");
+            InfoOnView.printEverything();
+            //if the first player is the one on this client, trigger the first spawn for him/her
+            //TODO
+
+        }
+    }
+
 }

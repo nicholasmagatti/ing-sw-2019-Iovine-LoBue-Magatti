@@ -26,6 +26,13 @@ public abstract class GeneralInfo {
     public static final int PURPLE_ROOM_ID = 4;
     public static final int GREEN_ROOM_ID = 5;
 
+    //names of powerups
+    public static final String TAGBACK_GRENADE = "TAGBACK GRENADE";
+    public static final String NEWTON = "NEWTON";
+    public static final String TARGETING_SCOPE = "TARGETING SCOPE";
+    public static final String TELEPORTER = "TELEPORTER";
+
+    //for view
     public static final String NO_COMMAND = "no";
     public static final String EXIT_COMMAND = "exit";
     public static final String EXIT_EXPLANATION = "exit from game";
