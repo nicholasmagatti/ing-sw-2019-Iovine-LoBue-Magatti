@@ -33,9 +33,17 @@ public abstract class GeneralInfo {
     public static final String TELEPORTER = "TELEPORTER";
 
     //for view
+    public static final String YES_COMMAND = "yes";
     public static final String NO_COMMAND = "no";
+    /**
+     * @deprecated
+     */
     public static final String EXIT_COMMAND = "exit";
+    public static final String MOVE_COMMAND = "move";
+    public static final String GRAB_COMMAND = "grab";
+    public static final String SHOOT_COMMAND = "shoot";
     public static final String EXIT_EXPLANATION = "exit from game";
     public static final String PREFIX_COMMAND_DESCRIPTION = "description ";
     public static final char[] ILLEGAL_CHARACTERS_FOR_USERNAME = {'.', ':', ',', ';'};
+    public static final String ASK_INPUT = "Type the chosen option: ";
 }

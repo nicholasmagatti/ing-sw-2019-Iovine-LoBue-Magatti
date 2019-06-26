@@ -2,10 +2,7 @@ package it.polimi.ProgettoIngSW2019.view;
 
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
-import it.polimi.ProgettoIngSW2019.common.LightModel.AmmoPointLM;
-import it.polimi.ProgettoIngSW2019.common.LightModel.MapLM;
-import it.polimi.ProgettoIngSW2019.common.LightModel.SpawnPointLM;
-import it.polimi.ProgettoIngSW2019.common.LightModel.SquareLM;
+import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
@@ -61,6 +58,45 @@ public abstract class ToolsView {
     }
 
     /**
+     * Print list of weapons with their names in a line.
+     * @param weapons
+     */
+    static void printListOfWeapons(List<WeaponLM> weapons){
+        for(WeaponLM weapon : weapons){
+            System.out.print(weapon.getName());
+            if(weapons.indexOf(weapon) != weapons.size()-1){
+                System.out.print(", ");
+            }
+        }
+    }
+
+    /**
+     * Print list of powerups with their names and their ammo color in a line.
+     * @param powerUps
+     */
+    static void printListOfPowerups(List<PowerUpLM> powerUps) {
+        for(PowerUpLM pu : powerUps){
+            System.out.print(pu.getName() + "(" + ToolsView.ammoTypeToString(pu.getGainAmmoColor()) + ")");
+            if(powerUps.indexOf(pu) != powerUps.size()-1){
+                System.out.print(", ");
+            }
+        }
+    }
+
+    /**
+     * Print list of players with their names in a line.
+     * @param players
+     */
+    static void printListOfPlayersNames(List<PlayerDataLM> players){
+        for(PlayerDataLM p : players){
+            System.out.print(p.getNickname());
+            if(players.indexOf(p) != players.size()-1){
+                System.out.print(", ");
+            }
+        }
+    }
+
+    /**
      * From an ammo type get the string of the respective color in lowercase.
      * @param ammoType
      * @return
@@ -84,7 +120,7 @@ public abstract class ToolsView {
     }
 
     static void printGeneralOptions(){
-        System.out.println(GeneralInfo.EXIT_COMMAND + ": exit from game");
+        //System.out.println(GeneralInfo.EXIT_COMMAND + ": exit from game");
         System.out.println(GeneralInfo.PREFIX_COMMAND_DESCRIPTION + "NameWeapon/Powerup: read the description of that weapon/powerup");
     }
 
@@ -118,9 +154,10 @@ public abstract class ToolsView {
      * If the //TODO finish this javadoc
      */
     static String readUserChoice(List<String> allowedAnswers, boolean generalOptionsEnabled){
+        /*
         if(generalOptionsEnabled) {
             allowedAnswers.add(GeneralInfo.EXIT_COMMAND);
-        }
+        }*/
         boolean exit = false;
         String inputFromUser;
         do {
@@ -130,7 +167,7 @@ public abstract class ToolsView {
                 exit = true;
             }
             else{
-                if(generalOptionsEnabled && inputFromUser.contains(GeneralInfo.PREFIX_COMMAND_DESCRIPTION)){
+                if(generalOptionsEnabled && isDescriptionCommand(inputFromUser)){
                     //TODO
                 }
                 else {
@@ -145,13 +182,14 @@ public abstract class ToolsView {
             return null;
         }
         else {
+            /*
             if(generalOptionsEnabled && inputFromUser.equals(GeneralInfo.EXIT_COMMAND)){
                 //TODO
                 return null;
             }
-            else {
+            else {*/
                 return inputFromUser;
-            }
+            /*}*/
         }
     }
 

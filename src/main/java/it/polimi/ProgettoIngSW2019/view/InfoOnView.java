@@ -46,6 +46,18 @@ public class InfoOnView implements Observer<Event> {
         return hostname;
     }
 
+    static PlayerDataLM[] getPlayers() {
+        return players;
+    }
+
+    static MyLoadedWeaponsLM getMyLoadedWeapons() {
+        return myLoadedWeapons;
+    }
+
+    static MyPowerUpLM getMyPowerUps() {
+        return myPowerUps;
+    }
+
     static void createFirstLightModel(
                         int id, String username, String hostName, PlayerDataLM[] allPlayers,
                         MyLoadedWeaponsLM loadedWeapons, MyPowerUpLM powerUps,
@@ -58,6 +70,26 @@ public class InfoOnView implements Observer<Event> {
         myPowerUps = powerUps;
         map = mapUsed;
         killshotTrack = killshotTrackGame;
+    }
+
+    /**
+     * Get the position of the player if present, return null otherwise.
+     * @param player
+     * @return the position of the player if present, return null otherwise.
+     */
+    static int[] positionPlayer(PlayerDataLM player){
+        int[] position = new int[2];
+        SquareLM[][] mapLM = map.getMap();
+        for(int row=0; row < mapLM.length; row++){
+            for(int col=0; col < mapLM[row].length; col++){
+                if(mapLM[row][col].getPlayers().contains(player)){
+                    position[0] = row;
+                    position[1] = col;
+                    return position;
+                }
+            }
+        }
+        return null;
     }
 
     static void printEverything(){
@@ -109,30 +141,23 @@ public class InfoOnView implements Observer<Event> {
     }
 
     void printWeaponsOnSpawnPoints(){
-        //array of spawn points in order of idRoom
+        //array of spawn points at the position X where X is the id room that represents a specific color
         SpawnPointLM[] spawnPoints = spawnPoints();
         System.out.print("Weapons on Spawn Points:\t");
-
-
+        //every ammo color is linked to the respective color of the spawn point
+        AmmoType[] listAmmoType = {AmmoType.RED, AmmoType.BLUE, AmmoType.YELLOW};
+        for(AmmoType ammoType : listAmmoType){
+            System.out.print("\t");
+            //print the color relative to that ammo in uppercase
+            System.out.print(ToolsView.ammoTypeToString(ammoType).toUpperCase() + ": ");
+            //print list of weapons of the spawn point of the color relative to that ammo
+            ToolsView.printListOfWeapons(spawnPoints[AmmoType.intFromAmmoType(ammoType)].getWeapons());
+            //if not last ammoType of the array
+            if(ammoType != listAmmoType[listAmmoType.length-1]){
+                System.out.print(",");
+            }
+        }
         System.out.print("\n");
-    }
-
-    void printListOfWeapons(List<WeaponLM> weapons){
-        for(WeaponLM weapon : weapons){
-            System.out.print(weapon.getName());
-            if(weapons.indexOf(weapon) != weapons.size()-1){
-                System.out.print(", ");
-            }
-        }
-    }
-
-    void printListOfPowerups(List<PowerUpLM> powerUps) {
-        for(PowerUpLM pu : powerUps){
-            System.out.print(pu.getName() + "(" + ToolsView.ammoTypeToString(pu.getGainAmmoColor()) + ")");
-            if(powerUps.indexOf(pu) != powerUps.size()-1){
-                System.out.print(", ");
-            }
-        }
     }
 
 

@@ -62,7 +62,6 @@ public class ReloadState extends State{
             for(int i=0; i <= weapons.size(); i++){
                 acceptableInputs.add(Integer.toString(i));
             }
-
             input = ToolsView.readUserChoice(acceptableInputs, true);
             if(input != null){ //time NOT expired
                 switch (input){

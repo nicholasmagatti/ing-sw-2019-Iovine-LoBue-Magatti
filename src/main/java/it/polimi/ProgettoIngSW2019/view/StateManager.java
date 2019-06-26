@@ -13,6 +13,7 @@ public class StateManager {
     /**
      * Get the current state
      * @return the current state set in StateManager. Note: it can be null.
+     * @deprecated
      */
     static State getCurrentState() {
         return currentState;
@@ -44,6 +45,7 @@ public class StateManager {
 
     /**
      * Set the current state to null: the user is just watching the game until an action from him/her will be requested.
+     * @deprecated
      */
     static void setNullState(){
         currentState = null;
