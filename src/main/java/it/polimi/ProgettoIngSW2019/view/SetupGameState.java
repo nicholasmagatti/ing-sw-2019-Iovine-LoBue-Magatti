@@ -140,7 +140,7 @@ public class SetupGameState extends State {
 
         if(isReconnection){ //if the palyer is reconnecting to the ongoing game
             InfoOnView.printEverything();
-            StateManager.setNullState();
+            //StateManager.setNullState();
         }
         else { //if the game is starting now
             System.out.println("The game starts now. Good luck!");

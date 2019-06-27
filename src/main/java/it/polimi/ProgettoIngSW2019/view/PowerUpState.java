@@ -18,11 +18,11 @@ public class PowerUpState extends State {
 
     private ActionState actionState;
 
-    public PowerUpState(ActionState actionState){
+    PowerUpState(ActionState actionState){
         this.actionState = actionState;
     }
 
-    public void setPowerupToUse(PowerUpLM powerup) {
+    void setPowerupToUse(PowerUpLM powerup) {
         this.powerup = powerup;
     }
 
@@ -62,17 +62,7 @@ public class PowerUpState extends State {
         EventType command = event.getCommand();
         String jsonMessage = event.getMessageInJsonFormat();
 
-        if(command == EventType.VUOI_USARE_UNO_DI_QUESTI_POWERUP_MENTRE_AVVERSARIO_TI_STA_ATTACCANDO?){
-            //TODO if one, three options: yes, no, description (ogni opzione a capo)
-            //TODO: if more than one: 1: sdfdff, 2: sdsdf, 3: weeewre, no: dwede, descriton (ogni opzione a capo)
-            //TODO: una volta scelto il powerup: setPowerupToUse(chosenPowerup); trigerNextState(this)
 
-        }
-
-        /*TODO: quando ricevo il messaggio che mi dice che l'uso del powerup è andato
-            a buon fine, metti  powerup = null e se avevi la grenade vai in state
-            null, se avevi una delle due che puoi usare prima o dopo un turno non fare niente
-         */
     }
 
     /**

@@ -224,4 +224,52 @@ public class TestPlayer {
         assertEquals(7, player1.getScore());
     }
 
+    @Test
+    public void testLimitDamage(){
+        player3.dealDamage(2, player1);
+        player2.dealDamage(5, player1);
+        player4.dealDamage(10, player1);
+        assertEquals(GeneralInfo.DAMAGE_TO_OVERKILL, player1.getDamageLine().size());
+
+        player4.dealDamage(20, player1);
+        assertEquals(GeneralInfo.DAMAGE_TO_OVERKILL, player1.getDamageLine().size());
+
+        player4.dealDamage(20, player3);
+        assertEquals(GeneralInfo.DAMAGE_TO_OVERKILL, player3.getDamageLine().size());
+    }
+
+    @Test
+    public void testCorrectRemovalOfMarks(){
+        player2.dealDamage(3, player1);
+        player2.markPlayer(2, player1);
+        player4.dealDamage(1, player1);
+        player4.markPlayer(1, player1);
+        player3.markPlayer(1, player1);
+        player4.markPlayer(1, player1);
+        player3.markPlayer(1, player1);
+        player4.dealDamage(1, player1);
+        player3.dealDamage(1, player1);
+        assertFalse(player1.getMarkLine().contains(player4.getCharaName()));
+        assertEquals(10, player1.getDamageLine().size());
+        assertEquals(2, player1.getMarkLine().size());
+    }
+
+    @Test
+    public void testMax3MarksFromSamePlayer(){
+        player3.markPlayer(2, player4);
+        player3.markPlayer(2, player4);
+        assertEquals(3, player4.getMarkLine().size());
+        player3.dealDamage(1, player4);
+        player3.markPlayer(1, player4);
+        player1.markPlayer(3, player4);
+        player3.markPlayer(3, player4);
+        int marksFromPlayer3 = 0;
+        for(String name : player4.getMarkLine()){
+            if(name.equals(player3.getCharaName())){
+                marksFromPlayer3++;
+            }
+        }
+        assertEquals(3, marksFromPlayer3);
+    }
+
 }

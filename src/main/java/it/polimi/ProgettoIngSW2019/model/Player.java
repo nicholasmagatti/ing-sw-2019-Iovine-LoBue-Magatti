@@ -211,14 +211,6 @@ public class Player{
         if(totDamageOnTarget >= GeneralInfo.DAMAGE_TO_KILL){
             targetPlayer.putPlayerDown();
         }
-        /*TODO: chiedere se devo farlo io o se se ne occupa il controller: in tal caso
-                cancellarlo(se invece devo farlo: decommentarlo)
-         */
-        /*
-        //if you have just overkilled your target, he/she marks you (1 mark)
-        if(targetPlayer.getDamageLine().size() == GeneralInfo.DAMAGE_TO_OVERKILL){
-            targetPlayer.markPlayer(1, this);
-        }*/
     }
 
     /**

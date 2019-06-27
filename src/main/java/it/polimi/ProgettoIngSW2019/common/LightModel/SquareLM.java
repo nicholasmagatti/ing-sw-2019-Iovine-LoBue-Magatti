@@ -38,8 +38,8 @@ public abstract class SquareLM {
     }
 
     /**
-     * Get the players on the square
-     * @return list of players on the square
+     * Get the id of the players on the square
+     * @return list of id of the players on the square
      */
     public List<Integer> getPlayers() {
         return players;

@@ -15,7 +15,9 @@ import java.util.List;
 public class ActionState extends State {
 
     private MessageActionLeft infoStart;
-
+    /**
+     * @deprecated
+     */
     private boolean moveGrabShootLinked = false;
 
     private ShootState shootState;
@@ -27,10 +29,18 @@ public class ActionState extends State {
 
     /**
      * Constructor
-     *
+     * @param moveState
+     * @param grabState
+     * @param shootState
+     * @param powerUpState
      * @param reloadState
      */
-    public ActionState(ReloadState reloadState) {
+    public ActionState(MoveState moveState, GrabState grabState, ShootState shootState,
+                       PowerUpState powerUpState, ReloadState reloadState) {
+        this.moveState = moveState;
+        this.grabState = grabState;
+        this.shootState = shootState;
+        this.powerUpState = powerUpState;
         this.reloadState = reloadState;
     }
 
@@ -40,6 +50,7 @@ public class ActionState extends State {
      * @param moveState
      * @param grabState
      * @param shootState
+     * @deprecated
      */
     public void linkToMoveGrabShootPowerup(MoveState moveState, GrabState grabState,
                                            ShootState shootState, PowerUpState powerUpState) {
@@ -52,9 +63,12 @@ public class ActionState extends State {
 
     @Override
     public void startState() {
+        /*
         if (!moveGrabShootLinked) {
             throw new RuntimeException("The attributes moveState, grabState and ShootState have not been assigned.");
-        }
+        }*/
+        InfoOnView.printEverything();
+
         String userAnswer;
         int actionsLeft = infoStart.getnActionsLeft();
         if (actionsLeft > 0) {
@@ -141,7 +155,8 @@ public class ActionState extends State {
                     StateManager.triggerNextState(shootState);
                     break;
                 default:
-                    throw new Error();
+                    throw new Error("If the command is not either the one for grab, shoot or move," +
+                            "it should not even have got here (in this switch-case).");
             }
         }
     }

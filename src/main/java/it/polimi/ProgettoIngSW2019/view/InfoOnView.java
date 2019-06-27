@@ -1,8 +1,10 @@
 package it.polimi.ProgettoIngSW2019.view;
 
+import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
@@ -82,7 +84,7 @@ public class InfoOnView implements Observer<Event> {
         SquareLM[][] mapLM = map.getMap();
         for(int row=0; row < mapLM.length; row++){
             for(int col=0; col < mapLM[row].length; col++){
-                if(mapLM[row][col].getPlayers().contains(player)){
+                if(mapLM[row][col].getPlayers().contains(player.getIdPlayer())){
                     position[0] = row;
                     position[1] = col;
                     return position;
@@ -92,31 +94,50 @@ public class InfoOnView implements Observer<Event> {
         return null;
     }
 
+    /**
+     * Print everything the player can see: the map and what is on it, the killshot track,
+     * all the info about the other players, the cards on his/her own hand.
+     */
     static void printEverything(){
-
+        System.out.print("\n");
+        printMapAndKillshotTrack();
+        System.out.print("\n");
+        printWeaponsOnSpawnPoints();
+        System.out.print("\n");
+        for(PlayerDataLM player : players){
+            if(player.getIdPlayer() != myId){
+                printPublicInfoOnPlayer(player);
+                System.out.print("\n");
+            }
+        }
+        System.out.println("YOU:");
+        printPublicInfoOnPlayer(players[myId]);
+        System.out.println("Your hand:");
+        printMyPowerupsAndLoadedWeapons();
+        System.out.print("\n\n");
     }
 
     /**
      * Print map and killshot track
      */
-    void printMapAndKillshotTrack(){
+    private static void printMapAndKillshotTrack(){
         printMap();
         System.out.print("\t");
         printKillshotTrack();
-        System.out.print("\n\n");
+        System.out.print("\n");
     }
 
     /**
      * Print the map, line by line (with colors)
      */
-    void printMap(){
+    private static void printMap(){
         ToolsView.printTheSpecifiedMap(map);
     }
 
     /**
      * Print the killshot track
      */
-    void printKillshotTrack(){
+    private static void printKillshotTrack(){
         List<KillToken> track = killshotTrack.getTrack();
         System.out.print("Killshot track: ");
         for(KillToken killToken : track){
@@ -140,7 +161,7 @@ public class InfoOnView implements Observer<Event> {
         System.out.print("\n");
     }
 
-    void printWeaponsOnSpawnPoints(){
+    private static void printWeaponsOnSpawnPoints(){
         //array of spawn points at the position X where X is the id room that represents a specific color
         SpawnPointLM[] spawnPoints = spawnPoints();
         System.out.print("Weapons on Spawn Points:\t");
@@ -160,6 +181,71 @@ public class InfoOnView implements Observer<Event> {
         System.out.print("\n");
     }
 
+    private static void printPublicInfoOnPlayer(PlayerDataLM player){
+        char markerPlayer;
+        String activeOrNot;
+        if(player.getDown()){
+            markerPlayer = 'p';
+        }
+        else{
+            markerPlayer = 'P';
+        }
+        if(player.getActive()){
+            activeOrNot = "active";
+        }
+        else{
+            activeOrNot = "inactive";
+        }
+        System.out.print(markerPlayer + (player.getIdPlayer()+1) + ": " + player.getNickname() + " (" + activeOrNot + "),\t");
+        System.out.print("Skulls: " + player.getnSkulls() + ",\t");
+        System.out.println("Ammo: " + player.getnRedAmmo() + " red, " +
+                                    player.getnBlueAmmo() + " blue, " +
+                                    player.getnYellowAmmo() + " yellow");
+        System.out.print("Damage Line: ");
+
+        for(int i=0; i < GeneralInfo.DAMAGE_TO_OVERKILL; i++){
+            if(i < player.getDamageLine().size()) {
+                System.out.print(player.getDamageLine().get(i));
+            }
+            else{ //empty spaces
+                System.out.print("[-]");
+            }
+            if(i == GeneralInfo.DAMAGE_TO_KILL - 1){
+                System.out.print("(kill)");
+            }
+            if(i == GeneralInfo.DAMAGE_TO_OVERKILL - 1){
+                System.out.print("(overkill)");
+            }
+            else{
+                System.out.print(", ");
+            }
+        }
+        System.out.print(";\t");
+
+        System.out.print("Mark Line: ");
+        for(int i=0; i < player.getMarkLine().size(); i++){
+            System.out.print(player.getMarkLine().get(i));
+            if(i < player.getMarkLine().size()-1){
+                System.out.print(", ");
+            }
+        }
+        System.out.print("\n");
+        System.out.print("Powerups: " + player.getnPowerUps() + "\t");
+        System.out.print("Loaded weapons: " + player.getnLoadedWeapons() + "\t");
+        System.out.print("Unloaded weapons: ");
+        ToolsView.printListOfWeapons(player.getUnloadedWeapons());
+        System.out.print("\n");
+    }
+
+    private static void printMyPowerupsAndLoadedWeapons(){
+        System.out.print("Powerups: ");
+        ToolsView.printListOfPowerups(myPowerUps.getPowerUps());
+        System.out.print("\t");
+        System.out.print("Loaded weapons: ");
+        ToolsView.printListOfWeapons(myLoadedWeapons.getLoadedWeapons());
+        System.out.print("\n");
+    }
+
 
 
     /**
@@ -168,7 +254,7 @@ public class InfoOnView implements Observer<Event> {
      * @return the spawn points in an array with the spawn point of the color corresponding to
      * the id room X at position X.
      */
-    SpawnPointLM[] spawnPoints(){
+    private static SpawnPointLM[] spawnPoints(){
         SpawnPointLM[] spawnPoints = new SpawnPointLM[3];
         SquareLM[][] mapLM = map.getMap();
 
@@ -187,8 +273,30 @@ public class InfoOnView implements Observer<Event> {
      * @param event
      */
     @Override
-    public void update(Event event){
+    public synchronized void update(Event event){
+        EventType command = event.getCommand();
+        String jsonMessage = event.getMessageInJsonFormat();
 
+        if(command == EventType.UPDATE_MAP){
+            map = new Gson().fromJson(jsonMessage, MapLM.class);
+        }
+
+        if(command == EventType.UPDATE_KILLSHOTTRACK){
+            killshotTrack = new Gson().fromJson(jsonMessage, KillshotTrackLM.class);
+        }
+
+        if(command == EventType.UPDATE_PLAYER_INFO){
+            PlayerDataLM playerToUpdate = new Gson().fromJson(jsonMessage, PlayerDataLM.class);
+            players[playerToUpdate.getIdPlayer()] = playerToUpdate;
+        }
+
+        if(command == EventType.UPDATE_MY_POWERUPS){
+            myPowerUps = new Gson().fromJson(jsonMessage, MyPowerUpLM.class);
+        }
+
+        if(command == EventType.UPDATE_MY_LOADED_WEAPONS){
+            myLoadedWeapons = new Gson().fromJson(jsonMessage, MyLoadedWeaponsLM.class);
+        }
     }
 
 }

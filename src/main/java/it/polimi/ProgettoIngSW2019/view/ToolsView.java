@@ -124,6 +124,10 @@ public abstract class ToolsView {
         System.out.println(GeneralInfo.PREFIX_COMMAND_DESCRIPTION + "NameWeapon/Powerup: read the description of that weapon/powerup");
     }
 
+    private void printDescription(String name){
+        
+    }
+
     /**
      * Return true if the string is a request from the user to visualize the description of a card.
      * @param string
@@ -388,8 +392,16 @@ public abstract class ToolsView {
     private static String playersToDrawOnSquare(SquareLM squareLM){
         String stringToReturn = "";
         for(int idPlayer : squareLM.getPlayers()){
+            //'P' if the player is up, 'p' if the player is down
+            char markerPlayer;
+            if(InfoOnView.getPlayers()[idPlayer].getDown()){
+                markerPlayer = 'p';
+            }
+            else{
+                markerPlayer = 'P';
+            }
             //eg: the player with id 0 is the player 1
-            stringToReturn += "P" + (idPlayer + 1);
+            stringToReturn += markerPlayer + (idPlayer + 1);
         }
         //all the rest of the line is blank (' ')
         return lineInsideSquareWithBlankAtTheEnd(stringToReturn);
