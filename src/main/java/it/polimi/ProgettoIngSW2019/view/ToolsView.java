@@ -11,6 +11,7 @@ import it.polimi.ProgettoIngSW2019.common.utilities.InputScanner;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
+import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -20,6 +21,7 @@ import static org.fusesource.jansi.Ansi.Color.BLACK;
 import static org.fusesource.jansi.Ansi.ansi;
 
 /**
+ * Abstract static class that make different static methods of general user available for all the other classes of the view.
  * @author Nicholas Magatti
  */
 public abstract class ToolsView {
@@ -45,11 +47,20 @@ public abstract class ToolsView {
     /**
      * Return the input scanner of this client.
      * @return the input scanner of this client
+     * @author Nicholas Magatti
      */
     static InputScanner getInputScanner() {
         return inputScanner;
     }
 
+    /**
+     * Return a string with the information for the user (ready to be printed)
+     * about the specified amount of ammo. It could be for a cost or for representing
+     * the ammo that a player has in his/her ammo box.
+     * @param cost - amount of ammo to represent
+     * @return a string with the information for the user (ready to be printed) about the specified amount of ammo.
+     * @author Nicholas Magatti
+     */
     static String costToString(int[] cost){
         //example of output: 2 red, 1 blue, 0 yellow
         return cost[AmmoType.intFromAmmoType(AmmoType.RED)] + " red, " +
@@ -58,48 +69,10 @@ public abstract class ToolsView {
     }
 
     /**
-     * Print list of weapons with their names in a line.
-     * @param weapons
-     */
-    static void printListOfWeapons(List<WeaponLM> weapons){
-        for(WeaponLM weapon : weapons){
-            System.out.print(weapon.getName());
-            if(weapons.indexOf(weapon) != weapons.size()-1){
-                System.out.print(", ");
-            }
-        }
-    }
-
-    /**
-     * Print list of powerups with their names and their ammo color in a line.
-     * @param powerUps
-     */
-    static void printListOfPowerups(List<PowerUpLM> powerUps) {
-        for(PowerUpLM pu : powerUps){
-            System.out.print(pu.getName() + "(" + ToolsView.ammoTypeToString(pu.getGainAmmoColor()) + ")");
-            if(powerUps.indexOf(pu) != powerUps.size()-1){
-                System.out.print(", ");
-            }
-        }
-    }
-
-    /**
-     * Print list of players with their names in a line.
-     * @param players
-     */
-    static void printListOfPlayersNames(List<PlayerDataLM> players){
-        for(PlayerDataLM p : players){
-            System.out.print(p.getNickname());
-            if(players.indexOf(p) != players.size()-1){
-                System.out.print(", ");
-            }
-        }
-    }
-
-    /**
      * From an ammo type get the string of the respective color in lowercase.
      * @param ammoType
-     * @return
+     * @return string of the requested color in lowercase
+     * @author Nicholas Magatti
      */
     static String ammoTypeToString(AmmoType ammoType){
         String color;
@@ -113,49 +86,73 @@ public abstract class ToolsView {
             case RED:
                 color = "red";
                 break;
-                default:
-                    throw new IllegalArgumentException("This ammo type is neither blue, yellow or red.");
+            default:
+                throw new IllegalArgumentException("This ammo type is neither blue, yellow or red.");
         }
         return color;
     }
 
+
+    /**
+     * Print list of weapons with their names in a line.
+     * @param weapons
+     * @author Nicholas Magatti
+     */
+    static void printListOfWeapons(List<WeaponLM> weapons){
+        for(WeaponLM weapon : weapons){
+            System.out.print(weapon.getName());
+            if(weapons.indexOf(weapon) != weapons.size()-1){
+                System.out.print(", ");
+            }
+        }
+    }
+
+    /**
+     * Print list of powerups with their names and their ammo color in a line.
+     * @param powerUps
+     * @author Nicholas Magatti
+     */
+    static void printListOfPowerups(List<PowerUpLM> powerUps) {
+        for(PowerUpLM pu : powerUps){
+            System.out.print(pu.getName() + "(" + ToolsView.ammoTypeToString(pu.getGainAmmoColor()) + ")");
+            if(powerUps.indexOf(pu) != powerUps.size()-1){
+                System.out.print(", ");
+            }
+        }
+    }
+
+    /**
+     * Print list of players with their names in a line.
+     * @param players
+     * @author Nicholas Magatti
+     */
+    static void printListOfPlayersNames(List<PlayerDataLM> players){
+        for(PlayerDataLM p : players){
+            System.out.print(p.getNickname());
+            if(players.indexOf(p) != players.size()-1){
+                System.out.print(", ");
+            }
+        }
+    }
+
+    /**
+     * Print the general options that are usually available for the player.
+     * @author Nicholas Magatti
+     */
     static void printGeneralOptions(){
         //System.out.println(GeneralInfo.EXIT_COMMAND + ": exit from game");
         System.out.println(GeneralInfo.PREFIX_COMMAND_DESCRIPTION + "NameWeapon/Powerup: read the description of that weapon/powerup");
     }
 
-    private void printDescription(String name){
-        
-    }
-
-    /**
-     * Return true if the string is a request from the user to visualize the description of a card.
-     * @param string
-     * @return true if the string is a request from the user to visualize the description of a card
-     */
-    static boolean isDescriptionCommand(String string){
-        return stringStartsWith(string, GeneralInfo.PREFIX_COMMAND_DESCRIPTION);
-    }
-
-    /**
-     * Return true if the string 'string' start with the string 'prefix', false otherwise.
-     * @param string - string to parse
-     * @param prefix - possible prefix of the string to parse
-     * @return true if the string 'string' start with the string 'prefix', false otherwise
-     */
-    private static boolean stringStartsWith(String string, String prefix){
-        for(int i=0; i < prefix.length(); i++){
-            if(string.charAt(i) != prefix.charAt(i)){
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * Keep reading input from user util he/she gives the requested result or
-     * until the timer expire, in which case return null, return the correct input otherwise.
-     * If the //TODO finish this javadoc
+     * until the timer expires, in which case return null, and return the correct input otherwise.
+     * Also allow the general options if they are enabled in the respective parameter.
+     * @param allowedAnswers
+     * @param generalOptionsEnabled - boolean that indicates if the general options are allowed here
+     * @return return the correct input inserted by the user if the timer has not expired first, return null otherwise.
+     * @author Nicholas Magatti
      */
     static String readUserChoice(List<String> allowedAnswers, boolean generalOptionsEnabled){
         /*
@@ -172,7 +169,9 @@ public abstract class ToolsView {
             }
             else{
                 if(generalOptionsEnabled && isDescriptionCommand(inputFromUser)){
-                    //TODO
+                    printDescription(inputFromUser);
+                    System.out.println("Answer the previous question or read another description.");
+                    System.out.print(GeneralInfo.ASK_INPUT);
                 }
                 else {
                     System.out.println("Illegal input. Insert correct input.");
@@ -188,7 +187,7 @@ public abstract class ToolsView {
         else {
             /*
             if(generalOptionsEnabled && inputFromUser.equals(GeneralInfo.EXIT_COMMAND)){
-                //TODO
+                method to disconnect
                 return null;
             }
             else {*/
@@ -201,8 +200,9 @@ public abstract class ToolsView {
      * Translate coordinates for developers in coordinates for users (eg: (0,1) becomes (A,2) ).
      * @param coordinatesForDeveloper - numeric coordinates as row and column, beginning from 0 (eg: row=0, column=3).
      * @return coordinates for users (eg: [C, 3]).
+     * @author Nicholas Magatti
      */
-    public static char[] coordinatesForUser(int[]coordinatesForDeveloper){
+    static char[] coordinatesForUser(int[]coordinatesForDeveloper){
         if(coordinatesForDeveloper.length != 2){
             throw new RuntimeException("The coordinates should be 2 (row and column), not " + coordinatesForDeveloper.length +".");
         }
@@ -217,6 +217,7 @@ public abstract class ToolsView {
     /**
      * Print the specified map, line by line (with colors)
      * @param mapToPrint
+     * @author Nicholas Magatti
      */
     static void printTheSpecifiedMap(MapLM mapToPrint){
         List<List<List<Ansi>>> mapAnsi = mapLMToAnsi(mapToPrint.getMap());
@@ -249,6 +250,144 @@ public abstract class ToolsView {
         }
     }
 
+    //ALL THE PRIVATE METHODS are below:
+
+    /**
+     * Return true if the string is a request from the user to visualize the description of a card.
+     * @param string
+     * @return true if the string is a request from the user to visualize the description of a card
+     * @author Nicholas Magatti
+     */
+    private static boolean isDescriptionCommand(String string){
+        return stringStartsWith(string, GeneralInfo.PREFIX_COMMAND_DESCRIPTION);
+    }
+
+    /**
+     * Return true if the string 'string' start with the string 'prefix', false otherwise.
+     * @param string - string to parse
+     * @param prefix - possible prefix of the string to parse
+     * @return true if the string 'string' start with the string 'prefix', false otherwise
+     * @author Nicholas Magatti
+     */
+    private static boolean stringStartsWith(String string, String prefix){
+        for(int i=0; i < prefix.length(); i++){
+            if(string.charAt(i) != prefix.charAt(i)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Given the input from a user that is asking for a detailed description of a card with a
+     * certain name, print the detailed description if the name of the card is on the table or on
+     * the hand of the player. If not, print a message that explains that the requested name has not
+     * been found.
+     * @param inputFromUser
+     * @author Nicholas Magatti
+     */
+    private static void printDescription(String inputFromUser){
+        String descrCommmand = GeneralInfo.PREFIX_COMMAND_DESCRIPTION;
+        for(int index = 0; index < descrCommmand.length(); index++){
+            if(inputFromUser.charAt(index) != descrCommmand.charAt(index)){
+                throw new IllegalArgumentException("The input is not a description request. It " +
+                        "this method should not have been called");
+            }
+        }
+        String nameCard = descrCommmand.substring(GeneralInfo.PREFIX_COMMAND_DESCRIPTION.length());
+        printDescriptionCard(nameCard);
+    }
+
+    /**
+     * Given the name of a card from a user that is asking for a detailed description of a card with a
+     * that name, print the detailed description if the name of the card is on the table or on
+     * the hand of the player. If not, print a message that explains that the requested name has not
+     * been found.
+     * @param cardName
+     * @author Nicholas Magatti
+     */
+    private static void printDescriptionCard(String cardName){
+        String descWeaponFound = descriptionWeaponFoundOnView(cardName);
+        String descPowerUpFound = descriptionPowerUpFoundOnView(cardName);
+        String descToPrint;
+        if(descWeaponFound == null && descPowerUpFound == null){
+            System.out.println("The card you are searching for is not visible to you now, or does not exist.");
+        }
+        else{
+            if(descWeaponFound != null){
+                descToPrint = descWeaponFound;
+            }
+            else{
+                descToPrint = descPowerUpFound;
+            }
+            System.out.println(descToPrint);
+        }
+    }
+
+    /**
+     * Return the string with the detailed description of the requested weapon card if
+     * present on the client, return null otherwise.
+     * @param cardName
+     * @return the string with the detailed description of the requested weapon card if
+     * present on the client, return null otherwise.
+     * @author Nicholas Magatti
+     */
+    private static String descriptionWeaponFoundOnView(String cardName){
+        String descToReturn = null;
+        //search between your loaded weapons
+        for(WeaponLM weapon : InfoOnView.getMyLoadedWeapons().getLoadedWeapons()){
+            if(cardName.equalsIgnoreCase(weapon.getName())){
+                descToReturn = detailedDescriptionWeapon(weapon);
+            }
+        }
+        //search between the unloaded weapons of all the players
+        for(PlayerDataLM player : InfoOnView.getPlayers()){
+            for(WeaponLM weapon : player.getUnloadedWeapons()) {
+                if (cardName.equalsIgnoreCase(weapon.getName())){
+                    descToReturn = detailedDescriptionWeapon(weapon);
+                }
+            }
+        }
+        return descToReturn;
+    }
+
+    /**
+     * Return the detailed description of a specific weapon.
+     * @param weapon
+     * @return the detailed description of a specific weapon.
+     * @author Nicholas Magatti
+     */
+    private static String detailedDescriptionWeapon(WeaponLM weapon){
+        return "Cost to reload: " + costToString(weapon.getAmmoCostReload()) +
+                ",\tCost to buy: " + costToString(weapon.getAmmoCostBuy()) +
+                "\nDescription: " + weapon.getDescription();
+    }
+
+    /**
+     * Return the string with the detailed description of the requested powerup card if
+     * present on the client, return null otherwise.
+     * @param cardName
+     * @return the string with the detailed description of the requested powerup card if
+     * present on the client, return null otherwise.
+     * @author Nicholas Magatti
+     */
+    private static String descriptionPowerUpFoundOnView(String cardName){
+        String descToReturn = null;
+        for(PowerUpLM card : InfoOnView.getMyPowerUps().getPowerUps()){
+            if(cardName.equalsIgnoreCase(card.getName())){
+                descToReturn = card.getDescription();
+            }
+        }
+        return descToReturn;
+    }
+
+    /**
+     *
+     * @param mapLM
+     * @return
+     * @author Nicholas Magatti
+     */
     private static List<List<List<Ansi>>> mapLMToAnsi(SquareLM[][] mapLM){
 
         List<List<List<Ansi>>> mapAnsi = new ArrayList<>();
@@ -264,7 +403,14 @@ public abstract class ToolsView {
         return mapAnsi;
     }
 
-
+    /**
+     *
+     * @param row
+     * @param col
+     * @param mapLM
+     * @return
+     * @author Nicholas Magatti
+     */
     private static List<Ansi> squareLMToAnsi(int row, int col, SquareLM[][] mapLM){
         //squares have only two borders: the ones at east and south
         //fist I work with strings, then I add them here as ansi
@@ -325,6 +471,7 @@ public abstract class ToolsView {
      * @param squareOfStrings
      * @param squareLM
      * @return
+     * @author Nicholas Magatti
      */
     private static List<Ansi>colorSquare(List<String> squareOfStrings, SquareLM squareLM){
         List<Ansi> squareAnsi = new ArrayList<>();
@@ -361,6 +508,12 @@ public abstract class ToolsView {
         return squareAnsi;
     }
 
+    /**
+     *
+     * @param squareLM
+     * @return
+     * @author Nicholas Magatti
+     */
     private static String[] bodySquare(SquareLM squareLM){
         String[] bodyLines = new String[ROWS_BODY_SQUARE];
         if(squareLM == null){ //if it is empty
@@ -389,6 +542,12 @@ public abstract class ToolsView {
         return bodyLines;
     }
 
+    /**
+     *
+     * @param squareLM
+     * @return
+     * @author Nicholas Magatti
+     */
     private static String playersToDrawOnSquare(SquareLM squareLM){
         String stringToReturn = "";
         for(int idPlayer : squareLM.getPlayers()){
@@ -407,6 +566,12 @@ public abstract class ToolsView {
         return lineInsideSquareWithBlankAtTheEnd(stringToReturn);
     }
 
+    /**
+     *
+     * @param ammoPointLM
+     * @return
+     * @author Nicholas Magatti
+     */
     private static String [] specificInfoAmmoPointToDraw(AmmoPointLM ammoPointLM){
         String[] stringsToReturn = new String[2];
         if(ammoPointLM.getAmmoCard() == null){
@@ -442,6 +607,12 @@ public abstract class ToolsView {
         return stringsToReturn;
     }
 
+    /**
+     *
+     * @param spawnPointLM
+     * @return
+     * @author Nicholas Magatti
+     */
     private static String[] specificInfoSpawnPointToDraw(SpawnPointLM spawnPointLM){
         String[] stringsToReturn = new String[2];
         if(spawnPointLM.getWeapons().isEmpty()){
@@ -469,6 +640,7 @@ public abstract class ToolsView {
      * Translate vertical coordinates for developers in coordinates for users (eg: from 0 to 1, from 3 to 4).
      * @param verticalCoordinateForDeveloper
      * @return the coordinate for the user as a char, starting the count from 1 instead of 0
+     * @author Nicholas Magatti
      */
     private static char verticalCoordinateForUser(int verticalCoordinateForDeveloper){
         //row (with letters: A,B,C instead of 0,1,2)
@@ -479,6 +651,7 @@ public abstract class ToolsView {
      * Translate horizontal coordinates for developers in coordinates for users (eg: from 0 to A, from 3 to D).
      * @param horizontalCoordinateForDeveloper
      * @return the coordinate for the user as a capital letter
+     * @author Nicholas Magatti
      */
     private static char horizontalCoordinateForUser(int horizontalCoordinateForDeveloper){
         //column (1,2,3 instead of 0,1,2)

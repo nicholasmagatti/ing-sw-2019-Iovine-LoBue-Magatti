@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.WeaponLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.PayAmmoList;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponsCanPayResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
@@ -36,45 +37,59 @@ public class ReloadState extends State{
 
         if(command == EventType.RESPONSE_REQUEST_WEAPONS_CAN_RELOAD){
             WeaponsCanPayResponse reloadInfo = new Gson().fromJson(jsonMessage, WeaponsCanPayResponse.class);
+            chooseWeaponIfPossible(reloadInfo);
+        }
+    }
+
+    private void chooseWeaponIfPossible(WeaponsCanPayResponse reloadInfo){
+
+        if(reloadInfo.getWeaponsCanReload().isEmpty()){
+            //end turn (there is nothing to reload)
+            notifyEndTurn();
+        }
+        else {
             chooseWeaponToReload(reloadInfo);
         }
     }
 
     private void chooseWeaponToReload(WeaponsCanPayResponse reloadInfo){
         int chosenOption; //typed by user
-        int chosenWeapon; // to send to view
-
+        int idWeapon; // chosen weapon to send to view
         List<WeaponLM>weapons = reloadInfo.getWeaponsCanReload();
-        if(weapons.isEmpty()){
-            //TODO
+        //options
+        System.out.println("Which weapon do you want to reload? Choose an option:");
+        for(int i=0; i < weapons.size(); i++) {
+            System.out.println(i + 1 + ": " + weapons.get(i).getName() +
+                    ", cost: " + ToolsView.costToString(reloadInfo.getListPaymentReload().get(i).getAmmoCost()));
         }
-        else {
-            //options
-            System.out.println("Which weapon do you want to reload? Choose an option:");
-            for(int i=0; i < weapons.size(); i++) {
-                System.out.println(i + 1 + ": " + weapons.get(i).getName() +
-                        ", cost: " + ToolsView.costToString(reloadInfo.getListPaymentReload().get(i).getAmmoCost()));
+        System.out.println(GeneralInfo.NO_COMMAND + ": don't reload");
+        ToolsView.printGeneralOptions();
+        List<String>acceptableInputs = new ArrayList<>();
+        acceptableInputs.add(GeneralInfo.NO_COMMAND);
+        for(int i=0; i <= weapons.size(); i++){
+            acceptableInputs.add(Integer.toString(i));
+        }
+        input = ToolsView.readUserChoice(acceptableInputs, true);
+        if(input != null){ //time NOT expired
+            if(input.equals(GeneralInfo.NO_COMMAND)) {
+                notifyEndTurn();
             }
-            System.out.println(GeneralInfo.NO_COMMAND + ": don't reload");
-            ToolsView.printGeneralOptions();
-            List<String>acceptableInputs = new ArrayList<>();
-            acceptableInputs.add(GeneralInfo.NO_COMMAND);
-            for(int i=0; i <= weapons.size(); i++){
-                acceptableInputs.add(Integer.toString(i));
-            }
-            input = ToolsView.readUserChoice(acceptableInputs, true);
-            if(input != null){ //time NOT expired
-                switch (input){
-                    case GeneralInfo.NO_COMMAND :
-                        //TODO: invia messaggio al controller del fatto che ho finito di ricaricare
-                        break;
-                        default: //option as a number
-                            chosenOption = Integer.parseInt(input);
-                            //TODO
-                            break;
+            else {// pay and notify
+                chosenOption = Integer.parseInt(input);
+                idWeapon = weapons.get(chosenOption - 1).getIdWeapon(); //to send to server
+                PayAmmoList payAmmoInfo = reloadInfo.getListPaymentReload().get(chosenOption - 1);
+                if(payAmmoInfo.getIdWeapon() != idWeapon){
+                    throw new Error("This ids should be equals. Something went wrong.");
                 }
+                //TODO inputUserPayment = ToolsView.payment(...);
+                //TODO if(inputUserPayment != null) notify with ReloadChoiceRequest with EventType.REQUEST_RELOAD
             }
         }
+    }
+
+    private void notifyEndTurn(){
+        InfoRequest infoToSend = new InfoRequest(InfoOnView.getHostname(), InfoOnView.getMyId());
+        notifyEvent(infoToSend, EventType.REQUEST_ENDTURN_INFO);
     }
 
 }

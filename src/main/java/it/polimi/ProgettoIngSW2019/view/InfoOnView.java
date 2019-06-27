@@ -98,7 +98,7 @@ public class InfoOnView implements Observer<Event> {
      * Print everything the player can see: the map and what is on it, the killshot track,
      * all the info about the other players, the cards on his/her own hand.
      */
-    static void printEverything(){
+    static void printEverythingVisible(){
         System.out.print("\n");
         printMapAndKillshotTrack();
         System.out.print("\n");

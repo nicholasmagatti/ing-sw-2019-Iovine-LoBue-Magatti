@@ -5,6 +5,10 @@ import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 
+/**
+ * Part of the view that manages the messages for visualization received from the server.
+ * @author Nicholas Magatti
+ */
 public class GeneralMessageObserver implements Observer<Event> {
 
     /**
@@ -32,6 +36,11 @@ public class GeneralMessageObserver implements Observer<Event> {
             ToolsView.getInputScanner().close();
             System.out.println("Time expired! You have been suspended.");
             System.out.println("You can ");
+        }
+
+        if(command == EventType.MSG_POWERUP_DISCARDED_TO_SPAWN){
+            //TODO: dire quello che è successo
+
         }
     }
 }
