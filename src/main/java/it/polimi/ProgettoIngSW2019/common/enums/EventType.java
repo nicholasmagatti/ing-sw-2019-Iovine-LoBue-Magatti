@@ -2,9 +2,9 @@ package it.polimi.ProgettoIngSW2019.common.enums;
 
 public enum EventType {
     //Request View to Controller
-    REQUEST_USE_POWERUP,
     REQUEST_SPAWN_CARDS,                             //toController: request draw 1 card to spawn
     REQUEST_SPAWN,                                   //toController: request spawn
+    REQUEST_INITIAL_SPAWN,
     REQUEST_INITIAL_SPAWN_CARDS,                     //toController: request draw 2 card to spawn
     REQUEST_WEAPONS_CAN_RELOAD,                      //toController: request weapons can be reloaded
     REQUEST_RELOAD,                                  //toController: request the reload of a specific weapon
@@ -19,11 +19,11 @@ public enum EventType {
     REQUEST_MOVE,                                   //toController: request choice to move
     REQUEST_SETUP,
     REQUEST_GAME_IS_STARTED,
+    REQUEST_GAME_DATA,
 
 
 
     //Response Controller to View
-    RESPONSE_REQUEST_USE_POWERUP,
     RESPONSE_REQUEST_SPAWN_CARDS,                   //toView: response draw card to spawn
     RESPONSE_REQUEST_INITIAL_SPAWN_CARDS,           //toView: response draw 2 cards to spawn
     RESPONSE_REQUEST_WEAPONS_CAN_RELOAD,            //toView: response with a list of weapons can be reloaded
@@ -34,6 +34,8 @@ public enum EventType {
     RESPONSE_SETUP,
     RESPONSE_GAME_IS_STARTED,
     RESPONSE_REQUEST_MOVE_INFO,                     //toView: response move info
+    RESPONSE_GAME_DATA,
+    RESPONSE_NEWTON_INFO,
 
 
     //Other things XD
@@ -50,6 +52,12 @@ public enum EventType {
     USER_HAS_DISCONNECTED,                          //toView: warns other players that a user has logged out
     START_ACTION_TIMER,
     STOP_ACTION_TIMER,
+    TELEPORTER,
+    NEWTON,
+    TAGBACK_GRENADE,
+    TARGETING_SCOPE,
+    CAN_USE_TARGETING_SCOPE,
+    CAN_USE_TAGBACK,
 
 
 
@@ -72,4 +80,9 @@ public enum EventType {
     MSG_WEAPON_SWAP,                                //msg to all players, the player swapped a weapon card and bought another
     MSG_MY_N_ACTION_LEFT,                           //msg to all player, n action left of the player
     MSG_FIRST_TURN_PLAYER,                          //msg to the player who had to spawn for the first time
+    MSG_TARGETING_SCOPE,
+    MSG_TAGBACK_GRENADE,
+    MSG_BEFORE_ENEMY_ACTION_OR_RELOAD,
+    MSG_USE_POWERUP,
+    MSG_PLAYER_SPAWN,
 }

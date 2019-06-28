@@ -3,6 +3,7 @@ package it.polimi.ProgettoIngSW2019.controller;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.custom_exception.IllegalAttributeException;
 import it.polimi.ProgettoIngSW2019.custom_exception.IllegalIdException;
@@ -10,6 +11,7 @@ import it.polimi.ProgettoIngSW2019.custom_exception.NotPartOfBoardException;
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import java.util.List;
  * it has the model classes needed to the all the Controllers
  * @author Priscilla Lo Bue
  */
-public abstract class Controller implements Observer<Event> {
+abstract class Controller implements Observer<Event> {
     private TurnManager turnManager;
     private VirtualView virtualView;
     private IdConverter idConverter;
@@ -31,7 +33,7 @@ public abstract class Controller implements Observer<Event> {
      * Constructor
      * @param turnManager   access to TurnManger model
      */
-    public Controller(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList) {
+    Controller(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList) {
         this.turnManager = turnManager;
         this.virtualView = virtualView;
         this.idConverter = idConverter;
@@ -44,7 +46,7 @@ public abstract class Controller implements Observer<Event> {
      * access to TurnManager
      * @return  turnManager
      */
-    public TurnManager getTurnManager() {
+    TurnManager getTurnManager() {
         return turnManager;
     }
 
@@ -53,7 +55,7 @@ public abstract class Controller implements Observer<Event> {
      * access to VirtualView
      * @return  virtualView
      */
-    public VirtualView getVirtualView() {
+    VirtualView getVirtualView() {
         return virtualView;
     }
 
@@ -62,7 +64,7 @@ public abstract class Controller implements Observer<Event> {
      * access to IdConverter
      * @return  IdConverter
      */
-    public IdConverter getIdConverter() {
+    IdConverter getIdConverter() {
         return idConverter;
     }
 
@@ -71,7 +73,7 @@ public abstract class Controller implements Observer<Event> {
      * access to CreateJson
      * @return  CreateJson
      */
-    public CreateJson getCreateJson() {
+    CreateJson getCreateJson() {
         return createJson;
     }
 
@@ -80,7 +82,7 @@ public abstract class Controller implements Observer<Event> {
      * access to HostNameCreateList
      * @return  HostPlayerCreateList
      */
-    public HostNameCreateList getHostNameCreateList() {
+    HostNameCreateList getHostNameCreateList() {
         return hostNameCreateList;
     }
 
@@ -91,7 +93,7 @@ public abstract class Controller implements Observer<Event> {
      * @param msgJson           message in json format
      * @param hostNameList      list of host name player who will receive the message
      */
-    public void sendInfo(EventType eventType, String msgJson, List<String> hostNameList) {
+    void sendInfo(EventType eventType, String msgJson, List<String> hostNameList) {
         Event event = new Event(eventType, msgJson);
         virtualView.sendMessage(event, hostNameList);
     }
@@ -103,7 +105,7 @@ public abstract class Controller implements Observer<Event> {
      * @param idPlayer          id player
      * @return                  return the player id the id is correct, otherwise null
      */
-    public Player convertPlayer(int idPlayer, String hostName) {
+    Player convertPlayer(int idPlayer, String hostName) {
         Player player;
         if(idPlayer < 0)
             throw new IllegalAttributeException("id player cannot be negative");
@@ -125,7 +127,7 @@ public abstract class Controller implements Observer<Event> {
      * @param idPlayer          id player
      * @return                  return the player id the id is correct, otherwise null
      */
-    public Player convertPlayerWithId(int idPlayer) {
+    Player convertPlayerWithId(int idPlayer) {
         Player player;
         if(idPlayer < 0)
             throw new IllegalAttributeException("id player cannot be negative");
@@ -148,7 +150,7 @@ public abstract class Controller implements Observer<Event> {
      * @param idPowerUp        idPowerUp
      * @return                 powerUp or null
      */
-    public PowerUp convertPowerUp(Player player, int idPowerUp) {
+    PowerUp convertPowerUp(Player player, int idPowerUp) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
@@ -176,7 +178,7 @@ public abstract class Controller implements Observer<Event> {
      * @param unloadedWeapon    boolean to define if is an unloadedWeapon or not
      * @return                  weapon or null
      */
-    public WeaponCard convertWeapon(Player player, int idWeapon, boolean unloadedWeapon) {
+    WeaponCard convertWeapon(Player player, int idWeapon, boolean unloadedWeapon) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
@@ -200,7 +202,7 @@ public abstract class Controller implements Observer<Event> {
 
 
 
-    public Square convertSquare(Player player, int[] coordinates) {
+    Square convertSquare(Player player, int[] coordinates) {
         Square square;
         try {
             square = idConverter.getSquareByCoordinates(coordinates);
@@ -215,7 +217,7 @@ public abstract class Controller implements Observer<Event> {
 
 
 //CHECK TURN
-    public boolean checkHostNameCorrect(Player player, String hostName) {
+    boolean checkHostNameCorrect(Player player, String hostName) {
         if(player.getHostname().equals(hostName))
             return true;
         else {
@@ -226,7 +228,7 @@ public abstract class Controller implements Observer<Event> {
     }
 
 
-    public boolean checkIdCorrect(Player player, int idPlayer, String hostName) {
+    boolean checkIdCorrect(Player player, int idPlayer, String hostName) {
         if(player.getIdPlayer() == idPlayer)
             return true;
         else {
@@ -244,7 +246,7 @@ public abstract class Controller implements Observer<Event> {
      * @param player    player
      * @return          true if is turn player, false if not
      */
-    public boolean checkCurrentPlayer(Player player) {
+    boolean checkCurrentPlayer(Player player) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
@@ -261,7 +263,7 @@ public abstract class Controller implements Observer<Event> {
      * @param player    player
      * @return          true if there are no action left
      */
-    public boolean checkNoActionLeft(Player player) {
+    boolean checkNoActionLeft(Player player) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
@@ -274,7 +276,7 @@ public abstract class Controller implements Observer<Event> {
     }
 
 
-    public boolean checkHasActionLeft(Player player) {
+    boolean checkHasActionLeft(Player player) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
@@ -295,7 +297,7 @@ public abstract class Controller implements Observer<Event> {
      * @param powerUp       powerUp of the player
      * @return              boolean if the player has the powerUp
      */
-    public boolean checkContainsPowerUp(Player player, PowerUp powerUp) {
+    boolean checkContainsPowerUp(Player player, PowerUp powerUp) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
@@ -318,7 +320,7 @@ public abstract class Controller implements Observer<Event> {
      * @param unloadedWeapon    boolean if is an unloaded Weapon
      * @return                  true if the player has the weapon
      */
-    public boolean checkContainsWeapon(Player player, WeaponCard weaponCard, boolean unloadedWeapon) {
+    boolean checkContainsWeapon(Player player, WeaponCard weaponCard, boolean unloadedWeapon) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
@@ -353,7 +355,7 @@ public abstract class Controller implements Observer<Event> {
      * @param ammoToPay     ammo cost
      * @return              true if the player can pay
      */
-    public boolean checkHasEnoughAmmo(Player player, List<AmmoType> ammoToPay) {
+    boolean checkHasEnoughAmmo(Player player, List<AmmoType> ammoToPay) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
@@ -367,5 +369,21 @@ public abstract class Controller implements Observer<Event> {
         }
         else
             return true;
+    }
+
+
+
+    void msgActionLeft(Player ownerPlayer) {
+        List<PowerUp> powerUpsCanUse = new ArrayList<>();
+
+        if(!ownerPlayer.getPowerUps().isEmpty()) {
+            for(PowerUp p:ownerPlayer.getPowerUps()) {
+                if(!p.getName().equals(GeneralInfo.TAGBACK_GRENADE) && !p.getName().equals(GeneralInfo.TARGETING_SCOPE))
+                    powerUpsCanUse.add(p);
+            }
+        }
+
+        String messageActionLeftJson = getCreateJson().createMessageActionsLeftJson(ownerPlayer, powerUpsCanUse);
+        sendInfo(EventType.MSG_MY_N_ACTION_LEFT, messageActionLeftJson, getHostNameCreateList().addOneHostName(ownerPlayer));
     }
 }

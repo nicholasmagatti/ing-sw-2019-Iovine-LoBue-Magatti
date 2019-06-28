@@ -29,6 +29,7 @@ public class EndTurnController extends Controller {
     private Deck ammoDeck;
     private Player ownerPlayer;
     private List<MessageScorePlayer> messageScorePlayerList = new ArrayList<>();
+    List<Player> deadPlayers = new ArrayList<>();
 
 
     /**
@@ -79,11 +80,26 @@ public class EndTurnController extends Controller {
 
                         sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
 
+                        if(!deadPlayers.isEmpty()) {
+                            for (Player dp : deadPlayers) {
+                                String message = "";
+                                sendInfo(EventType.MSG_PLAYER_SPAWN, message, getHostNameCreateList().addOneHostName(dp));
+                            }
+                        }
+
                         Player player = getTurnManager().getCurrentPlayer();
                         sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(player), getHostNameCreateList().addAllHostName());
 
-                        if(player.getPosition() == null)
+                        if(player.getPosition() == null) {
                             sendInfo(EventType.MSG_FIRST_TURN_PLAYER, getCreateJson().createMessageJson(player), getHostNameCreateList().addOneHostName(player));
+                        }
+                        else {
+                            String mess = "";
+                            sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(ownerPlayer));
+
+                            //inside there is the message for Nick
+                            msgActionLeft(ownerPlayer);
+                        }
                     }
                 }
             }
@@ -97,7 +113,7 @@ public class EndTurnController extends Controller {
      *
      */
     private void checkScore() {
-        List<Player> deadPlayers = getTurnManager().checkDeadPlayers();
+        deadPlayers = getTurnManager().checkDeadPlayers();
 
         if(!deadPlayers.isEmpty()) {
             boolean doubleKill;
@@ -116,7 +132,7 @@ public class EndTurnController extends Controller {
                     throw new IllegalAttributeException("Something wrong with the killer");
             }
 
-            scoreDeadPlayers(deadPlayers);
+            scoreDeadPlayers();
 
             if(messageScorePlayerList == null)
                 throw new NullPointerException("scorePlayersList cannot be null");
@@ -133,9 +149,8 @@ public class EndTurnController extends Controller {
 
     /**
      * if there is a player dead count the score of each player who damage the dead ones
-     * @param deadPlayers      dead player list
      */
-    private void scoreDeadPlayers(List<Player> deadPlayers) {
+    private void scoreDeadPlayers() {
         if(deadPlayers == null)
             throw new NullPointerException("Something wrong, deadPlayers cannot be null");
 

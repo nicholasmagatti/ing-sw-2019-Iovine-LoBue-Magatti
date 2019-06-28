@@ -6,12 +6,8 @@ import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.MoveChoiceRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MoveInfoResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
-import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.model.*;
-import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +17,7 @@ import java.util.List;
 public class MoveController extends Controller {
     private Player ownerPlayer;
     private List<Square> squaresAvailable = new ArrayList<>();
+    private List<int[]> coordinates = new ArrayList<>();
     private Square squareToMove;
 
 
@@ -80,18 +77,11 @@ public class MoveController extends Controller {
         String updateMap = getCreateJson().createMapLMJson();
         sendInfo(EventType.UPDATE_MAP, updateMap, getHostNameCreateList().addAllHostName());
 
+        String mess = "";
+        sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(ownerPlayer));
 
-        List<PowerUp> powerUpsCanUse = new ArrayList<>();
-
-        if(!ownerPlayer.getPowerUps().isEmpty()) {
-            for(PowerUp p:ownerPlayer.getPowerUps()) {
-                if(p.getName() != GeneralInfo.TAGBACK_GRENADE || p.getName() != GeneralInfo.TARGETING_SCOPE)
-                    powerUpsCanUse.add(p);
-            }
-        }
-
-        String messageActionLeftJson = getCreateJson().createMessageActionsLeftJson(ownerPlayer, powerUpsCanUse);
-        sendInfo(EventType.MSG_MY_N_ACTION_LEFT, messageActionLeftJson, getHostNameCreateList().addOneHostName(ownerPlayer));
+        //inside there is the message for Nick
+        msgActionLeft(ownerPlayer);
     }
 
 
@@ -170,8 +160,13 @@ public class MoveController extends Controller {
 
         searchDuplicateSquare();
 
-        String moveInfoResponsejson = createMoveInfoResponseJson();
-        sendInfo(EventType.RESPONSE_REQUEST_MOVE_INFO, moveInfoResponsejson, getHostNameCreateList().addOneHostName(ownerPlayer));
+        coordinates.clear();
+        for(Square s:squaresAvailable) {
+            coordinates.add(s.getCoordinates(getTurnManager().getGameTable().getMap()));
+        }
+
+        String moveInfoResponseJson = createMoveInfoResponseJson();
+        sendInfo(EventType.RESPONSE_REQUEST_MOVE_INFO, moveInfoResponseJson, getHostNameCreateList().addOneHostName(ownerPlayer));
     }
 
 
@@ -202,7 +197,7 @@ public class MoveController extends Controller {
 
 
     private String createMoveInfoResponseJson() {
-        MoveInfoResponse moveInfoResponse = new MoveInfoResponse(ownerPlayer.getIdPlayer(), squaresAvailable);
+        MoveInfoResponse moveInfoResponse = new MoveInfoResponse(ownerPlayer.getIdPlayer(), coordinates);
         return new Gson().toJson(moveInfoResponse);
     }
 

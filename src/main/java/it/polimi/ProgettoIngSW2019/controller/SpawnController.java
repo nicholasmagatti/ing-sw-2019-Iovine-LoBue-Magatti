@@ -66,8 +66,14 @@ public class SpawnController extends Controller {
             }
         }
 
-        if(event.getCommand().equals(EventType.REQUEST_SPAWN)) {
+        if(event.getCommand().equals(EventType.REQUEST_SPAWN) || (event.getCommand().equals(EventType.REQUEST_INITIAL_SPAWN))) {
             checkRespawnFromView(event.getMessageInJsonFormat());
+
+            if(event.getCommand().equals(EventType.REQUEST_INITIAL_SPAWN)) {
+                String mess = "";
+                sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(spawnPlayer));
+                msgActionLeft(spawnPlayer);
+            }
         }
     }
 

@@ -363,6 +363,12 @@ public class GrabController extends Controller {
 
         String updateMyLoadedWeapons = getCreateJson().createMyLoadedWeaponsListLMJson(grabberPlayer);
         sendInfo(EventType.UPDATE_MY_LOADED_WEAPONS, updateMyLoadedWeapons, getHostNameCreateList().addOneHostName(grabberPlayer));
+
+        String mess = "";
+        sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(grabberPlayer));
+
+        //inside there is the message for Nick
+        msgActionLeft(grabberPlayer);
     }
 
 
@@ -399,17 +405,12 @@ public class GrabController extends Controller {
         }
 
         getTurnManager().decreaseActionsLeft();
-        List<PowerUp> powerUpsCanUse = new ArrayList<>();
 
-        if(!grabberPlayer.getPowerUps().isEmpty()) {
-            for(PowerUp p:grabberPlayer.getPowerUps()) {
-                if(p.getName() != GeneralInfo.TAGBACK_GRENADE || p.getName() != GeneralInfo.TARGETING_SCOPE)
-                    powerUpsCanUse.add(p);
-            }
-        }
+        String mess = "";
+        sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(grabberPlayer));
 
-        String messageActionLeftJson = getCreateJson().createMessageActionsLeftJson(grabberPlayer, powerUpsCanUse);
-        sendInfo(EventType.MSG_MY_N_ACTION_LEFT, messageActionLeftJson, getHostNameCreateList().addOneHostName(grabberPlayer));
+        //inside there is the message for Nick
+        msgActionLeft(grabberPlayer);
     }
 
 

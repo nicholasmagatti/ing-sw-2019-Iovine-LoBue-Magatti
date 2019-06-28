@@ -90,8 +90,8 @@ public class PowerUp extends Card {
 
 
 
-    public void usePowerUpEffect(AmmoType ammoDiscard, Player playerTarget, Player playerOwner, Square position) {
-        powerUpEffect.activateEffect(ammoDiscard, playerTarget, playerOwner, position);
+    public void usePowerUpEffect(AmmoType ammoDiscard, PowerUp powerUpToDiscard, Player playerTarget, Player playerOwner, Square position) {
+        powerUpEffect.activateEffect(ammoDiscard, powerUpToDiscard, playerTarget, playerOwner, position);
     }
 
 }

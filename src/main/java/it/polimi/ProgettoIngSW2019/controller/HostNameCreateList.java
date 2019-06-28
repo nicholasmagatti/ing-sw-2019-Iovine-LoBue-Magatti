@@ -36,7 +36,7 @@ public class HostNameCreateList {
      * Add in the list all the clients
      * @return      list of host name
      */
-    public List<String> addAllHostName() {
+    List<String> addAllHostName() {
         hostNamePlayers.clear();
         Player[] playersList = turnManager.getGameTable().getPlayers();
 
@@ -52,7 +52,7 @@ public class HostNameCreateList {
      * @param player    player to send info
      * @return          list of host name
      */
-    public List<String> addOneHostName(Player player) {
+    List<String> addOneHostName(Player player) {
         hostNamePlayers.clear();
         hostNamePlayers.add(player.getHostname());
         return hostNamePlayers;
@@ -64,7 +64,7 @@ public class HostNameCreateList {
      * @param player        player cannot be added
      * @return              list of host name
      */
-    public List<String> addAllExceptOneHostName(Player player) {
+    List<String> addAllExceptOneHostName(Player player) {
         hostNamePlayers.clear();
         Player[] playersList = turnManager.getGameTable().getPlayers();
 

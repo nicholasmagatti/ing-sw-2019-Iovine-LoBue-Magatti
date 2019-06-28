@@ -15,6 +15,8 @@ public class PlayerDataLM {
     private int nRedAmmo;
     private int nBlueAmmo;
     private int nYellowAmmo;
+    private int nLoadedWeapons;
+    private int nPowerUps;
     private int nSkulls;
     private boolean active;
     private boolean playerDown;
@@ -36,7 +38,7 @@ public class PlayerDataLM {
      * @param damageLine            list of player name who hits owner player
      * @param markLine              list of player name who marks owner player
      */
-    public PlayerDataLM(int idPlayer, String nickname, List<WeaponLM> unloadedWeapons, int nRedAmmo, int nBlueAmmo, int nYellowAmmo, int nSkulls, boolean active, boolean playerDown, List<String> damageLine, List<String> markLine) {
+    public PlayerDataLM(int idPlayer, String nickname, List<WeaponLM> unloadedWeapons, int nRedAmmo, int nBlueAmmo, int nYellowAmmo, int nSkulls, boolean active, boolean playerDown, List<String> damageLine, List<String> markLine, int nLoadedWeapons, int nPowerUps) {
         if(idPlayer < 0)
             throw new IllegalArgumentException("IdPlayer cannot be negative");
         this.idPlayer = idPlayer;
@@ -54,6 +56,8 @@ public class PlayerDataLM {
         this.playerDown = playerDown;
         this.damageLine = new ArrayList<>(damageLine);
         this.markLine = new ArrayList<>(markLine);
+        this.nLoadedWeapons = nLoadedWeapons;
+        this.nPowerUps = nPowerUps;
     }
 
 
@@ -154,5 +158,23 @@ public class PlayerDataLM {
      */
     public boolean getDown() {
         return playerDown;
+    }
+
+
+    /**
+     * get n loaded weapons cards
+     * @return      n loaded weapons cards
+     */
+    public int getnMyLoadedWeapons() {
+        return nLoadedWeapons;
+    }
+
+
+    /**
+     * get n powerUps cards
+     * @return      n powerUps cards
+     */
+    public int getnPowerUps() {
+        return nPowerUps;
     }
 }
