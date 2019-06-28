@@ -1,5 +1,9 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
+/**
+ * Basic message from controller to view
+ * @author Priscilla Lo Bue
+ */
 public class InfoResponse {
     private int idPlayer;
 

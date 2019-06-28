@@ -1,11 +1,11 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * for each weapon payment this class tells the way the player can pay this weapon
  * @author Priscilla Lo Bue
  */
 public class PayAmmoList {
@@ -60,6 +60,9 @@ public class PayAmmoList {
     }
 
 
+    /**
+     * @return a list of powerUpsLM to discard as ammo
+     */
     public List<PowerUpLM> getAmmoInPowerUp() {
         return ammoInPowerUp;
     }

@@ -2,13 +2,13 @@ package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 
 import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
-import it.polimi.ProgettoIngSW2019.model.PowerUp;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Spawn Draw Cards Response
+ * Draw Cards Response
+ * @author Priscilla Lo Bue
  */
 public class DrawCardsInfoResponse extends InfoResponse {
     private List<PowerUpLM> powerUps;
@@ -24,7 +24,7 @@ public class DrawCardsInfoResponse extends InfoResponse {
         if(powerUps == null)
             throw new NullPointerException("powerUps cannot be null");
 
-        this.powerUps = powerUps;
+        this.powerUps = new ArrayList<>(powerUps);
     }
 
 

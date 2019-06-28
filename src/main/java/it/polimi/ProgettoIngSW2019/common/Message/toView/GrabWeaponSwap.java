@@ -1,6 +1,8 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 import it.polimi.ProgettoIngSW2019.common.LightModel.WeaponLM;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ public class GrabWeaponSwap extends PlayerChoiceResponse {
      */
     public GrabWeaponSwap(int idPlayer, List<WeaponLM> weapons) {
         super(idPlayer);
-        this.weapons = weapons;
+        this.weapons = new ArrayList<>(weapons);
     }
 
 

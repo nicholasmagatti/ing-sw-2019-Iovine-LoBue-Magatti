@@ -1,6 +1,6 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
-import it.polimi.ProgettoIngSW2019.model.Square;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ public class MoveInfoResponse extends InfoResponse {
      */
     public MoveInfoResponse(int idPlayer, List<int[]> coordinates) {
         super(idPlayer);
-        this.coordinates = coordinates;
+        this.coordinates = new ArrayList<>(coordinates);
     }
 
 

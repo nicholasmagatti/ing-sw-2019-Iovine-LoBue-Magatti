@@ -2,6 +2,7 @@ package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class MessageActionLeft extends Message {
             throw new IllegalArgumentException("powerUpsInHand cannot be nulls");
 
         this.nActionsLeft = nActionsLeft;
-        this.powerUpsCanUse = powerUpsCanUse;
+        this.powerUpsCanUse = new ArrayList<>(powerUpsCanUse);
     }
 
 

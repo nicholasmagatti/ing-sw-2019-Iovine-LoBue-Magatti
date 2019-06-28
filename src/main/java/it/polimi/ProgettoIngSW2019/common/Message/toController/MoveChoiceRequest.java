@@ -24,6 +24,9 @@ public class MoveChoiceRequest extends PlayerChoiceRequest {
     }
 
 
+    /**
+     * @return  the coordinates of the square to grab
+     */
     public int[] getCoordinates() {
         return coordinates;
     }

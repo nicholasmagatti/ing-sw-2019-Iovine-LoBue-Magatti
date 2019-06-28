@@ -384,7 +384,7 @@ public class PowerUpController extends Controller {
 
 
     private String createMessageTargetingScope() {
-        MessageTargetingScope messageTargetingScope = new MessageTargetingScope(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), getCreateJson().createPowerUpLM(powerUpToUse), ammoToSpend, targetPlayer.getCharaName());
+        MessageTargetingScope messageTargetingScope = new MessageTargetingScope(ownerPlayer.getIdPlayer(), ownerPlayer.getCharaName(), ammoToSpend, targetPlayer.getCharaName());
         return new Gson().toJson(messageTargetingScope);
     }
 

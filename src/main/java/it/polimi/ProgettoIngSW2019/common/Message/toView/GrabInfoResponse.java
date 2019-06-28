@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class GrabInfoResponse extends InfoResponse {
         if(coordinatesSquareToGrab == null)
             throw new NullPointerException("square To Grab List cannot be null");
 
-        this.coordinatesSquareToGrab = coordinatesSquareToGrab;
+        this.coordinatesSquareToGrab = new ArrayList<>(coordinatesSquareToGrab);
     }
 
 

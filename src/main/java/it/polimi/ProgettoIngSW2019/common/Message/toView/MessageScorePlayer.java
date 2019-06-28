@@ -1,11 +1,13 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toView;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * MessageScorePlayer class
  * the information of the players who hits the dead player
+ * @author Priscilla Lo Bue
  */
 public class MessageScorePlayer extends InfoResponse {
     private String deadNamePlayer;
@@ -38,31 +40,46 @@ public class MessageScorePlayer extends InfoResponse {
         this.deadNamePlayer = deadNamePlayer;
         this.killerNamePlayer = killerNamePlayer;
         this.firstBloodNamePlayer = firstBloodNamePlayer;
-        this.playersWhoHit = playersWhoHit;
+        this.playersWhoHit = new ArrayList<>(playersWhoHit);
         this.nSkullsDeadPlayer = nSkullsDeadPlayer;
     }
 
 
+    /**
+     * @return      name of the dead player
+     */
     public String getDeadNamePlayer() {
         return deadNamePlayer;
     }
 
 
+    /**
+     * @return      number of skulls of the dead player
+     */
     public int getnSkullsDeadPlayer() {
         return nSkullsDeadPlayer;
     }
 
 
+    /**
+     * @return      name of the player who makes the first blood
+     */
     public String getFirstBloodNamePlayer() {
         return firstBloodNamePlayer;
     }
 
 
+    /**
+     * @return      name of the killer player
+     */
     public String getKillerNamePlayer() {
         return killerNamePlayer;
     }
 
 
+    /**
+     * @return      list of score for each player who hit the dead player
+     */
     public List<ScorePlayerWhoHit> getPlayersWhoHit() {
         return playersWhoHit;
     }

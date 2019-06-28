@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Reload info class
+ * Payment info class: reload or buy
  * @author Priscilla Lo Bue
  */
 public class WeaponsCanPayResponse extends InfoResponse {
