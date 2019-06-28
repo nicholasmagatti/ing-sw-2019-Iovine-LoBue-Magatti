@@ -7,7 +7,6 @@ import it.polimi.ProgettoIngSW2019.common.Message.toController.SetupRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
-import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,12 @@ public class SetupGameState extends State {
     private String hostname;
     private String playerWhoSetsTheGame;
     private List<MapLM> maps;
+
+    private SpawnState spawnState;
+
+    public SetupGameState(SpawnState spawnState){
+        this.spawnState = spawnState;
+    }
 
 
     void setInfoBeforeStartGame(String myName, String hostname, List<MapLM> maps, String playerWhoSetsTheGame){
@@ -139,14 +144,13 @@ public class SetupGameState extends State {
                 setupResponse.myPowerUpLM(), setupResponse.getMap(), setupResponse.getKillshotTrack());
 
         if(isReconnection){ //if the palyer is reconnecting to the ongoing game
-            InfoOnView.printEverything();
-            //StateManager.setNullState();
+            InfoOnView.printEverythingVisible();
         }
         else { //if the game is starting now
             System.out.println("The game starts now. Good luck!");
-            InfoOnView.printEverything();
+            InfoOnView.printEverythingVisible();
             //if the first player is the one on this client, trigger the first spawn for him/her
-            //TODO
+            spawnState.triggerFirstSpawn();
 
         }
     }

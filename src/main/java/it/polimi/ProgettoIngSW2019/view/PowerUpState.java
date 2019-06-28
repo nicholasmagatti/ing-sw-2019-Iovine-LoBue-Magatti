@@ -62,6 +62,9 @@ public class PowerUpState extends State {
         EventType command = event.getCommand();
         String jsonMessage = event.getMessageInJsonFormat();
 
+        //TODO: ricevi messaggio per tag qualcos grenade che inserisce le info negli attributi e fa triggerNextState(this)
+
+        //TODO: analogo per targeting scope
 
     }
 

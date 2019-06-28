@@ -2,7 +2,6 @@ package it.polimi.ProgettoIngSW2019.view;
 
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
-import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageActionLeft;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
@@ -67,7 +66,7 @@ public class ActionState extends State {
         if (!moveGrabShootLinked) {
             throw new RuntimeException("The attributes moveState, grabState and ShootState have not been assigned.");
         }*/
-        InfoOnView.printEverything();
+        InfoOnView.printEverythingVisible();
 
         String userAnswer;
         int actionsLeft = infoStart.getnActionsLeft();
