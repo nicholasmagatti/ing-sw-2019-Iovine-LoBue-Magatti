@@ -35,7 +35,7 @@ public class GeneralMessageObserver implements Observer<Event> {
         if(command == EventType.INPUT_TIME_EXPIRED){
             ToolsView.getInputScanner().close();
             System.out.println("Time expired! You have been suspended.");
-            System.out.println("You can ");
+            System.out.println("But you can reconnect to the ongoing game when you want.");
         }
 
         if(command == EventType.MSG_POWERUP_DISCARDED_TO_SPAWN){

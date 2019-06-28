@@ -90,10 +90,10 @@ public class ActionState extends State {
             }
         }
         if(!infoStart.getPowerUpsCanUse().isEmpty()){
-            userAnswer = powerUpState.askUsePowerupsAndReturnAnswer(infoStart.getPowerUpsCanUse());
+            userAnswer = powerUpState.askUsePowerup(infoStart.getPowerUpsCanUse());
             if (userAnswer != null) {
                 if (userAnswer.equals(GeneralInfo.YES_COMMAND)) {
-                    powerUpState.choosePowerupAndTriggerPowerupState(infoStart.getPowerUpsCanUse());
+                    powerUpState.triggerPowerupState(infoStart.getPowerUpsCanUse());
                 }
                 if (userAnswer.equals(GeneralInfo.NO_COMMAND)) {
                     proceedWithActionOrReload();

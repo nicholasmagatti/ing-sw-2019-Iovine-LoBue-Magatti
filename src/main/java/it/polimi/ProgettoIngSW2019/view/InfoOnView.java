@@ -231,7 +231,7 @@ public class InfoOnView implements Observer<Event> {
         }
         System.out.print("\n");
         System.out.print("Powerups: " + player.getnPowerUps() + "\t");
-        System.out.print("Loaded weapons: " + player.getnLoadedWeapons() + "\t");
+        System.out.print("Loaded weapons: " + player.getnMyLoadedWeapons() + "\t");
         System.out.print("Unloaded weapons: ");
         ToolsView.printListOfWeapons(player.getUnloadedWeapons());
         System.out.print("\n");
@@ -296,6 +296,10 @@ public class InfoOnView implements Observer<Event> {
 
         if(command == EventType.UPDATE_MY_LOADED_WEAPONS){
             myLoadedWeapons = new Gson().fromJson(jsonMessage, MyLoadedWeaponsLM.class);
+        }
+
+        if(command == EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD){
+            printEverythingVisible();
         }
     }
 

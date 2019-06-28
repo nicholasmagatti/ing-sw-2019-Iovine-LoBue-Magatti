@@ -6,6 +6,7 @@ import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.SpawnChoiceRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.DrawCardsInfoResponse;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.MessagePowerUpsDiscarded;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 
@@ -39,8 +40,19 @@ public class SpawnState extends State{
     @Override
     public void update(Event event) {
 
+
         EventType command = event.getCommand();
         String jsonMessage = event.getMessageInJsonFormat();
+
+        //trigger first spawn
+        if(command == EventType.MSG_FIRST_TURN_PLAYER){
+            triggerFirstSpawn();
+        }
+
+        //trigger standard spawn
+        if(command == EventType.PLAYER_IN_SPAWN_STATE){
+            StateManager.triggerNextState(this);
+        }
 
         if(command == EventType.RESPONSE_REQUEST_INITIAL_SPAWN_CARDS || command == EventType.RESPONSE_REQUEST_SPAWN_CARDS){
             /*
@@ -55,9 +67,13 @@ public class SpawnState extends State{
             choosePowerupToDiscard(drawCardsInfo.getSpawnPlayerLM());
         }
 
-        //if first spawn is true, after the succesfull spawn, reset firstSpawn to false
+        //if first spawn is true, after your successful spawn, reset firstSpawn to false
         if(firstSpawn || command == EventType.MSG_POWERUP_DISCARDED_TO_SPAWN){
-            firstSpawn = false;
+            MessagePowerUpsDiscarded messagePowerUpsDiscarded = new Gson().fromJson(jsonMessage, MessagePowerUpsDiscarded.class);
+            int idPlayerJustSpawned = messagePowerUpsDiscarded.getIdPlayer();
+            if(idPlayerJustSpawned == InfoOnView.getMyId()){
+                firstSpawn = false;
+            }
         }
 
     }
