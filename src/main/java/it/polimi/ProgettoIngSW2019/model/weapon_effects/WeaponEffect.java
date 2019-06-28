@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import it.polimi.ProgettoIngSW2019.common.enums.AreaOfEffect;
 import it.polimi.ProgettoIngSW2019.common.enums.WeaponEffectType;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.custom_exception.EnemySizeLimitExceededException;
 import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.model.Square;
@@ -124,6 +125,8 @@ public class WeaponEffect {
             for (Player enemy: enemyList) {
                 player.dealDamage(effect.getDmg(), enemy);
                 player.markPlayer(effect.getMark(), enemy);
+                if(enemy.getDamageLine().size() >= GeneralInfo.DAMAGE_TO_OVERKILL)
+                    enemy.markPlayer(1, player);
             }
         }
         else{
@@ -196,6 +199,14 @@ public class WeaponEffect {
     //NOT TO BE TESTED
     public AreaOfEffect getAoe(){
         return effect.getAoe();
+    }
+
+    /**
+     * @return the number of target this effect can hit
+     */
+    //NOT TO BE TESTED
+    public int getNrOfTargetHittable(){
+        return effect.getNrTarget();
     }
 }
 

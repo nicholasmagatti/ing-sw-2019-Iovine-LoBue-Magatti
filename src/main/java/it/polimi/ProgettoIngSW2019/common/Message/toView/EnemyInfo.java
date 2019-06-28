@@ -5,6 +5,7 @@ import java.util.List;
 public class EnemyInfo {
     private int id;
     private String name;
+    int idRoom;
     int[] position;
     private List<int[]> movement;
 
@@ -25,5 +26,13 @@ public class EnemyInfo {
 
     public List<int[]> getMovement() {
         return movement;
+    }
+
+    public int[] getPosition() {
+        return position;
+    }
+
+    public int getIdRoom() {
+        return idRoom;
     }
 }

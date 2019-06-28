@@ -244,4 +244,12 @@ public class WeaponCard extends Card {
     public WeaponEffectType getBaseEffectType(){
         return baseEffect.getWeaponEffectType();
     }
+
+    /**
+     * @return the base effect number of target that can be hitted
+     */
+    //NOT TO BE TESTED
+    public int getNrOfPlayerHittable(){
+        return baseEffect.getNrOfTargetHittable();
+    }
 }

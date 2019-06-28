@@ -6,17 +6,13 @@ import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.LoginRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.SetupRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupResponse;
-import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
-import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class SetupController implements Observer<Event> {
     private VirtualView virtualView;
@@ -24,9 +20,8 @@ public class SetupController implements Observer<Event> {
     private Maps maps;
     private GameTable gt;
     private TurnManager turnManager;
-    private int valueOfMapChosen;
-    private int numberOfSkullChosen;
     private SetupResponse setupResponse;
+    private CreateJson createJson;
 
     public SetupController(VirtualView virtualView, LoginHandler loginHandler){
         this.virtualView = virtualView;
@@ -39,8 +34,6 @@ public class SetupController implements Observer<Event> {
         if(event.getCommand().equals(EventType.REQUEST_SETUP)){
             loginHandler.setInSetupState(false);
             SetupRequest setup = (SetupRequest)deserialize(event.getMessageInJsonFormat(), SetupRequest.class);
-            valueOfMapChosen = setup.getMapChosen();
-            numberOfSkullChosen = setup.getNrOfSkullChosen();
             setModel(setup);
             setController();
 
@@ -56,6 +49,12 @@ public class SetupController implements Observer<Event> {
         }
     }
 
+    /**
+     * Initialize the model based on the user choice of the map and number of skull
+     *
+     * @param setup
+     * @author: Luca Iovine
+     */
     //NOT TO BE TESTED
     private void setModel(SetupRequest setup){
         gt = new GameTable(maps.getMaps()[setup.getMapChosen()], setup.getNrOfSkullChosen());
@@ -80,7 +79,7 @@ public class SetupController implements Observer<Event> {
         PayAmmoController payAmmoController = new PayAmmoController(createJson);
         GrabController grabController = new GrabController(turnManager, virtualView, idConverter, createJson, hostNameCreateList, payAmmoController);
         MoveController moveController = new MoveController(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
-        PowerUpController powerUpController = new PowerUpController(turnManager);
+        PowerUpController powerUpController = new PowerUpController(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
         ReloadController reloadController = new ReloadController(turnManager, virtualView, idConverter, createJson, hostNameCreateList, payAmmoController);
         ShootController shootController = new ShootController(turnManager, idConverter, virtualView, createJson, hostNameCreateList, distance);
         SpawnController spawnController = new SpawnController(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
@@ -95,125 +94,47 @@ public class SetupController implements Observer<Event> {
     }
 
     /**
-     * Generates the light model of the map chosen
-     *
-     * @param mapChosen integer that rapresent the map chosen by the player
-     * @return map light model
-     * @author: Luca Iovine
-     */
-
-    private MapLM getMapLMChosen(int mapChosen){
-        MapLM mapLM;
-        int rowCounter = 0;
-        int colCounter;
-        SquareLM[][] mapLMTmp = new SquareLM[3][4];
-        Maps maps = new Maps();
-        List<Integer> idPlayersOnSquare;
-        List<WeaponLM> weaponLMList;
-        int[] reloadCostInteger;
-        int[] buyCostInteger;
-
-        for(Square[] row: maps.getMaps()[mapChosen]){
-            colCounter = 0;
-            for(Square col: row){
-                if(col != null) {
-                    //ID giocatori sul quadrato
-                    idPlayersOnSquare = new ArrayList<>();
-                    for(Player p: col.getPlayerOnSquare()){
-                        idPlayersOnSquare.add(p.getIdPlayer());
-                    }
-                    if (col.getSquareType().equals(SquareType.SPAWNING_POINT)) {
-                        //Lista WeaponLM
-                        SpawningPoint sp = (SpawningPoint)col;
-                        weaponLMList = new ArrayList<>();
-
-                        /*
-                            Crezione della lista di weapon light model sul quadrato in questione
-                         */
-                        for(WeaponCard weapon: sp.getWeaponCards()) {
-                            reloadCostInteger = new int[weapon.getreloadCost().size()];
-                            for(int i = 0; i < weapon.getreloadCost().size(); i++){
-                                reloadCostInteger[i] = AmmoType.intFromAmmoType(weapon.getreloadCost().get(i));
-                            }
-                            buyCostInteger = new int[weapon.getBuyCost().size()];
-                            for(int i = 0; i < weapon.getBuyCost().size(); i++){
-                                buyCostInteger[i] = AmmoType.intFromAmmoType(weapon.getBuyCost().get(i));
-                            }
-
-                            weaponLMList.add(new WeaponLM(weapon.getIdCard(), weapon.getName(), weapon.getDescription(), reloadCostInteger, buyCostInteger));
-                        }
-
-                            mapLMTmp[rowCounter][colCounter] = new SpawnPointLM(idPlayersOnSquare, weaponLMList,
-                                col.getIsBlockedAtNorth(), col.getIsBlockedAtEast(), col.getIsBlockedAtSouth(), col.getIsBlockedAtWest(), col.getIdRoom());
-                    } else {
-                        AmmoCardLM ammoCardLM;
-                        AmmoPoint ap = (AmmoPoint)col;
-                        AmmoCard ammo = ap.getAmmoCard();
-                        if(ammo.hasPowerUp())
-                            ammoCardLM = new AmmoCardLM(ammo.getIdCard(), ammo.getAmmo().get(0), ammo.getAmmo().get(1));
-                        else
-                            ammoCardLM = new AmmoCardLM(ammo.getIdCard(), ammo.getAmmo().get(0), ammo.getAmmo().get(1), ammo.getAmmo().get(2));
-
-                        mapLMTmp[rowCounter][colCounter] = new AmmoPointLM(idPlayersOnSquare, ammoCardLM,
-                                col.getIsBlockedAtNorth(), col.getIsBlockedAtEast(), col.getIsBlockedAtSouth(), col.getIsBlockedAtWest(), col.getIdRoom());
-
-                    }
-                }
-                else
-                    mapLMTmp[rowCounter][colCounter] = null;
-
-                colCounter++;
-            }
-            rowCounter++;
-        }
-        mapLM = new MapLM(mapLMTmp);
-
-        return mapLM;
-    }
-
-    /**
      * Generates the list of light models of the players in game
      *
      * @return players light model
      * @author: Luca Iovine
      */
 
+    /**
+     * Generate the game data response for the player based on his hostname
+     *
+     * @param hostname to identify the player
+     * @return the SetupResponse which hold the game data of the player
+     * @author: Luca Iovine
+     */
+    private SetupResponse createSetupResponse(String hostname){
+        int myID;
+        String currentPlayer;
+
+        PlayerDataLM[] playerLMList = getPlayerLMList();
+        MapLM mapLM = createJson.createMapLM();
+        KillshotTrackLM killshotTrackLM = createJson.createKillShotTrackLM();
+
+        if(!loginHandler.isGameStarted())
+            currentPlayer = loginHandler.getSessions().get(0).getUsername();
+        else
+            currentPlayer = turnManager.getCurrentPlayer().getCharaName();
+
+        MyLoadedWeaponsLM myLoadedWeaponsLM = createJson.createMyLoadedWeaponsListLM(getPlayer(hostname));
+        MyPowerUpLM myPowerUpLM = createJson.createMyPowerUpsLM(getPlayer(hostname));
+        myID = getPlayer(hostname).getIdPlayer();
+
+        return new SetupResponse(currentPlayer, myID, playerLMList, mapLM, killshotTrackLM, hostname, myLoadedWeaponsLM, myPowerUpLM);
+    }
+
+    /**
+     * @return the list of all player light model
+     * @author: Luca Iovine
+     */
     private PlayerDataLM[] getPlayerLMList(){
-        int counter = 0;
-        PlayerDataLM tmpPlayerLM;
         PlayerDataLM[] playerDataLMList = new PlayerDataLM[gt.getPlayers().length];
-
-        for(Player p: gt.getPlayers()){
-            /*
-                Creazione unloaded weapon lm
-             */
-            List<WeaponLM> weaponLMList = new ArrayList<>();
-            int[] reloadCostInteger;
-            int[] buyCostInteger;
-
-            for(WeaponCard weapon: p.getUnloadedWeapons()) {
-                reloadCostInteger = new int[weapon.getreloadCost().size()];
-                for(int i = 0; i < weapon.getreloadCost().size(); i++){
-                    reloadCostInteger[i] = AmmoType.intFromAmmoType(weapon.getreloadCost().get(i));
-                }
-                buyCostInteger = new int[weapon.getBuyCost().size()];
-                for(int i = 0; i < weapon.getBuyCost().size(); i++){
-                    buyCostInteger[i] = AmmoType.intFromAmmoType(weapon.getBuyCost().get(i));
-                }
-
-                weaponLMList.add(new WeaponLM(weapon.getIdCard(), weapon.getName(), weapon.getDescription(), reloadCostInteger, buyCostInteger));
-            }
-            /*
-                Creazione player
-             */
-            tmpPlayerLM = new PlayerDataLM(p.getIdPlayer(), p.getCharaName(),
-                    weaponLMList, p.getRedAmmo(), p.getBlueAmmo(), p.getYellowAmmo(),
-                    p.getNumberOfSkulls(), p.isActive(), p.isPlayerDown(), p.getDamageLine(),
-                    p.getMarkLine());
-
-            playerDataLMList[counter] = tmpPlayerLM;
-            counter++;
-        }
+        for(int i = 0; i < gt.getPlayers().length; i++)
+            playerDataLMList[i] = createJson.createPlayerLM(gt.getPlayers()[i]);
 
         return playerDataLMList;
     }
@@ -234,73 +155,6 @@ public class SetupController implements Observer<Event> {
         }
 
         return player;
-    }
-
-    /**
-     * @param p is the player who hold the loaded weapon
-     * @return a list of MyLoadedWeaponsLM
-     * @author: Luca Iovine
-     */
-    private MyLoadedWeaponsLM getLoadedWeapon(Player p) {
-        List<WeaponLM> weaponLMList = new ArrayList<>();
-        int[] reloadCostInteger;
-        int[] buyCostInteger;
-
-        for (WeaponCard weapon : p.getLoadedWeapons()) {
-            reloadCostInteger = new int[weapon.getreloadCost().size()];
-            for (int i = 0; i < weapon.getreloadCost().size(); i++) {
-                reloadCostInteger[i] = AmmoType.intFromAmmoType(weapon.getreloadCost().get(i));
-            }
-            buyCostInteger = new int[weapon.getBuyCost().size()];
-            for (int i = 0; i < weapon.getBuyCost().size(); i++) {
-                buyCostInteger[i] = AmmoType.intFromAmmoType(weapon.getBuyCost().get(i));
-            }
-
-            weaponLMList.add(new WeaponLM(weapon.getIdCard(), weapon.getName(), weapon.getDescription(), reloadCostInteger, buyCostInteger));
-        }
-        return new MyLoadedWeaponsLM(weaponLMList);
-    }
-
-    /**
-     * @param p is the player who hold the loaded weapon
-     * @return a list of MyPowerUpLM
-     * @author: Luca Iovine
-     */
-    private MyPowerUpLM getMyPowerUpLM(Player p){
-        List<PowerUpLM> myPowerUp = new ArrayList<>();
-
-        for(PowerUp pu: p.getPowerUps())
-            myPowerUp.add(new PowerUpLM(pu.getIdCard(), pu.getName(), pu.getDescription(), pu.getGainAmmoColor()));
-
-        return new MyPowerUpLM(myPowerUp);
-    }
-
-    /**
-     * Generate the game data response for the player based on his hostname
-     *
-     * @param hostname to identify the player
-     * @return the SetupResponse which hold the game data of the player
-     * @author: Luca Iovine
-     */
-    private SetupResponse createSetupResponse(String hostname){
-        int myID;
-        String currentPlayer;
-        List<SetupResponse> setupResponseList = new ArrayList<>();
-
-        PlayerDataLM[] playerLMList = getPlayerLMList();
-        MapLM mapLM = getMapLMChosen(valueOfMapChosen);
-        KillshotTrackLM killshotTrackLM = new KillshotTrackLM(gt.getKillshotTrack(), numberOfSkullChosen);
-
-        if(!loginHandler.isGameStarted())
-            currentPlayer = loginHandler.getSessions().get(0).getUsername();
-        else
-            currentPlayer = turnManager.getCurrentPlayer().getCharaName();
-
-        MyLoadedWeaponsLM myLoadedWeaponsLM = getLoadedWeapon(getPlayer(hostname));
-        MyPowerUpLM myPowerUpLM = getMyPowerUpLM(getPlayer(hostname));
-        myID = getPlayer(hostname).getIdPlayer();
-
-        return new SetupResponse(currentPlayer, myID, playerLMList, mapLM, killshotTrackLM, hostname, myLoadedWeaponsLM, myPowerUpLM);
     }
 
     /**
@@ -333,11 +187,4 @@ public class SetupController implements Observer<Event> {
 
         return serializedObj;
     }
-
-    /**
-     * Initialize the model based on the user choice of the map and number of skull
-     *
-     * @param setup
-     * @author: Luca Iovine
-     */
 }

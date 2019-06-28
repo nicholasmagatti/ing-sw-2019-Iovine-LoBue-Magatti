@@ -1,11 +1,15 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
+import com.sun.javafx.scene.control.skin.IntegerFieldSkin;
 import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.ShootChoiceRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.EnemyInfo;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.ShootPowerUpInfo;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponInfo;
+import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.WeaponEffectType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
@@ -86,17 +90,15 @@ public class ShootController extends Controller{
                                        sendTargetingScopeInfo();
                                        sendTagbackGranedeInfo(enemyChosenList);
 
-                                       List<PowerUp> powerUpsCanUse = new ArrayList<>();
-
-                                       if(!weaponUser.getPowerUps().isEmpty()) {
-                                           for(PowerUp p: weaponUser.getPowerUps()) {
-                                               if(p.getName() != GeneralInfo.TAGBACK_GRENADE || p.getName() != GeneralInfo.TARGETING_SCOPE)
-                                                   powerUpsCanUse.add(p);
-                                           }
+                                       sendInfo(EventType.UPDATE_MY_LOADED_WEAPONS, getCreateJson().createMyLoadedWeaponsListLMJson(weaponUser), getHostNameCreateList().addOneHostName(weaponUser));
+                                       sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
+                                       sendInfo(EventType.UPDATE_PLAYER_INFO, getCreateJson().createPlayerLMJson(weaponUser), getHostNameCreateList().addAllHostName());
+                                       for(Player enemy: enemyChosenList){
+                                           sendInfo(EventType.UPDATE_PLAYER_INFO, getCreateJson().createPlayerLMJson(enemy), getHostNameCreateList().addAllHostName());
                                        }
 
-                                       String messageActionLeftJson = getCreateJson().createMessageActionsLeftJson(weaponUser, powerUpsCanUse);
-                                       sendInfo(EventType.MSG_MY_N_ACTION_LEFT, messageActionLeftJson, getHostNameCreateList().addOneHostName(weaponUser));
+                                       sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, "", getHostNameCreateList().addAllExceptOneHostName(weaponUser));
+                                       msgActionLeft(weaponUser);
                                    }
                                } catch (EnemySizeLimitExceededException e) {
                                    wrongChoiceErr = "Troppi nemici scelti\n" +
@@ -128,13 +130,21 @@ public class ShootController extends Controller{
         List<WeaponInfo> weaponInfoList = new ArrayList<>();
         boolean hasToMove;
         WeaponEffectType effectType;
+        int weaponId;
+        String weaponName;
+        int nrOfTargetHittable;
 
         for(WeaponCard card: weaponUser.getLoadedWeapons()){
             List<EnemyInfo> enemyVisible = generateEnemyInfoList(card);
-            hasToMove = card.hasToMoveInBaseEffect();
-            effectType = card.getBaseEffectType();
+            if(!enemyVisible.isEmpty()) {
+                hasToMove = card.hasToMoveInBaseEffect();
+                effectType = card.getBaseEffectType();
+                weaponId = card.getIdCard();
+                weaponName = card.getName();
+                nrOfTargetHittable = card.getNrOfPlayerHittable();
 
-            weaponInfoList.add(new WeaponInfo(enemyVisible, hasToMove, effectType));
+                weaponInfoList.add(new WeaponInfo(enemyVisible, hasToMove, effectType, weaponId, weaponName, nrOfTargetHittable));
+            }
         }
 
         String jsonObj = gson.toJson(weaponInfoList);
@@ -159,18 +169,16 @@ public class ShootController extends Controller{
      */
     private List<EnemyInfo> generateEnemyInfoList(WeaponCard card){
         List<EnemyInfo> enemyInfoList = new ArrayList<>();
-        List<Square> area = distance.getTargetPosition(card.getBaseEffectAoe(), weaponUser.getPosition());
+        List<Player> enemyList = card.getEnemyList(weaponUser);
 
-        for(Square s: area){
-            for(Player enemy: s.getPlayerOnSquare()){
-                List<int[]> movementList = new ArrayList<>();
-                for(Square movementPos: card.getMovementList(weaponUser, enemy)){
-                    movementList.add(movementPos.getCoordinates(getTurnManager().getGameTable().getMap()));
-                }
-                int[] enemyPosition = enemy.getPosition().getCoordinates(getTurnManager().getGameTable().getMap());
-
-                enemyInfoList.add(new EnemyInfo(enemy.getIdPlayer(), enemy.getCharaName(), enemyPosition, movementList));
+        for(Player enemy: enemyList){
+            List<int[]> movementList = new ArrayList<>();
+            for(Square movementPos: card.getMovementList(weaponUser, enemy)){
+                movementList.add(movementPos.getCoordinates(getTurnManager().getGameTable().getMap()));
             }
+            int[] enemyPosition = enemy.getPosition().getCoordinates(getTurnManager().getGameTable().getMap());
+
+            enemyInfoList.add(new EnemyInfo(enemy.getIdPlayer(), enemy.getCharaName(), enemyPosition, movementList));
         }
 
         return enemyInfoList;
@@ -182,17 +190,31 @@ public class ShootController extends Controller{
      * @author: Luca Iovine
      */
     private void sendTargetingScopeInfo(){
-        boolean hasTargetingScope = false;
+        List<PowerUpLM> targetingScopeList = new ArrayList<>();
+        List<EnemyInfo> enemyChosenLM = new ArrayList<>();
+        List<PowerUpLM> powerUpForBuy = new ArrayList<>();
+        int[] ammoForBuy = new int[3];
 
         for(PowerUp power: weaponUser.getPowerUps()){
-            if(power.getName().equals("TARGETING_SCOPE")){
-                hasTargetingScope = true;
-                break;
-            }
+            if(power.getName().equals("TARGETING_SCOPE"))
+                targetingScopeList.add(getCreateJson().createPowerUpLM(power));
+            else
+                //TODO: in realtà anche gli "altri" targeting scope possono essere utilizzati per pagare
+                powerUpForBuy.add(getCreateJson().createPowerUpLM(power));
         }
 
-        if(hasTargetingScope){
-            sendInfo(EventType.CAN_USE_TARGETING_SCOPE, "", Arrays.asList(weaponUser.getHostname()));
+        for(Player p: enemyChosenList){
+            if(!p.isPlayerDown())
+                enemyChosenLM.add(new EnemyInfo(p.getIdPlayer(), p.getCharaName(), p.getPosition().getCoordinates(getTurnManager().getGameTable().getMap()), null));
+        }
+
+        ammoForBuy[GeneralInfo.RED_ROOM_ID] = weaponUser.getRedAmmo();
+        ammoForBuy[GeneralInfo.BLUE_ROOM_ID] = weaponUser.getBlueAmmo();
+        ammoForBuy[GeneralInfo.YELLOW_ROOM_ID] = weaponUser.getYellowAmmo();
+
+        if(!targetingScopeList.isEmpty() && !enemyChosenLM.isEmpty()){
+            ShootPowerUpInfo shootPowerUpInfo = new ShootPowerUpInfo(targetingScopeList, enemyChosenLM, powerUpForBuy, ammoForBuy);
+            sendInfo(EventType.CAN_USE_TARGETING_SCOPE, serialize(shootPowerUpInfo), Arrays.asList(weaponUser.getHostname()));
         }
     }
 
@@ -202,6 +224,8 @@ public class ShootController extends Controller{
      * @author: Luca Iovine
      */
     private void sendTagbackGranedeInfo(List<Player> enemyChosen){
+        //TODO: sistemare il metodo perché deve inviare le tagback solo ai giocatori che vedono chi li
+        // ha colpiti e deve inviare la lista di tutte le tagback che ha in mano
         List<String> hostnameEnemyThatHasGotTagback = new ArrayList<>();
 
         for(Player enemy: enemyChosen) {
@@ -274,5 +298,20 @@ public class ShootController extends Controller{
         weaponChosen = null;
         enemyChosenList = new ArrayList<>();
         positionToMove = null;
+    }
+
+    /**
+     * To serialize information of the event
+     *
+     * @param objToSerialize object that needs to be serialized
+     * @return object serialized
+     * @author: Luca Iovine
+     */
+    //NOT TO BE TESTED
+    private String serialize(Object objToSerialize){
+        Gson gsonReader = new Gson();
+        String serializedObj = gsonReader.toJson(objToSerialize, objToSerialize.getClass());
+
+        return serializedObj;
     }
 }
