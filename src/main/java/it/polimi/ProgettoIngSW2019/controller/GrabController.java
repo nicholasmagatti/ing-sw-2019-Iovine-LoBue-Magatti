@@ -312,7 +312,7 @@ public class GrabController extends Controller {
                     myWeapons.addAll(grabberPlayer.getLoadedWeapons());
                     myWeapons.addAll(grabberPlayer.getUnloadedWeapons());
 
-                    String grabWeaponSwapJson = getCreateJson().createWeaponsListLMJson(grabberPlayer, myWeapons);
+                    String grabWeaponSwapJson = getCreateJson().createGrabWeaponSwapJson(grabberPlayer, myWeapons);
                     sendInfo(EventType.DISCARD_WEAPON, grabWeaponSwapJson, getHostNameCreateList().addOneHostName(grabberPlayer));
                 }
 

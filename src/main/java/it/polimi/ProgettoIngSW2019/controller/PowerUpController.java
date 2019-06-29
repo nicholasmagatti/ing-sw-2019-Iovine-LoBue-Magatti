@@ -76,6 +76,9 @@ public class PowerUpController extends Controller {
                             powerUpToUse.usePowerUpEffect(null, null,null, ownerPlayer, position);
                             ownerPlayer.discardPowerUps(Arrays.asList(powerUpToUse));
 
+                            String messageUsePowerUp = getCreateJson().createMessagePowerUpsDiscardedJson(ownerPlayer, Arrays.asList(powerUpToUse));
+                            sendInfo(EventType.MSG_USE_POWERUP, messageUsePowerUp, getHostNameCreateList().addAllHostName());
+
                             String updateMapLMJson = getCreateJson().createMapLMJson();
                             sendInfo(EventType.UPDATE_MAP, updateMapLMJson, getHostNameCreateList().addAllHostName());
 
