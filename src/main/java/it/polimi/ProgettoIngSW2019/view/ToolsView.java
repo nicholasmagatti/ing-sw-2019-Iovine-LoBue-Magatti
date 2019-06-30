@@ -1,20 +1,17 @@
 package it.polimi.ProgettoIngSW2019.view;
 
-import com.google.gson.Gson;
-import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.*;
+import it.polimi.ProgettoIngSW2019.common.Message.toController.PaymentChoiceInfo;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.EnemyInfo;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
-import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.common.utilities.InputScanner;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
-import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import static org.fusesource.jansi.Ansi.Color.*;
 import static org.fusesource.jansi.Ansi.Color.BLACK;
@@ -197,6 +194,126 @@ public abstract class ToolsView {
     }
 
     /**
+     * Interaction with the user to make him/her pay one ammo of any color. Return the chosen ammo (or powerup) if
+     * the timer has not expired; return null otherwise.
+     * @param ammoInAmmoBox
+     * @param ammoInPowerUp
+     * @return the chosen ammo (or powerup) if the timer has not expired; return null otherwise.
+     */
+    static PaymentChoiceInfo payOneAmmo(int[] ammoInAmmoBox, List<PowerUpLM> ammoInPowerUp){
+        System.out.println("You have " + costToString(ammoInAmmoBox) + "in your ammo box");
+        System.out.println("Choose one ammo unit or powerup of the following to pay the cost of one ammo: ");
+        List<String> options = new ArrayList<>();
+        int nrOption = 1;
+
+        for(PowerUpLM pw : ammoInPowerUp){
+            System.out.println(nrOption + ": " + pw.getName() + "(" + ammoTypeToString(pw.getGainAmmoColor()) + ")");
+            options.add(Integer.toString(nrOption));
+            nrOption++;
+        }
+        AmmoType[] ammoTypes = {AmmoType.RED, AmmoType.BLUE, AmmoType.YELLOW};
+
+        for(AmmoType ammoType : ammoTypes) {
+            if (ammoInAmmoBox[AmmoType.intFromAmmoType(ammoType)] > 0) {
+                System.out.println(nrOption + ": " + ammoTypeToString(ammoType).toUpperCase() + "ammo unit");
+                options.add(Integer.toString(nrOption));
+                nrOption++;
+            }
+        }
+        System.out.print(GeneralInfo.ASK_INPUT);
+        String userAnswer = readUserChoice(options, false);
+        if(userAnswer == null){//time expired
+            return null;
+        }
+        else{
+            Integer idChosenPowerup;
+            int[] ammoToDiscard = new int[3];
+            List<Integer> idPowerUpsToDiscard = new ArrayList<>();
+
+            int chosenOption = Integer.parseInt(userAnswer);
+            if(chosenOption <= ammoInPowerUp.size()){//it is a powerup
+                int posInList = chosenOption - 1;
+                idChosenPowerup = ammoInPowerUp.get(posInList).getIdPowerUp();
+                idPowerUpsToDiscard.add(idChosenPowerup);
+            }
+            else{//it is an ammo unit
+                int posInAmmoTypes = chosenOption - ammoInPowerUp.size() - 1;
+                AmmoType chosenAmmo = ammoTypes[posInAmmoTypes];
+                ammoToDiscard[AmmoType.intFromAmmoType(chosenAmmo)] = 1;
+            }
+
+            return new PaymentChoiceInfo(ammoToDiscard, idPowerUpsToDiscard);
+        }
+    }
+
+    /**
+     * Return the id of the target chosen by the user if the time has not expired first,
+     * or return the only possible target if there is no choice to make. Return null if the
+     * timer expired.
+     * @param enemyInfoList
+     * @return the id of the target chosen by the user if the time has not expired first,
+     * or return the only possible target if there is no choice to make. Return null if the
+     * timer expired.
+     */
+    static Integer readTargetChoice(List<EnemyInfo> enemyInfoList){
+        if(enemyInfoList.isEmpty()){
+            throw new IllegalArgumentException("The list of possible targets should not be empty.");
+        }
+        if(enemyInfoList.size() == 1) { //only one possible target
+            return enemyInfoList.get(0).getId();
+        }
+        else { //choose between the possible targets
+            System.out.println("Choose one of these targets: ");
+            List<String> options = new ArrayList<>();
+            for (int i = 0; i < enemyInfoList.size(); i++) {
+                System.out.println((i + 1) + ": " + enemyInfoList.get(i).getName());
+                options.add(Integer.toString(i + 1));
+            }
+            System.out.print(GeneralInfo.ASK_INPUT);
+            String userChoice = ToolsView.readUserChoice(options, false);
+            if (userChoice != null) {//time not expired
+                return enemyInfoList.get(Integer.parseInt(userChoice) - 1).getId();
+            }
+            else{
+                return null;
+            }
+        }
+    }
+
+    /**
+     *  Ask the user to choose between the possible destinations and return the chosen option if
+     *  the timer has not expired, null otherwise.
+     * @param possibleDestinations
+     * @return the chosen option if the timer has not expired, null otherwise.
+     */
+    static int[] chooseDestination(List<int[]> possibleDestinations){
+        System.out.println("Choose destination: ");
+        List<String> options = new ArrayList<>();
+        for(int i=0; i < possibleDestinations.size(); i++){
+            int optionNr = i + 1;
+            options.add(Integer.toString(optionNr));
+            System.out.print(optionNr + ": ");
+
+            char [] cordForUser = coordinatesForUser(possibleDestinations.get(i));
+
+            for(char c : cordForUser){
+                System.out.print(c);
+            }
+            System.out.print("\n");
+
+        }
+        System.out.print("Type the chosen option(the number at left, not the coordinates): ");
+        String userChoice = readUserChoice(options, false);
+        if(userChoice != null){//timer not expired
+            int posInList = Integer.parseInt(userChoice) - 1;
+            return possibleDestinations.get(posInList);
+        }
+        else{
+            return null;
+        }
+    }
+
+    /**
      * Translate coordinates for developers in coordinates for users (eg: (0,1) becomes (A,2) ).
      * @param coordinatesForDeveloper - numeric coordinates as row and column, beginning from 0 (eg: row=0, column=3).
      * @return coordinates for users (eg: [C, 3]).
@@ -213,6 +330,7 @@ public abstract class ToolsView {
         coordinatesForUser[1] = horizontalCoordinateForUser(coordinatesForDeveloper[1]);
         return coordinatesForUser;
     }
+
 
     /**
      * Print the specified map, line by line (with colors)
@@ -383,9 +501,9 @@ public abstract class ToolsView {
     }
 
     /**
-     *
+     * Convert a SquareLM[][] map in a list of lists of lists of Ansi (to be able to print it with colors).
      * @param mapLM
-     * @return
+     * @return the map as lists of Ansi, ready to be printed with colors.
      * @author Nicholas Magatti
      */
     private static List<List<List<Ansi>>> mapLMToAnsi(SquareLM[][] mapLM){
@@ -404,11 +522,11 @@ public abstract class ToolsView {
     }
 
     /**
-     *
+     * Convert a square of the given map to a square as list of Ansi.
      * @param row
      * @param col
      * @param mapLM
-     * @return
+     * @return a square formatted as a list of Ansi.
      * @author Nicholas Magatti
      */
     private static List<Ansi> squareLMToAnsi(int row, int col, SquareLM[][] mapLM){
@@ -509,7 +627,7 @@ public abstract class ToolsView {
     }
 
     /**
-     *
+     * Return the strings that compose the body of the square (the square excluding the borders).
      * @param squareLM
      * @return
      * @author Nicholas Magatti
@@ -543,12 +661,15 @@ public abstract class ToolsView {
     }
 
     /**
-     *
+     * Return the line with the info about the players to draw on a specific square
      * @param squareLM
      * @return
      * @author Nicholas Magatti
      */
     private static String playersToDrawOnSquare(SquareLM squareLM){
+        if(squareLM == null){
+            throw new NullPointerException("The parameter should not be null");
+        }
         String stringToReturn = "";
         for(int idPlayer : squareLM.getPlayers()){
             //'P' if the player is up, 'p' if the player is down
@@ -567,12 +688,15 @@ public abstract class ToolsView {
     }
 
     /**
-     *
+     * Return the lines with the info about the indicated ammo point to draw in it.
      * @param ammoPointLM
-     * @return
+     * @return the lines with the info about the indicated ammo point to draw in it.
      * @author Nicholas Magatti
      */
     private static String [] specificInfoAmmoPointToDraw(AmmoPointLM ammoPointLM){
+        if(ammoPointLM == null){
+            throw new NullPointerException("The parameter should not be null.");
+        }
         String[] stringsToReturn = new String[2];
         if(ammoPointLM.getAmmoCard() == null){
             for(int i=0; i < 2; i++) {
@@ -608,12 +732,15 @@ public abstract class ToolsView {
     }
 
     /**
-     *
+     * Return the lines with the info about the indicated spawn point to draw in it.
      * @param spawnPointLM
-     * @return
+     * @return he lines with the info about the indicated spawn point to draw in it.
      * @author Nicholas Magatti
      */
     private static String[] specificInfoSpawnPointToDraw(SpawnPointLM spawnPointLM){
+        if(spawnPointLM == null){
+            throw new NullPointerException("The parameter should not be null.");
+        }
         String[] stringsToReturn = new String[2];
         if(spawnPointLM.getWeapons().isEmpty()){
             stringsToReturn[0] = EMPTY_LINE_INSIDE_SQUARE;
@@ -629,6 +756,11 @@ public abstract class ToolsView {
         return stringsToReturn;
     }
 
+    /**
+     * Create the white space at the end of a line of a square and return the completed line.
+     * @param line - line with the important content, without the white space at the end.
+     * @return the completed line with white space at the end
+     */
     private static String lineInsideSquareWithBlankAtTheEnd(String line) {
         while (line.length() < SPACES_INSIDE_SQUARE) {
             line+= EMPTY_SPACE_CAR;

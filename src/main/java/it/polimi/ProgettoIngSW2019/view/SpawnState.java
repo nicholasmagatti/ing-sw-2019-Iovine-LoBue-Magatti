@@ -24,7 +24,7 @@ public class SpawnState extends State{
     @Override
     public void startState() {
 
-        InfoOnView.printEverythingVisible();
+        //InfoOnView.printEverythingVisible();
 
         InfoRequest infoRequest = new InfoRequest(InfoOnView.getHostname(), InfoOnView.getMyId());
         EventType eventType;
@@ -46,11 +46,13 @@ public class SpawnState extends State{
 
         //trigger first spawn
         if(command == EventType.MSG_FIRST_TURN_PLAYER){
+            System.out.println("Before start your first turn, you have to spawn!");
             triggerFirstSpawn();
         }
 
         //trigger standard spawn
-        if(command == EventType.PLAYER_IN_SPAWN_STATE){
+        if(command == EventType.MSG_PLAYER_SPAWN){
+            System.out.println("You died so now you will spawn again.");
             StateManager.triggerNextState(this);
         }
 
@@ -64,7 +66,7 @@ public class SpawnState extends State{
                 firstSpawn = true;
             }
             DrawCardsInfoResponse drawCardsInfo = new Gson().fromJson(jsonMessage, DrawCardsInfoResponse.class);
-            choosePowerupToDiscard(drawCardsInfo.getSpawnPlayerLM());
+            choosePowerupToDiscard(drawCardsInfo.getDrawnPowerUps());
         }
 
         //if first spawn is true, after your successful spawn, reset firstSpawn to false
@@ -98,10 +100,13 @@ public class SpawnState extends State{
         userInput = ToolsView.readUserChoice(options, true);
         if(userInput != null){
             //notify answer to server
-            int idPowerup = powerUps.get(Integer.parseInt(userInput) - 1).getIdWeapon();
+            int idPowerup = powerUps.get(Integer.parseInt(userInput) - 1).getIdPowerUp();
             SpawnChoiceRequest spawnChoiceRequest =
                     new SpawnChoiceRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), idPowerup);
             notifyEvent(spawnChoiceRequest, EventType.REQUEST_SPAWN);
+        }
+        else{//timer expired
+            firstSpawn = false; //reset firstSpawn to false (in case it was true)
         }
     }
 

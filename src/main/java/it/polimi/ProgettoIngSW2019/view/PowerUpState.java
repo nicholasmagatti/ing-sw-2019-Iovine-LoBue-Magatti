@@ -3,6 +3,11 @@ package it.polimi.ProgettoIngSW2019.view;
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
+import it.polimi.ProgettoIngSW2019.common.Message.toController.*;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.EnemyInfo;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.MessagePowerUpsDiscarded;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.NewtonInfoResponse;
+import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.ShootPowerUpInfo;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
@@ -15,74 +20,62 @@ import java.util.List;
  */
 public class PowerUpState extends State {
 
-    /**
-     * @deprecated
-     */
-    private PowerUpLM powerup = null;
-    private ShootPowerUpInfo shootPowerUpInfo = null;
 
-    /**
-     *
-     * @param powerup
-     * @deprecated
-     */
-    void setPowerupToUse(PowerUpLM powerup) {
-        this.powerup = powerup;
-    }
+    private ShootPowerUpInfo shootPowerUpInfo = null;
 
     @Override
     void startState() {
-        /*
-        if(powerup == null){
-            throw new Error("Powerup is null: you should have set the powerup to use before trigger the powerUpState.");
-        }
-        switch(powerup.getName()){
-            case GeneralInfo.NEWTON:
-                //TODO
-                break;
 
-            case GeneralInfo.TARGETING_SCOPE:
-                //TODO
-                break;
-
-            case GeneralInfo.TELEPORTER:
-                //TODO
-                break;
-
-            case GeneralInfo.TAGBACK_GRENADE:
-                //TODO
-                break;
-
-                default:
-                    throw new RuntimeException("The name of the powerup is " + powerup.getName() +
-                            " and does not correspond to any of the names available.");
-
-        }*/
         if(shootPowerUpInfo == null){
             throw new NullPointerException("The info about the powerup to use etc should have " +
                                             "been inserted before calling this method.");
         }
 
         List<PowerUpLM> usablePowerups = shootPowerUpInfo.getPowerUpUsableList();
+        /*ask the user to choose the powerup to use (or
+          , if there is only one, just use that one without asking
+         */
+        PowerUpLM chosenPwUp = choosePowerup(usablePowerups);
+        if(chosenPwUp != null) { //timer not expired
+            int idPowerUp = chosenPwUp.getIdPowerUp();
+            //if NEWTON or TELEPORTER
+            if (forBeforeOrAfterAction(usablePowerups)) {
 
-        if(powerupsBeforeOrAfterAction(usablePowerups)){
-            PowerUpLM chosenPwUp = choosePowerup(usablePowerups);
-            if(chosenPwUp != null){ //timer not expired
-                switch (chosenPwUp.getName()){
+                switch (chosenPwUp.getName()) {
                     case GeneralInfo.NEWTON:
-                        newton(chosenPwUp.getIdWeapon());
+                        //keep ONLY the chosen powerup in usablePowerUps: remove the others
+                        for(PowerUpLM pw : usablePowerups){
+                            if(pw.getIdPowerUp() != idPowerUp){
+                                usablePowerups.remove(pw);
+                            }
+                        }
+                        newtonInfoRequest(idPowerUp);
                         break;
                     case GeneralInfo.TELEPORTER:
-                        teleporter(chosenPwUp.getIdWeapon());
+                        teleporter(idPowerUp);
                         break;
-                        default:
-                            throw new Error("The chosen weapon has the wrong name: " + chosenPwUp.getName());
+                    default:
+                        throw new Error("The chosen weapon has the wrong name: " + chosenPwUp.getName());
+                }
+
+            }
+            else{//if GRENADE or TARGETING SCOPE
+                if (everyPowerupNameIs(usablePowerups, GeneralInfo.TAGBACK_GRENADE)) {
+                    grenade(idPowerUp);
+                }
+                else{
+                    if (everyPowerupNameIs(usablePowerups, GeneralInfo.TARGETING_SCOPE)) {
+                        targetingScope(idPowerUp);
+                    }
+                    else{
+                        throw new Error("Something went wrong.");
+                    }
                 }
             }
         }
-
-        //TODO if arriva SMG_USE_POWERUP e l'id player corrisponde al mio, allora resetto le info: shootPowerUpInfo = null;
-
+        else{ //reset shootPowerUpInfo to null
+            shootPowerUpInfo = null;
+        }
     }
 
     @Override
@@ -91,29 +84,40 @@ public class PowerUpState extends State {
         EventType command = event.getCommand();
         String jsonMessage = event.getMessageInJsonFormat();
 
-        if(command == EventType.CAN_USE_TAGBACK) {
-            ShootPowerUpInfo shootPowerUpInfo = new Gson().fromJson(jsonMessage, ShootPowerUpInfo.class);
-            /*TODO: RICICLANDO il possibile dai metodi già fatti sotto,
-                     quando ricevi messaggio per tagback grenade
-                    chiedi all'utente se vuole utilizzare uno dei seguenti powerup quale vuole utilizzare (o se invece dice no):
-                    se dice no non fare più niente, se dice di sì, se era solo uno procedi inserendo
-                     le info negli attributi e fa triggerNextState(this), altrimenti gli chiedi quale e poi
-                     inserisci le info negli attributi e fai triggerNextState(this)
-             */
-
+        if(command == EventType.CAN_USE_TAGBACK || command == EventType.CAN_USE_TARGETING_SCOPE) {
+            askUsePowerUpAndTriggerStateIfYes(jsonMessage);
         }
 
-        if(command == EventType.CAN_USE_TARGETING_SCOPE) {
-            ShootPowerUpInfo shootPowerUpInfo = new Gson().fromJson(jsonMessage, ShootPowerUpInfo.class);
-            /*TODO: RICICLANDO il possibile dai metodi già fatti sotto,
-                     quando ricevi messaggio per targeting scope
-                    chiedi all'utente se vuole utilizzare uno dei seguenti powerup quale vuole utilizzare (o se invece dice no):
-                    se dice no non fare più niente, se dice di sì, se era solo uno procedi inserendo
-                     le info negli attributi e fa triggerNextState(this), altrimenti gli chiedi quale e poi
-                     inserisci le info negli attributi e fai triggerNextState(this)
+        if(command == EventType.RESPONSE_NEWTON_INFO){
+            NewtonInfoResponse newtonInfoResponse = new Gson().fromJson(jsonMessage, NewtonInfoResponse.class);
+            /*
+            I insert the info here in the attribute of the class to avoid the situation in which the programmer
+            tries to access the info about newtonInfoResponse.getEnemyInfoMovement() from the shootPowerUpInfo
+            and gets an empty list instead of the correct one. But inserting it in the shootPowerUpInfo this
+            possible mistake is prevented.
              */
+            shootPowerUpInfo = new ShootPowerUpInfo(
+                    shootPowerUpInfo.getPowerUpUsableList(), newtonInfoResponse.getEnemyInfoMovement(),
+                    shootPowerUpInfo.getPowerUpAsPayment(), shootPowerUpInfo.getAmmoAsPayment());
+            newton(shootPowerUpInfo.getPowerUpUsableList().get(0).getIdPowerUp());
         }
 
+        //reset inf in shootPowerUpInfo after the use of a powerup by THIS user has worked successfully
+        if(command == EventType.MSG_USE_POWERUP){
+            MessagePowerUpsDiscarded messagePowerUpsDiscarded = new Gson().fromJson(jsonMessage, MessagePowerUpsDiscarded.class);
+            if(messagePowerUpsDiscarded.getIdPlayer() == InfoOnView.getMyId()){
+                shootPowerUpInfo = null;
+            }
+        }
+    }
+
+    private void askUsePowerUpAndTriggerStateIfYes(String jsonMessage){
+        ShootPowerUpInfo shootPowerUpInfo = new Gson().fromJson(jsonMessage, ShootPowerUpInfo.class);
+        String userAnswer = askUsePowerup(shootPowerUpInfo.getPowerUpUsableList());
+
+        if(userAnswer != null && userAnswer.equals(GeneralInfo.YES_COMMAND)){
+            triggerPowerupState(shootPowerUpInfo);
+        }
     }
 
     /**
@@ -127,6 +131,7 @@ public class PowerUpState extends State {
         if(usablePowerups.isEmpty()){
             throw new RuntimeException("This method should not be called with an empty list of powerups.");
         }
+        System.out.println("Do you want to use one of these powerups?");
         ToolsView.printListOfPowerups(usablePowerups);
         System.out.println(GeneralInfo.YES_COMMAND + ": use powerup");
         System.out.println(GeneralInfo.NO_COMMAND + ": don't");
@@ -208,7 +213,7 @@ public class PowerUpState extends State {
      * @return true if the received list of usable powerups is composed (only) by the
      * powerups you can use before or after an action during your turn; false otherwise.
      */
-    private boolean powerupsBeforeOrAfterAction(List<PowerUpLM> usablePowerups) {
+    private boolean forBeforeOrAfterAction(List<PowerUpLM> usablePowerups) {
         for (PowerUpLM pwUp : usablePowerups) {
             if (!pwUp.getName().equals(GeneralInfo.TELEPORTER) && !pwUp.getName().equals(GeneralInfo.NEWTON)){
                 return false;
@@ -217,14 +222,147 @@ public class PowerUpState extends State {
         return true;
     }
 
-    private int newton(int idWeapon){
-        return 1;
-        //TODO
+    /**
+     * Reurn true if every powerup has the name requested in the parameters, return false otherwise.
+     * @param powerups
+     * @param name
+     * @return true if every powerup has the name requested in the parameters, return false otherwise.
+     */
+    private boolean everyPowerupNameIs(List<PowerUpLM> powerups, String name){
+        for(PowerUpLM pwUp : powerups){
+            if(!pwUp.getName().equals(name)){
+                return false;
+            }
+        }
+        return true;
     }
 
-    private int teleporter(int idWeapon){
-        return 1;
-        //TODO
+    /**
+     * Indicate the specific card to use and send this info to the server
+     * @param idPowerUp
+     */
+    private void newtonInfoRequest(int idPowerUp){
+        //set id
+        //notify server
+        PowerUpChoiceRequest powerUpChoiceRequest =
+                new PowerUpChoiceRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), idPowerUp);
+        notifyEvent(powerUpChoiceRequest, EventType.RESPONSE_NEWTON_INFO);
     }
+
+    /**
+     *  Ask the user to set what is necessary for the user of the Newton powerup and
+     *  if the timer does not expire first, send the choice to the server
+     * @param idPowerUp
+     */
+    private void newton(int idPowerUp){
+        Integer idTarget = ToolsView.readTargetChoice(shootPowerUpInfo.getEnemy());
+        if(idTarget != null){//time not expired
+            System.out.println("Where do you want to move the target?");
+
+            List<int[]> possibleDestinations = new ArrayList<>();
+
+            for(EnemyInfo enemyInfo : shootPowerUpInfo.getEnemy()){
+                possibleDestinations.addAll(enemyInfo.getMovement());
+            }
+
+            int[] chosenDestination = ToolsView.chooseDestination(possibleDestinations);
+            if(chosenDestination != null){
+                //notify server
+                NewtonRequest newtonRequest = new NewtonRequest(InfoOnView.getHostname(),
+                        InfoOnView.getMyId(), idTarget, chosenDestination);
+                notifyEvent(newtonRequest, EventType.NEWTON);
+            }
+            else{//reset shootPowerUpInfo (time expired)
+                shootPowerUpInfo = null;
+            }
+        }
+        else{ //reset shootPowerUpInfo (time expired)
+            shootPowerUpInfo = null;
+        }
+    }
+
+    /**
+     *  Ask the user to set what is necessary for the user of the Teleporter and
+     *  if the timer does not expire first, send the choice to the server
+     * @param idPowerUp
+     */
+    private void teleporter(int idPowerUp){
+        System.out.println("Where do you want to teleport yourself?");
+        int[] chosenDestination = ToolsView.chooseDestination(InfoOnView.allNonNullSquarePositions());
+        if(chosenDestination != null){ //time not expired
+            //notify server
+            TeleporterRequest teleporterRequest = new TeleporterRequest(InfoOnView.getHostname(),
+                    InfoOnView.getMyId(), idPowerUp, chosenDestination);
+            notifyEvent(teleporterRequest, EventType.TELEPORTER);
+        }
+        else{ //reset shootPowerUpInfo
+            shootPowerUpInfo = null;
+        }
+    }
+
+    /**
+     *  Ask the user to set what is necessary for the user of the tagback grenade and
+     *  if the timer does not expire first, send the choice to the server
+     * @param idPowerUp
+     */
+    private void grenade(int idPowerUp){
+        Integer idTarget = ToolsView.readTargetChoice(shootPowerUpInfo.getEnemy());
+        if(idTarget != null){ //time not expired
+            //send choice to server
+            TagBackGrenadeRequest tagBackGrenadeRequest =
+                    new TagBackGrenadeRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), idPowerUp, idTarget);
+            notifyEvent(tagBackGrenadeRequest, EventType.TAGBACK_GRENADE);
+        }
+        else{//reset shootPowerUpInfo to null
+            shootPowerUpInfo = null;
+        }
+    }
+
+    /**
+     *  Ask the user to set what is necessary for the user of the Targeting Scope and
+     *  if the timer does not expire first, send the choice to the server
+     * @param idPowerUp
+     */
+    private void targetingScope(int idPowerUp){
+
+        AmmoType ammoToSpend = null; //it will be inserted if an ammo unit is chosen to pay
+        int idPowerUpToSpend = -1; //it will be inserted if a powerup is chosen to pay
+        //choose how to pay
+        PaymentChoiceInfo paymentChoiceInfo = ToolsView.
+                payOneAmmo(shootPowerUpInfo.getAmmoAsPayment(), shootPowerUpInfo.getPowerUpAsPayment());
+        if(paymentChoiceInfo != null){//time not expired
+            //insert the chosen ammoToSpend/idPowerUpToSpend
+            if(paymentChoiceInfo.getIdPowerUpToDiscard().isEmpty()){ //insert ammo
+                for(int i=0; i < paymentChoiceInfo.getAmmoToDiscard().length; i++){
+                    if(paymentChoiceInfo.getAmmoToDiscard()[i] == 1){
+                        for(AmmoType ammoType : AmmoType.values()){
+                            if(AmmoType.intFromAmmoType(ammoType) == i) {
+                                ammoToSpend = ammoType;
+                            }
+                        }
+                    }
+                }
+            }
+            else{// insert powerup
+                idPowerUpToSpend = paymentChoiceInfo.getIdPowerUpToDiscard().get(0);
+            }
+            //choose the target: if there is only one option, don't even ask
+            Integer idTarget = ToolsView.readTargetChoice(shootPowerUpInfo.getEnemy());
+            if (idTarget != null) { //time not expired
+                //notify choice to server
+                TargetingScopeRequest targetingScopeRequest = new
+                        TargetingScopeRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), idPowerUp,
+                        idTarget, ammoToSpend, idPowerUpToSpend);
+                notifyEvent(targetingScopeRequest, EventType.TARGETING_SCOPE);
+            }
+            else{//reset shootPowerUpInfo to null if the time has expired
+                shootPowerUpInfo = null;
+            }
+        }
+        else{ //reset shootPowerUpInfo to null if the time has expired
+            shootPowerUpInfo = null;
+        }
+    }
+
 
 }

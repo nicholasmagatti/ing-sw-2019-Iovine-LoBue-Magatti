@@ -146,7 +146,7 @@ public class LoginState extends State{
      */
     private void askCredentials(){
         System.out.print("Write the name of your character: ");
-        name = readUsername();
+        name = readUsername().toLowerCase();
         System.out.print("Write your password: ");
         password = readPassword();
         //notify to server

@@ -75,6 +75,24 @@ public class InfoOnView implements Observer<Event> {
     }
 
     /**
+     * Return a list with all the positions of all the non-null squares on the map
+     * @return a list with all the positions of all the non-null squares on the map
+     */
+    static List<int[]> allNonNullSquarePositions(){
+        List<int[]> allNonNullSquares = new ArrayList<>();
+        for(int row = 0; row < GeneralInfo.ROWS_MAP; row++){
+            for(int col = 0; col < GeneralInfo.COLUMNS_MAP; col++){
+                SquareLM square = map.getMap()[row][col];
+                if(square != null){
+                    int[] positionSquare = {row, col};
+                    allNonNullSquares.add(positionSquare);
+                }
+            }
+        }
+        return allNonNullSquares;
+    }
+
+    /**
      * Get the position of the player if present, return null otherwise.
      * @param player
      * @return the position of the player if present, return null otherwise.
@@ -82,9 +100,9 @@ public class InfoOnView implements Observer<Event> {
     static int[] positionPlayer(PlayerDataLM player){
         int[] position = new int[2];
         SquareLM[][] mapLM = map.getMap();
-        for(int row=0; row < mapLM.length; row++){
-            for(int col=0; col < mapLM[row].length; col++){
-                if(mapLM[row][col].getPlayers().contains(player.getIdPlayer())){
+        for(int row=0; row < GeneralInfo.ROWS_MAP; row++){
+            for(int col=0; col < GeneralInfo.COLUMNS_MAP; col++){
+                if(mapLM[row][col] != null && mapLM[row][col].getPlayers().contains(player.getIdPlayer())){
                     position[0] = row;
                     position[1] = col;
                     return position;
@@ -245,8 +263,6 @@ public class InfoOnView implements Observer<Event> {
         ToolsView.printListOfWeapons(myLoadedWeapons.getLoadedWeapons());
         System.out.print("\n");
     }
-
-
 
     /**
      * Return the spawn points in an array with the spawn point of the color corresponding to
