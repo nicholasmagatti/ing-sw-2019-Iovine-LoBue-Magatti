@@ -10,6 +10,7 @@ import it.polimi.ProgettoIngSW2019.common.Message.toView.EnemyInfo;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.ShootPowerUpInfo;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponInfo;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
+import it.polimi.ProgettoIngSW2019.common.enums.AreaOfEffect;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.WeaponEffectType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
@@ -86,7 +87,6 @@ public class ShootController extends Controller{
                                        sendInfo(EventType.ERROR, wrongChoiceErr, getHostNameCreateList().addOneHostName(weaponUser));
                                    } else {
                                        activateEffect();
-                                       //TODO: move due to effect
                                        sendTargetingScopeInfo();
                                        sendTagbackGranedeInfo(enemyChosenList);
 
@@ -199,7 +199,6 @@ public class ShootController extends Controller{
             if(power.getName().equals("TARGETING_SCOPE"))
                 targetingScopeList.add(getCreateJson().createPowerUpLM(power));
             else
-                //TODO: in realtà anche gli "altri" targeting scope possono essere utilizzati per pagare
                 powerUpForBuy.add(getCreateJson().createPowerUpLM(power));
         }
 
@@ -212,35 +211,94 @@ public class ShootController extends Controller{
         ammoForBuy[GeneralInfo.BLUE_ROOM_ID] = weaponUser.getBlueAmmo();
         ammoForBuy[GeneralInfo.YELLOW_ROOM_ID] = weaponUser.getYellowAmmo();
 
-        if(!targetingScopeList.isEmpty() && !enemyChosenLM.isEmpty()){
+        if(checkIfCanUseTargetingScope(targetingScopeList, enemyChosenLM, powerUpForBuy, ammoForBuy)){
             ShootPowerUpInfo shootPowerUpInfo = new ShootPowerUpInfo(targetingScopeList, enemyChosenLM, powerUpForBuy, ammoForBuy);
             sendInfo(EventType.CAN_USE_TARGETING_SCOPE, serialize(shootPowerUpInfo), Arrays.asList(weaponUser.getHostname()));
         }
     }
 
     /**
+     * To check if the weapon user can actually use the trargetting scopet that has in hand (if it has
+     * any)
+     *
+     * @param targetingScopeList list of targeting scope that user has got in hand
+     * @param enemyChosenLM list of the enemy he can hit with the targeting scope
+     * @param powerUpForBuy list of power up he can use to afford the one ammo cost
+     * @param ammoForBuy list of ammo in his ammo box he can use to afford the one ammo cost
+     * @return true if he can use the power up in his hand, false otherwise
+     */
+    private boolean checkIfCanUseTargetingScope(List<PowerUpLM> targetingScopeList, List<EnemyInfo> enemyChosenLM, List<PowerUpLM> powerUpForBuy, int[] ammoForBuy){
+        boolean result = false;
+        if(!targetingScopeList.isEmpty() && !enemyChosenLM.isEmpty()){
+            result = true;
+        }
+
+        if(result) {
+            if(powerUpForBuy.isEmpty())
+                result = false;
+
+            if(!result) {
+                for (int i = 0; i < ammoForBuy.length; i++) {
+                    if (ammoForBuy[i] > 0) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+    /**
      * Notify the enemy hitted if they have got the tagback grenade
      *
      * @author: Luca Iovine
      */
     private void sendTagbackGranedeInfo(List<Player> enemyChosen){
-        //TODO: sistemare il metodo perché deve inviare le tagback solo ai giocatori che vedono chi li
-        // ha colpiti e deve inviare la lista di tutte le tagback che ha in mano
+        List<ShootPowerUpInfo> messageToSendList = new ArrayList<>();
+        List<PowerUpLM> tagbackList;
         List<String> hostnameEnemyThatHasGotTagback = new ArrayList<>();
 
         for(Player enemy: enemyChosen) {
-            for (PowerUp power : enemy.getPowerUps()) {
-                if (power.getName().equals("TAGBACK_GRENADE")) {
-                    hostnameEnemyThatHasGotTagback.add(enemy.getHostname());
+            if(canSeeTheWeaponUser(enemy, weaponUser)) {
+                tagbackList = new ArrayList<>();
+                for (PowerUp power : enemy.getPowerUps()) {
+                    if (power.getName().equals("TAGBACK_GRENADE")) {
+                        tagbackList.add(getCreateJson().createPowerUpLM(power));
+                        if(!hostnameEnemyThatHasGotTagback.contains(enemy.getHostname()))
+                            hostnameEnemyThatHasGotTagback.add(enemy.getHostname());
+                    }
+                }
+
+                if(!tagbackList.isEmpty()){
+                    messageToSendList.add(new ShootPowerUpInfo(tagbackList, null, null, null));
                 }
             }
         }
 
-        if(!hostnameEnemyThatHasGotTagback.isEmpty()){
-            sendInfo(EventType.CAN_USE_TAGBACK, "", hostnameEnemyThatHasGotTagback);
+        for(int i = 0; i < hostnameEnemyThatHasGotTagback.size(); i++){
+            sendInfo(EventType.CAN_USE_TAGBACK, serialize(messageToSendList.get(i)), Arrays.asList(hostnameEnemyThatHasGotTagback.get(i)));
         }
     }
 
+    /**
+     * To check if the enemy hitted can see the weapon user in order to use the tagback grenade
+     *
+     * @param enemy who would use the tagback
+     * @param user who would be hitted by the tagback
+     * @return true if the enemy can see the user, false otherwise
+     */
+    private boolean canSeeTheWeaponUser(Player enemy, Player user){
+        boolean result = false;
+        List<Square> squareListEnemyCanSee = distance.getTargetPosition(AreaOfEffect.CAN_SEE, enemy.getPosition());
+        for(Square positionCanSee: squareListEnemyCanSee){
+            if(positionCanSee.getPlayerOnSquare().contains(user)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
     /**
      * Convert the enemy list id into Player of the game
      *
@@ -249,7 +307,7 @@ public class ShootController extends Controller{
      * @return the list of enemy as "Player"
      * @author: Luca Iovine
      */
-    public List<Player> convertEnemyListFromView(Player player, List<Integer> idEnemyList){
+    private List<Player> convertEnemyListFromView(Player player, List<Integer> idEnemyList){
         List<Player> enemylist = new ArrayList<>();
 
         for(int idEnemy: idEnemyList) {
@@ -276,7 +334,7 @@ public class ShootController extends Controller{
      * @return the position as "Square"
      * @author: Luca Iovine
      */
-    public Square convertMovementFromView(Player player, int[] position){
+    private Square convertMovementFromView(Player player, int[] position){
         Square newPostion = null;
 
         try{

@@ -11,6 +11,7 @@ import it.polimi.ProgettoIngSW2019.common.Message.toController.PaymentChoiceInfo
 import it.polimi.ProgettoIngSW2019.common.Message.toView.GrabInfoResponse;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.PayAmmoList;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponsCanPayResponse;
+import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 
@@ -95,7 +96,7 @@ public class GrabState extends State{
         //Cerco l'arma corrispondente
         for(PayAmmoList payAmmo: weaponInfo.getListPaymentReload()){
             if(payAmmo.getIdWeapon() == idWeaponChosen)
-                payment = askPayment(payAmmo.getAmmoCost(), payAmmo.getAmmoInAmmoBox(), payAmmo.getAmmoInPowerUp());
+                payment = ToolsView.askPayment(payAmmo.getAmmoCost(), payAmmo.getAmmoInAmmoBox(), payAmmo.getAmmoInPowerUp());
                 break;
         }
         if(idWeaponChosen != -1 && idWeaponToDiscard != - 1 && payment != null) {
@@ -162,124 +163,5 @@ public class GrabState extends State{
         }
 
         return idWeaponToDiscard;
-    }
-
-    private PaymentChoiceInfo askPayment(int[] costToPay, int[] ammoInAmmoBox, List<PowerUpLM> ammoInPowerUp){
-        int i;
-        boolean checkResult = true;
-        final String red = "R";
-        final String blue = "B";
-        final String yellow = "Y";
-
-        int[] ammoChosen = new int[ammoInAmmoBox.length];
-        List<Integer> powerUpIdChosenList = new ArrayList<>();
-
-        int[] tmpCostToPay = new int[costToPay.length];
-        int[] tmpAmmoInAmmoBox = new int[ammoInAmmoBox.length];
-        List<PowerUpLM> tmpAmmoInPowerUp = new ArrayList<>();
-
-        StringBuilder paymentSB = new StringBuilder();
-        List<String> responeForAmmo = new ArrayList<>();
-        List<String> responseForPowerUp = new ArrayList<>();
-
-        //Creazione liste temporanee per tenere traccia quantità "utilizzate" e del costo rimanente
-        for(i = 0; i < costToPay.length; i++){
-            tmpCostToPay[i] = costToPay[i];
-        }
-
-        for(i = 0; i < ammoInAmmoBox.length; i++){
-            tmpAmmoInAmmoBox[i] = ammoInAmmoBox[i];
-        }
-
-        tmpAmmoInPowerUp.addAll(ammoInPowerUp);
-
-        //Costruzione interazione utente
-        msg = "Devi pagare delle munizioni per proseguire con l'azione. \n" +
-                "Puoi utilizzare sia le munizioni che hai nella box delle ammo, che i power up.\n\n" +
-                "Questo è il costo che devi pagare: ";
-        paymentSB.append(msg);
-
-        msg = ToolsView.costToString(costToPay) + "\n\n";
-        paymentSB.append(msg);
-
-        while(checkResult) {
-            msg = "Queste sono le munizioni che puoi spendere.\n" +
-                    "Ogni volta che selezionerai il colore corrispondente, verrà scalata di uno la quantità: \n";
-
-            paymentSB.append(msg);
-
-            if (tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID] > 0) {
-                msg = red + ": Ammo rosse disponibili" + tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID] + "\n";
-                paymentSB.append(msg);
-                responeForAmmo.add(red);
-            }
-            if (tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID] > 0) {
-                msg = blue + ": Ammo blu disponibili" + tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID] + "\n";
-                paymentSB.append(msg);
-                responeForAmmo.add(blue);
-            }
-            if (tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID] > 0) {
-                msg = yellow + ": Ammo Gialle disponibili" + tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID] + "\n";
-                paymentSB.append(msg);
-                responeForAmmo.add(yellow);
-            }
-
-            for (i = 0; i < tmpAmmoInPowerUp.size(); i++) {
-                msg = (i + 1) + ": " + tmpAmmoInPowerUp.get(i).getName() + " COLORE: " + tmpAmmoInPowerUp.get(i).getGainAmmoColor() + "\n";
-                paymentSB.append(msg);
-                responseForPowerUp.add(Integer.toString(i + 1));
-            }
-
-            if (!responeForAmmo.isEmpty()) {
-                possibleChoice.addAll(responeForAmmo);
-                msg = "Scegli una lettera R/B/Y oppure ";
-                paymentSB.append(msg);
-            }
-
-            possibleChoice.addAll(responseForPowerUp);
-            msg = "scegli un numero da 1 a " + i + ": ";
-            paymentSB.append(msg);
-            System.out.print(sb);
-
-            String userChoice = ToolsView.readUserChoice(possibleChoice, false);
-
-            if (userChoice != null) {
-                if (responeForAmmo.contains(userChoice)) {
-                    switch (userChoice) {
-                        case red:
-                            tmpCostToPay[GeneralInfo.RED_ROOM_ID]--;
-                            tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID]--;
-                            ammoChosen[GeneralInfo.RED_ROOM_ID]++;
-                            break;
-                        case blue:
-                            tmpCostToPay[GeneralInfo.BLUE_ROOM_ID]--;
-                            tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID]--;
-                            ammoChosen[GeneralInfo.BLUE_ROOM_ID]++;
-                            break;
-                        case yellow:
-                            tmpCostToPay[GeneralInfo.YELLOW_ROOM_ID]--;
-                            tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID]--;
-                            ammoChosen[GeneralInfo.YELLOW_ROOM_ID]++;
-                            break;
-                    }
-                    checkResult = checkIfNeedMore(tmpCostToPay);
-                } else if (responseForPowerUp.contains(userChoice)) {
-                    powerUpIdChosenList.add(tmpAmmoInPowerUp.get(Integer.parseInt(userChoice) - 1).getIdWeapon());
-                    tmpAmmoInPowerUp.remove(Integer.parseInt(userChoice) - 1);
-                }
-            }
-            else
-                return null;
-        }
-        return new PaymentChoiceInfo(ammoChosen, powerUpIdChosenList);
-    }
-
-    private boolean checkIfNeedMore(int[] costToPayToCheck){
-        if(costToPayToCheck[GeneralInfo.RED_ROOM_ID] > 0 ||
-                costToPayToCheck[GeneralInfo.BLUE_ROOM_ID] > 0 ||
-                costToPayToCheck[GeneralInfo.YELLOW_ROOM_ID] > 0)
-            return true;
-        else
-            return false;
     }
 }

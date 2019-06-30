@@ -89,7 +89,6 @@ public class WeaponEffect {
      * @suthor: Luca Iovine
      */
     //TESTED --> generalEffectGetEnemyListKnowingAOETest
-    //TODO: da spostare in square (?)
     public List<Player> getPlayerInTheArea(Player fromPlayer, AreaOfEffect aoe) {
         List<Square> squareVisible = distance.getTargetPosition(aoe, fromPlayer.getPosition());
         List<Player> enemyList = new ArrayList<>();
