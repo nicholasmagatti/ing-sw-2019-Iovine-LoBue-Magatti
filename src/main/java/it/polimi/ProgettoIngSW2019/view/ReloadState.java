@@ -83,7 +83,7 @@ public class ReloadState extends State{
                 if(payInfo.getIdWeapon() != idWeapon){
                     throw new Error("This ids should be equal. Something went wrong.");
                 }
-                /*TODO uncomment after Luca Iovine put askPayment in ToolsView
+
                 PaymentChoiceInfo inputUserPayment = ToolsView.
                         askPayment(payInfo.getAmmoCost(), payInfo.getAmmoInAmmoBox(), payInfo.getAmmoInPowerUp());
                 if(inputUserPayment != null){ //time not expired
@@ -93,7 +93,7 @@ public class ReloadState extends State{
                                     inputUserPayment.getAmmoToDiscard(), inputUserPayment.getIdPowerUpToDiscard());
 
                     notifyEvent(reloadChoiceRequest, EventType.REQUEST_RELOAD);
-                }*/
+                }
             }
         }
     }

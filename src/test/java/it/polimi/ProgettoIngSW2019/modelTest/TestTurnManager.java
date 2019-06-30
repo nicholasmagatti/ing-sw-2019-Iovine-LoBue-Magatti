@@ -250,9 +250,9 @@ public class TestTurnManager {
         }
     }
 
-    //TODO: assign score when some players did not damaged the player to score
     @Test
     public void scoreDmLineWithSomeEnemiesMissing(){
+
         player1.dealDamage(11, player2);
         pointsActuallyAssigned = turnManager.scoreDamageLineOf(player2);
         pointsExpected[0] = 8;
@@ -262,6 +262,60 @@ public class TestTurnManager {
         for(int i=0; i < pointsExpected.length; i++){
             assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
         }
+        player2.getDamageLine().clear();
+        player2.increaseNumberOfSkulls();
+
+        player1.dealDamage(11, player2);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player2);
+        pointsExpected[0] = 6;
+        pointsExpected[1] = 0;
+        pointsExpected[2] = 0;
+        pointsExpected[3] = 0;
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+        player2.getDamageLine().clear();
+        player2.increaseNumberOfSkulls();
+
+        player3.dealDamage(11, player2);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player2);
+        pointsExpected[0] = 0;
+        pointsExpected[1] = 0;
+        pointsExpected[2] = 4;
+        pointsExpected[3] = 0;
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+        player2.getDamageLine().clear();
+        player2.increaseNumberOfSkulls();
+
+        player1.dealDamage(11, player2);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player2);
+        pointsExpected[0] = 2;
+        pointsExpected[1] = 0;
+        pointsExpected[2] = 0;
+        pointsExpected[3] = 0;
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+        player2.getDamageLine().clear();
+        player2.increaseNumberOfSkulls();
+
+        for(int j=0; j < 10; j++) {
+            player1.dealDamage(11, player2);
+            pointsActuallyAssigned = turnManager.scoreDamageLineOf(player2);
+            pointsExpected[0] = 1;
+            pointsExpected[1] = 0;
+            pointsExpected[2] = 0;
+            pointsExpected[3] = 0;
+            for (int i = 0; i < pointsExpected.length; i++) {
+                assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+            }
+            player2.getDamageLine().clear();
+            player2.increaseNumberOfSkulls();
+        }
+
+
 
         player2.dealDamage(5, player1);
         player3.dealDamage(6, player1);
@@ -274,6 +328,67 @@ public class TestTurnManager {
         for(int i=0; i < pointsExpected.length; i++){
             assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
         }
+        player1.getDamageLine().clear();
+        player1.increaseNumberOfSkulls();
+
+        player2.dealDamage(5, player1);
+        player3.dealDamage(6, player1);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[0] = 0;
+        pointsExpected[1] = 4;
+        pointsExpected[2] = 6;
+        pointsExpected[3] = 0;
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+        player1.getDamageLine().clear();
+        player1.increaseNumberOfSkulls();
+
+        player2.dealDamage(5, player1);
+        player3.dealDamage(6, player1);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[0] = 0;
+        pointsExpected[1] = 2;
+        pointsExpected[2] = 4;
+        pointsExpected[3] = 0;
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+        player1.getDamageLine().clear();
+        player1.increaseNumberOfSkulls();
+
+        player2.dealDamage(5, player1);
+        player3.dealDamage(6, player1);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[0] = 0;
+        pointsExpected[1] = 1;
+        pointsExpected[2] = 2;
+        pointsExpected[3] = 0;
+
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+        player1.getDamageLine().clear();
+        player1.increaseNumberOfSkulls();
+
+        for(int j=0; j < 10; j++) {
+            player2.dealDamage(5, player1);
+            player3.dealDamage(6, player1);
+            pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+            pointsExpected[0] = 0;
+            pointsExpected[1] = 1;
+            pointsExpected[2] = 1;
+            pointsExpected[3] = 0;
+
+            for (int i = 0; i < pointsExpected.length; i++) {
+                assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+            }
+            player1.getDamageLine().clear();
+            player1.increaseNumberOfSkulls();
+        }
+
     }
 
     //damages: p2: 6, p3: 1, p4: 4
@@ -360,68 +475,66 @@ public class TestTurnManager {
 
     }
 
-    //TODO: uncomment and finish testing
-    /*
+
     @Test
     public void testScoreKillshotTrack(){
 
         //TOKENS
         //p1: 2, p2: 6, p3: 5, p4: 2
 
-        player3.dealDamage(DAMAGE_TO_KILL, player1);
+        player3.dealDamage(GeneralInfo.DAMAGE_TO_KILL, player1);
         gameTable.addTokenOnKillshotTrack(player1, player3);
-        player1.emptyDamageLine();
+        player1.getDamageLine().clear();
 
         assertEquals(1, gameTable.getKillshotTrack().size());
         assertFalse(gameTable.getKillshotTrack().get(0).isOverkill());
 
-        player1.dealDamage(DAMAGE_TO_OVERKILL, player4);
+        player1.dealDamage(GeneralInfo.DAMAGE_TO_OVERKILL, player4);
         gameTable.addTokenOnKillshotTrack(player4, player1);
-        player4.emptyDamageLine();
+        player4.getDamageLine().clear();
 
         assertEquals(2, gameTable.getKillshotTrack().size());
         assertTrue(gameTable.getKillshotTrack().get(1).isOverkill());
 
-        player2.dealDamage(DAMAGE_TO_OVERKILL, player4);
+        player2.dealDamage(GeneralInfo.DAMAGE_TO_OVERKILL, player4);
         gameTable.addTokenOnKillshotTrack(player4, player2);
-        player4.emptyDamageLine();
+        player4.getDamageLine().clear();
 
         assertEquals(3, gameTable.getKillshotTrack().size());
         assertTrue(gameTable.getKillshotTrack().get(2).isOverkill());
 
-        player4.dealDamage(DAMAGE_TO_OVERKILL, player1);
+        player4.dealDamage(GeneralInfo.DAMAGE_TO_OVERKILL, player1);
         gameTable.addTokenOnKillshotTrack(player1, player4);
-        player4.emptyDamageLine();
+        player1.getDamageLine().clear();
 
         assertEquals(4, gameTable.getKillshotTrack().size());
         assertTrue(gameTable.getKillshotTrack().get(3).isOverkill());
 
         for(int i=0; i < 4; i++){
-            player3.dealDamage(DAMAGE_TO_KILL, player1);
+            player3.dealDamage(GeneralInfo.DAMAGE_TO_KILL, player1);
             gameTable.addTokenOnKillshotTrack(player1, player3);
-            player1.emptyDamageLine();
+            player1.getDamageLine().clear();
 
-            //TODO: delete print
-            System.out.println("i=" + i);
             assertEquals(5+i, gameTable.getKillshotTrack().size());
             assertFalse(gameTable.getKillshotTrack().get(4+i).isOverkill());
         }
 
         assertEquals(8, gameTable.getKillshotTrack().size());
-        assertTrue(!gameTable.getKillshotTrack().get(7).isOverkill());
+        assertFalse(gameTable.getKillshotTrack().get(7).isOverkill());
 
         for(int i=0; i < 2; i++){
-            player2.dealDamage(DAMAGE_TO_KILL, player4);
+            player2.dealDamage(GeneralInfo.DAMAGE_TO_KILL, player4);
             gameTable.addTokenOnKillshotTrack(player4, player2);
-            player4.emptyDamageLine();
+            player4.getDamageLine().clear();
         }
 
         assertEquals(10, gameTable.getKillshotTrack().size());
-        assertTrue(!gameTable.getKillshotTrack().get(9).isOverkill());
+        assertFalse(gameTable.getKillshotTrack().get(8).isOverkill());
+        assertFalse(gameTable.getKillshotTrack().get(9).isOverkill());
 
-        player2.dealDamage(DAMAGE_TO_OVERKILL, player4);
+        player2.dealDamage(GeneralInfo.DAMAGE_TO_OVERKILL, player4);
         gameTable.addTokenOnKillshotTrack(player4, player2);
-        player4.emptyDamageLine();
+        player4.getDamageLine().clear();
 
         assertEquals(11, gameTable.getKillshotTrack().size());
         assertTrue(gameTable.getKillshotTrack().get(10).isOverkill());
@@ -440,7 +553,6 @@ public class TestTurnManager {
         }
 
     }
-    */
 
     @Test
     public void checkDeadPlayersCorrectly(){

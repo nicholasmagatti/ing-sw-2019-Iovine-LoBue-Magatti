@@ -108,28 +108,20 @@ public class TurnManager{
      */
     private int[] pointsToAssignScoringSomething(int numberOfSkulls){
         //succession of points to assign without considering the number of skulls
-        final int LENGTH_SUCCESSION_OF_POINTS = 5;
-        int[] successionOfPoints = new int[LENGTH_SUCCESSION_OF_POINTS];
+        int [] successionOfPoints = {8, 6, 4, 2, 1};
 
-        successionOfPoints[0] = 8;
-        successionOfPoints[1] = 6;
-        successionOfPoints[2] = 4;
-        successionOfPoints[3] = 2;
-        successionOfPoints[4] = 1;
-
-        //excluding the player to score
-        int lengthOfPointsToAssign = gameTable.getPlayers().length-1;
+        int lengthOfPointsToAssign = gameTable.getPlayers().length;
 
         //succession of points to assign considering the number of skulls on the player to score
         int[] pointsToAssign = new int[lengthOfPointsToAssign];
 
         for(int i=0, j = numberOfSkulls; i < lengthOfPointsToAssign; i++, j++){
-            if(j < LENGTH_SUCCESSION_OF_POINTS) {
+            if(j < successionOfPoints.length) {
                 pointsToAssign[i] = successionOfPoints[j];
             }
             else{
                 //assign the last element of successionOfPoints
-                pointsToAssign[i] = successionOfPoints[LENGTH_SUCCESSION_OF_POINTS-1];
+                pointsToAssign[i] = successionOfPoints[successionOfPoints.length - 1];
             }
         }
         return pointsToAssign;
@@ -320,38 +312,17 @@ public class TurnManager{
      */
     private int[] assignPoints
             (List<Integer> listOfDamagesFromPlayers, int[] pointsToAssign, List<Player> playersInOrderOfFistHit, Player[] allPlayers){
-        //TODO: remove prints
 
-        System.out.println("listOfDamagesFromPlayers: ");
-        for(int e : listOfDamagesFromPlayers){
-            System.out.println(e);
-        }
-        System.out.println("pointsToAssign: ");
-        for (int e: pointsToAssign){
-            System.out.println(e);
-        }
-        System.out.println("playersInOrderOfFirstHit: ");
-        for (Player p : playersInOrderOfFistHit){
-            System.out.println(p.getCharaName());
-        }
-        System.out.println("allPlayers: ");
-        for(Player p : allPlayers){
-            System.out.println(p.getCharaName());
-        }
         //array to return
         int[] pointsAssignedInOrderOfId = new int[allPlayers.length];
         //at first, every cell is set to zero
-        for(int i=0; i < pointsAssignedInOrderOfId.length; i++){
-            pointsAssignedInOrderOfId[i] = 0;
-        }
 
         int idIndex;
         //now assign the points to the players
         for(int i=0; max(listOfDamagesFromPlayers) > 0; i++) {
             idIndex = IdOfThePlayerWhoHitFirstBetweenThese(indexesOfGreaterValue(listOfDamagesFromPlayers), playersInOrderOfFistHit);
             //assign points to this player
-            //TODO: remove print
-            System.out.println("idIndex: " + idIndex);
+
             allPlayers[idIndex].addPointsToScore(pointsToAssign[i]);
             //set it to 0
             listOfDamagesFromPlayers.set(idIndex, 0);
