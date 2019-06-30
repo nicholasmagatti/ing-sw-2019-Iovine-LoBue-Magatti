@@ -29,7 +29,7 @@ public class EndTurnController extends Controller {
     private Deck ammoDeck;
     private Player ownerPlayer;
     private List<MessageScorePlayer> messageScorePlayerList = new ArrayList<>();
-    List<Player> deadPlayers = new ArrayList<>();
+    private List<Player> deadPlayers = new ArrayList<>();
 
 
     /**
@@ -82,24 +82,30 @@ public class EndTurnController extends Controller {
                                 sendInfo(EventType.MSG_PLAYER_SPAWN, message, getHostNameCreateList().addOneHostName(dp));
                             }
                         }
-
-                        resetMap();
-                        getTurnManager().changeCurrentPlayer();
-
-                        sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
-
-                        Player player = getTurnManager().getCurrentPlayer();
-                        sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(player), getHostNameCreateList().addAllHostName());
-
-                        if(player.getPosition() == null) {
-                            sendInfo(EventType.MSG_FIRST_TURN_PLAYER, getCreateJson().createMessageJson(player), getHostNameCreateList().addOneHostName(player));
+                        //if the game has to come to its end
+                        if(getTurnManager().getGameTable().isKillshotTrackFull()){
+                            new FinalScoreController(getTurnManager(), getVirtualView(), getIdConverter(),
+                                    getCreateJson(), getHostNameCreateList()).endGame();
                         }
-                        else {
-                            String mess = "";
-                            sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(ownerPlayer));
+                        else{
+                            resetMap();
+                            getTurnManager().changeCurrentPlayer();
 
-                            //inside there is the message for Nick
-                            msgActionLeft(ownerPlayer);
+                            sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
+
+                            Player player = getTurnManager().getCurrentPlayer();
+                            sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(player), getHostNameCreateList().addAllHostName());
+
+                            if(player.getPosition() == null) {
+                                sendInfo(EventType.MSG_FIRST_TURN_PLAYER, getCreateJson().createMessageJson(player), getHostNameCreateList().addOneHostName(player));
+                            }
+                            else {
+                                String mess = "";
+                                sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(ownerPlayer));
+
+                                //inside there is the message for Nick
+                                msgActionLeft(ownerPlayer);
+                            }
                         }
                     }
                 }
@@ -127,7 +133,7 @@ public class EndTurnController extends Controller {
 
 
             for(Player deadPlayer: deadPlayers) {
-                String lastHitName = deadPlayer.getDamageLine().get(11);
+                String lastHitName = deadPlayer.getDamageLine().get(deadPlayer.getDamageLine().size() - 1);
                 Player player = getTurnManager().getPlayerFromCharaName(lastHitName);
                 if(player.getIdPlayer() != ownerPlayer.getIdPlayer())
                     throw new IllegalAttributeException("Something wrong with the killer");
@@ -140,6 +146,7 @@ public class EndTurnController extends Controller {
 
             //send the scores infoRequest to all players
             String messageScorePlayerListJson = new Gson().toJson(messageScorePlayerList);
+            messageScorePlayerList.clear();
             sendInfo(EventType.SCORE_DEAD_PLAYERS, messageScorePlayerListJson, getHostNameCreateList().addAllHostName());
 
             sendInfo(EventType.UPDATE_KILLSHOTTRACK, getCreateJson().createKillShotTrackLMJson(), getHostNameCreateList().addAllHostName());
@@ -215,4 +222,5 @@ public class EndTurnController extends Controller {
             }
         }
     }
+
 }

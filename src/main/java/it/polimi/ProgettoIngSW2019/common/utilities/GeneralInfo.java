@@ -18,6 +18,7 @@ public abstract class GeneralInfo {
     public static final int MAX_SKULLS = 8;
     public static final int MIN_NUM_PLAYERS = 3;
     public static final int MAX_NUM_PLAYERS = 5;
+    public static final int ACTIONS_PER_TURN = 2;
 
     public static final int RED_ROOM_ID = 0;
     public static final int BLUE_ROOM_ID = 1;

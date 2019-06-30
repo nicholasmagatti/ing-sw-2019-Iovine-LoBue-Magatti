@@ -5,6 +5,7 @@ import java.util.List;
 
 import it.polimi.ProgettoIngSW2019.common.enums.*;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 
 /**
  * Class used to represent the game table and everything on it
@@ -40,15 +41,6 @@ public class GameTable{
         }
         numberOfSkullsForTheGame = initialNumberOfSkulls;
 
-        DeckFactory deckFactory = new DeckFactory();
-        weaponDeck = new Deck(DeckType.WEAPON_CARD, deckFactory);
-        powerUpDeck = new Deck(DeckType.POWERUP_CARD, deckFactory);
-        ammoDeck = new Deck(DeckType.AMMO_CARD, deckFactory);
-
-        weaponDeck.shuffle();
-        powerUpDeck.shuffle();
-        ammoDeck.shuffle();
-
         map = chosenMap;
         //set dependencies for every square of the map
         for(int i = 0; i < GeneralInfo.ROWS_MAP; i++){
@@ -58,6 +50,15 @@ public class GameTable{
                 }
             }
         }
+
+        DeckFactory deckFactory = new DeckFactory(new DistanceDictionary(map));
+        weaponDeck = new Deck(DeckType.WEAPON_CARD, deckFactory);
+        powerUpDeck = new Deck(DeckType.POWERUP_CARD, deckFactory);
+        ammoDeck = new Deck(DeckType.AMMO_CARD, deckFactory);
+
+        weaponDeck.shuffle();
+        powerUpDeck.shuffle();
+        ammoDeck.shuffle();
     }
 
     /**

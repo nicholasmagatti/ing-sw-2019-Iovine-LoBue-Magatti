@@ -1,5 +1,7 @@
 package it.polimi.ProgettoIngSW2019.model;
 
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +17,14 @@ public class TurnManager{
 
 
     /**
-     * Constructor that sets the game table and also sets the first player as current player
+     * Constructor that sets the game table, the first player as current player and the number of actions
+     * available for the turn of that player
      * @param gameTable
      */
     public TurnManager(GameTable gameTable){
         this.gameTable = gameTable;
         currentPlayer = gameTable.getPlayers()[0];
+        actionsLeftForThisTurn = GeneralInfo.ACTIONS_PER_TURN;
     }
 
     /**
@@ -32,9 +36,13 @@ public class TurnManager{
     }
 
     /**
-     * Set the next active player as the 'current player' to refer in this turn
+     * Set the next active player as the 'current player' to refer in this turn and
+     * reset the number of actions available.
      */
     public void changeCurrentPlayer(){
+
+        resetActionsLeftForNextTurn();
+
         int idNextPlayer = currentPlayer.getIdPlayer();
 
         //first, go to the next player
@@ -55,11 +63,10 @@ public class TurnManager{
     }
 
     /**
-     * Set the number of actions available to this player on this turn
-     * @param num - number of actions available to this player on this turn
+     * Reset the number of actions available for the player of the next turn
      */
-    public void setNrActionsForTurn(int num){
-        actionsLeftForThisTurn = num;
+    private void resetActionsLeftForNextTurn(){
+        actionsLeftForThisTurn = GeneralInfo.ACTIONS_PER_TURN;
     }
 
     /**
@@ -347,5 +354,22 @@ public class TurnManager{
             }
         }
         return playersDown;
+    }
+
+    /**
+     * If one of the ammo card deck or the powerup deck is empty, reset that deck using the
+     * respective deck of discarded cards.
+     */
+    public void resetDecksIfNecessary(){
+        if(gameTable.getPowerUpDeck().getCards().isEmpty()){
+            gameTable.getPowerUpDeck().getCards().addAll(gameTable.getPowerUpDiscarded());
+            gameTable.getPowerUpDeck().shuffle();
+            gameTable.getPowerUpDiscarded().clear();
+        }
+        if(gameTable.getAmmoDeck().getCards().isEmpty()){
+            gameTable.getAmmoDeck().getCards().addAll(gameTable.getAmmoDiscarded());
+            gameTable.getAmmoDeck().shuffle();
+            gameTable.getAmmoDiscarded().clear();
+        }
     }
 }
