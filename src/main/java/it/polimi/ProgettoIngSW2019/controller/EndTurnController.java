@@ -75,10 +75,6 @@ public class EndTurnController extends Controller {
                 if (checkCurrentPlayer(ownerPlayer)) {
                     if (checkNoActionLeft(ownerPlayer)) {
                         checkScore();
-                        resetMap();
-                        getTurnManager().changeCurrentPlayer();
-
-                        sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
 
                         if(!deadPlayers.isEmpty()) {
                             for (Player dp : deadPlayers) {
@@ -86,6 +82,11 @@ public class EndTurnController extends Controller {
                                 sendInfo(EventType.MSG_PLAYER_SPAWN, message, getHostNameCreateList().addOneHostName(dp));
                             }
                         }
+
+                        resetMap();
+                        getTurnManager().changeCurrentPlayer();
+
+                        sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
 
                         Player player = getTurnManager().getCurrentPlayer();
                         sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(player), getHostNameCreateList().addAllHostName());
@@ -191,10 +192,6 @@ public class EndTurnController extends Controller {
 
             getTurnManager().getGameTable().addTokenOnKillshotTrack(deadPlayer, ownerPlayer);
             messageScorePlayerList.add(new MessageScorePlayer(ownerPlayer.getIdPlayer(), deadNamePlayer, killerNamePlayer, firstBloodNamePlayer, scorePlayersWhoHits, nSkullsDeadPlayer));
-
-            //msg to dead player to go to spawn state
-            String msgPlayerInSpawnState = new Gson().toJson(new InfoResponse(deadPlayer.getIdPlayer()));
-            sendInfo(EventType.PLAYER_IN_SPAWN_STATE, msgPlayerInSpawnState, getHostNameCreateList().addOneHostName(deadPlayer));
         }
     }
 

@@ -33,7 +33,7 @@ public class DrawCardsInfoResponse extends InfoResponse {
      * the player must choose one to spawn
      * @return  list of powerUps
      */
-    public List<PowerUpLM>  getSpawnPlayerLM() {
+    public List<PowerUpLM> getDrawnPowerUps() {
         return powerUps;
     }
 

@@ -38,7 +38,7 @@ public class PowerUpLM {
      * Get the id of the PowerUp to visualize
      * @return     int, the id
      */
-    public int getIdWeapon() {
+    public int getIdPowerUp() {
         return this.idPowerUp;
     }
 
