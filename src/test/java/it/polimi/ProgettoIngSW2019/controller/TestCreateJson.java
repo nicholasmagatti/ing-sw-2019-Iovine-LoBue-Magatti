@@ -312,7 +312,7 @@ public class TestCreateJson {
     @Test
     public void createMyPowerUpsLMTest() {
         MyPowerUpLM myPowerUpLMCreated = createJson.createMyPowerUpsLM(player1);
-        MyPowerUpLM myPowerUpLM = new MyPowerUpLM(powerUpLMS);
+        MyPowerUpLM myPowerUpLM = new MyPowerUpLM(Arrays.asList(createJson.createPowerUpLM(powerUp1)));
 
         for(int i = 0; i < myPowerUpLM.getPowerUps().size(); i++) {
             assertEquals(myPowerUpLM.getPowerUps().get(i).getIdPowerUp(), myPowerUpLMCreated.getPowerUps().get(i).getIdPowerUp());
@@ -325,7 +325,7 @@ public class TestCreateJson {
     @Test
     public void createMyPowerUpsLMJsonTest() {
         String myPowerUpLMJsonCreated = createJson.createMyPowerUpsLMJson(player1);
-        MyPowerUpLM myPowerUpLM = new MyPowerUpLM(powerUpLMS);
+        MyPowerUpLM myPowerUpLM = new MyPowerUpLM(Arrays.asList(createJson.createPowerUpLM(powerUp1)));
         MyPowerUpLM myPowerUpLMCreated = new Gson().fromJson(myPowerUpLMJsonCreated, MyPowerUpLM.class);
 
         for(int i = 0; i < myPowerUpLM.getPowerUps().size(); i++) {
@@ -381,8 +381,16 @@ public class TestCreateJson {
 
     @Test
     public void createKillShotTrackLMJsonTest() {
+        KillToken killToken1 = new KillToken("priscilla", true);
+        KillToken killToken2 = new KillToken("luca", false);
+        List<KillToken> killTokens = new ArrayList<>();
+        killTokens.add(killToken1);
+        killTokens.add(killToken2);
+        when(gameTable.getKillshotTrack()).thenReturn(killTokens);
+        when(gameTable.initialNumberOfSkulls()).thenReturn(5);
+
         String killShotTrackLMJsonCreated = createJson.createKillShotTrackLMJson();
-        KillshotTrackLM killshotTrackLM = new KillshotTrackLM(Arrays.asList(new KillToken("priscilla", true), new KillToken("luca", false)), 5);
+        KillshotTrackLM killshotTrackLM = new KillshotTrackLM(killTokens, 5);
         KillshotTrackLM killshotTrackLMCreated = new Gson().fromJson(killShotTrackLMJsonCreated, KillshotTrackLM.class);
 
         assertEquals(killshotTrackLM.getInitialNumberOfSkulls(), killshotTrackLMCreated.getInitialNumberOfSkulls());
