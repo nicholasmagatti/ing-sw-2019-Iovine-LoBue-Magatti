@@ -20,6 +20,7 @@ public class TestPlayer {
     private Square[][][] maps = new Maps().getMaps();
     private Player player1, player2, player3, player4;
     private AmmoPoint ammoPoint1, ammoPoint2, ammoPoint3;
+    private SpawningPoint spawningPoint1;
 
     @Before
     public void setUp(){
@@ -36,6 +37,8 @@ public class TestPlayer {
         ammoPoint1.reset(gameTable.getAmmoDeck());
         ammoPoint2.reset(gameTable.getAmmoDeck());
         ammoPoint3.reset(gameTable.getAmmoDeck());
+
+        spawningPoint1 = new SpawningPoint(1, true, true, true, true);
 
     }
 
@@ -270,6 +273,30 @@ public class TestPlayer {
             }
         }
         assertEquals(3, marksFromPlayer3);
+    }
+
+    @Test
+    public void testMoveTo(){
+        assertTrue(player3.getPosition() == null);
+
+        player3.moveTo(ammoPoint1);
+        player4.moveTo(ammoPoint1);
+        assertTrue(ammoPoint1.getPlayerOnSquare().contains(player3));
+        assertTrue(ammoPoint1.getPlayerOnSquare().contains(player4));
+        assertEquals(ammoPoint1, player3.getPosition());
+        assertFalse(ammoPoint1.getPlayerOnSquare().contains(player1));
+
+        player3.moveTo(spawningPoint1);
+        assertTrue(spawningPoint1.getPlayerOnSquare().contains(player3));
+        assertEquals(spawningPoint1, player3.getPosition());
+        assertTrue(ammoPoint1.getPlayerOnSquare().contains(player4));
+        assertFalse(ammoPoint1.getPlayerOnSquare().contains(player3));
+
+        player3.moveTo(ammoPoint2);
+        assertTrue(ammoPoint2.getPlayerOnSquare().contains(player3));
+        assertFalse(spawningPoint1.getPlayerOnSquare().contains(player3));
+        assertEquals(ammoPoint2, player3.getPosition());
+
     }
 
 }

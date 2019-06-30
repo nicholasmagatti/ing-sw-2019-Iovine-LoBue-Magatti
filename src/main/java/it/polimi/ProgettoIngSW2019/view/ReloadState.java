@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.WeaponLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
+import it.polimi.ProgettoIngSW2019.common.Message.toController.PaymentChoiceInfo;
+import it.polimi.ProgettoIngSW2019.common.Message.toController.ReloadChoiceRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.PayAmmoList;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponsCanPayResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
@@ -77,12 +79,21 @@ public class ReloadState extends State{
             else {// pay and notify
                 chosenOption = Integer.parseInt(input);
                 idWeapon = weapons.get(chosenOption - 1).getIdWeapon(); //to send to server
-                PayAmmoList payAmmoInfo = reloadInfo.getListPaymentReload().get(chosenOption - 1);
-                if(payAmmoInfo.getIdWeapon() != idWeapon){
-                    throw new Error("This ids should be equals. Something went wrong.");
+                PayAmmoList payInfo = reloadInfo.getListPaymentReload().get(chosenOption - 1);
+                if(payInfo.getIdWeapon() != idWeapon){
+                    throw new Error("This ids should be equal. Something went wrong.");
                 }
-                //TODO inputUserPayment = ToolsView.payment(...);
-                //TODO if(inputUserPayment != null) notify with ReloadChoiceRequest with EventType.REQUEST_RELOAD
+                /*TODO uncomment after Luca Iovine put askPayment in ToolsView
+                PaymentChoiceInfo inputUserPayment = ToolsView.
+                        askPayment(payInfo.getAmmoCost(), payInfo.getAmmoInAmmoBox(), payInfo.getAmmoInPowerUp());
+                if(inputUserPayment != null){ //time not expired
+                    //notify to server
+                    ReloadChoiceRequest reloadChoiceRequest =
+                            new ReloadChoiceRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), idWeapon,
+                                    inputUserPayment.getAmmoToDiscard(), inputUserPayment.getIdPowerUpToDiscard());
+
+                    notifyEvent(reloadChoiceRequest, EventType.REQUEST_RELOAD);
+                }*/
             }
         }
     }

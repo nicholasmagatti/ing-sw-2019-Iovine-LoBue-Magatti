@@ -14,9 +14,7 @@ import java.util.List;
 public class ActionState extends State {
 
     private MessageActionLeft infoStart;
-    /**
-     * @deprecated
-     */
+
     private boolean moveGrabShootLinked = false;
 
     private ShootState shootState;
@@ -28,44 +26,35 @@ public class ActionState extends State {
 
     /**
      * Constructor
-     * @param moveState
-     * @param grabState
-     * @param shootState
      * @param powerUpState
      * @param reloadState
      */
-    public ActionState(MoveState moveState, GrabState grabState, ShootState shootState,
-                       PowerUpState powerUpState, ReloadState reloadState) {
-        this.moveState = moveState;
-        this.grabState = grabState;
-        this.shootState = shootState;
+    public ActionState(PowerUpState powerUpState, ReloadState reloadState) {
+
         this.powerUpState = powerUpState;
         this.reloadState = reloadState;
     }
 
     /**
-     * Used after the creation of the parameters to link them to this state.
-     *
+     * Used after the creation of the parameters to link them to this state
      * @param moveState
      * @param grabState
      * @param shootState
-     * @deprecated
      */
-    public void linkToMoveGrabShootPowerup(MoveState moveState, GrabState grabState,
-                                           ShootState shootState, PowerUpState powerUpState) {
+    public void linkToMoveGrabShoot(MoveState moveState, GrabState grabState,
+                                           ShootState shootState) {
         this.moveState = moveState;
         this.grabState = grabState;
         this.shootState = shootState;
-        this.powerUpState = powerUpState;
         moveGrabShootLinked = true;
     }
 
     @Override
     public void startState() {
-        /*
+
         if (!moveGrabShootLinked) {
             throw new RuntimeException("The attributes moveState, grabState and ShootState have not been assigned.");
-        }*/
+        }
         InfoOnView.printEverythingVisible();
 
         String userAnswer;
@@ -79,17 +68,12 @@ public class ActionState extends State {
                 actionOrActions = "action";
             }
             System.out.println("You have " + actionsLeft + " " + actionOrActions + " available for this turn.");
-            if (!infoStart.getPowerUpsCanUse().isEmpty()) {
-                System.out.println("Do you want to use one of these powerups before the next action?");
-            }
         }
-        else{
+        else{ //no actions left
             System.out.println("You don't have any action left for this turn. You can only reload now.");
-            if(!infoStart.getPowerUpsCanUse().isEmpty()) {
-                System.out.println("But first, do you want to use one of these powerups?");
-            }
         }
         if(!infoStart.getPowerUpsCanUse().isEmpty()){
+            System.out.print("But first: ");
             userAnswer = powerUpState.askUsePowerup(infoStart.getPowerUpsCanUse());
             if (userAnswer != null) {
                 if (userAnswer.equals(GeneralInfo.YES_COMMAND)) {
