@@ -572,4 +572,47 @@ public class TestTurnManager {
             assertFalse(deadPlayersFound.contains(player4));
     }
 
+    @Test
+    public void scoreAlivePlayer(){
+        player2.dealDamage(4, player1);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[0] = 0;
+        pointsExpected[1] = 8;
+        pointsExpected[2] = 0;
+        pointsExpected[3] = 0;
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+        player3.dealDamage(2, player1);
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[0] = 0;
+        pointsExpected[1] = 8;
+        pointsExpected[2] = 6;
+        pointsExpected[3] = 0;
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+        for(int i=0; i < 2; i++)
+            player1.increaseNumberOfSkulls();
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[0] = 0;
+        pointsExpected[1] = 4;
+        pointsExpected[2] = 2;
+        pointsExpected[3] = 0;
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+
+        for(int i=0; i < 12; i++)
+            player1.increaseNumberOfSkulls();
+        pointsActuallyAssigned = turnManager.scoreDamageLineOf(player1);
+        pointsExpected[0] = 0;
+        pointsExpected[1] = 1;
+        pointsExpected[2] = 1;
+        pointsExpected[3] = 0;
+        for(int i=0; i < pointsExpected.length; i++){
+            assertEquals(pointsExpected[i], pointsActuallyAssigned[i]);
+        }
+    }
+
 }

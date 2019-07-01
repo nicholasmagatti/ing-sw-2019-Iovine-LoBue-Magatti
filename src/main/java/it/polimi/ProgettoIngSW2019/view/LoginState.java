@@ -179,12 +179,13 @@ public class LoginState extends State{
     private String readInputWithoutTimer(char[] illegalCharacters){
         Scanner scanner = new Scanner(System.in);
         String inputFromUser;
-        String ILLEGAL_INPUT_MESSAGE = "Illegal input. Insert correct input.";
+        final String ILLEGAL_INPUT_MESSAGE = "Illegal input. Insert correct input.";
         boolean exit;
         do{
             exit = true; //it will be set to false if there is an illegal character in the input
             inputFromUser = scanner.nextLine();
-            if(inputFromUser == null || inputFromUser.isEmpty()){ //the string should not be empty
+            //the string should not be empty or "you" (to avoid doubts when the user read "you")
+            if(inputFromUser == null || inputFromUser.isEmpty() || inputFromUser.equalsIgnoreCase("you")){
                 exit = false;
                 System.out.println(ILLEGAL_INPUT_MESSAGE);
             }

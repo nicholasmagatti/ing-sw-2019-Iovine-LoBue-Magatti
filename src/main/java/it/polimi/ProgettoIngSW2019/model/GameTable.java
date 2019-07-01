@@ -194,7 +194,7 @@ public class GameTable{
 
     /**
      * Number of tokens on the killshot track belonging to the specified player,
-     * considering that a KillToken with overkill worths as two tokens.
+     * considering that a KillToken with overkill counts as two tokens.
      * @param player - player whose this tokens belongs to
      * @return
      */
