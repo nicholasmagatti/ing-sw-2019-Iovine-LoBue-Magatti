@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.model.weapon_effects;
 
 import com.google.gson.JsonObject;
+import it.polimi.ProgettoIngSW2019.common.enums.AreaOfEffect;
 import it.polimi.ProgettoIngSW2019.custom_exception.EnemySizeLimitExceededException;
 import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.model.Square;
@@ -11,6 +12,10 @@ import java.util.List;
 
 public class FlamethrowerEffect extends WeaponEffect {
     private static final int maxNrTarget = 2;
+    private List<Player> northEnemyList;
+    private List<Player> southEnemyList;
+    private List<Player> eastEnemyList;
+    private List<Player> westEnemyList;
     /**
      * Constructor class
      * Read the weapon effect file and associate to paramater
@@ -28,10 +33,16 @@ public class FlamethrowerEffect extends WeaponEffect {
     @Override
     public List<Player> getEnemyList(Player fromPlayer){
         List<Player> enemyList = new ArrayList<>();
-        enemyList.addAll(getNorthEnemy(fromPlayer));
-        enemyList.addAll(getSouthEnemy(fromPlayer));
-        enemyList.addAll(getEastEnemy(fromPlayer));
-        enemyList.addAll(getWestEnemy(fromPlayer));
+
+        northEnemyList = getNorthEnemy(fromPlayer);
+        southEnemyList = getSouthEnemy(fromPlayer);
+        eastEnemyList = getEastEnemy(fromPlayer);
+        westEnemyList = getWestEnemy(fromPlayer);
+
+        enemyList.addAll(northEnemyList);
+        enemyList.addAll(southEnemyList);
+        enemyList.addAll(eastEnemyList);
+        enemyList.addAll(westEnemyList);
 
         return enemyList;
     }
@@ -54,94 +65,15 @@ public class FlamethrowerEffect extends WeaponEffect {
     @Override
     public boolean checkValidityEnemy(Player weaponUser, List<Player> enemyChosenList) throws EnemySizeLimitExceededException {
         boolean result = false;
-        boolean secondCheck = false;
         if(enemyChosenList.size() <= maxNrTarget) {
-            if(getEnemyList(weaponUser).containsAll(enemyChosenList)){
-                Square northSquare = weaponUser.getPosition().getNorthSquare();
-                Square southSquare = weaponUser.getPosition().getSouthSquare();
-                Square eastSquare = weaponUser.getPosition().getEastSquare();
-                Square westSquare = weaponUser.getPosition().getWestSquare();
-
-                //NORTH CHECK
-                if (northSquare != null) {
-                    for (Player firstEnemy : northSquare.getPlayerOnSquare()) {
-                        if (enemyChosenList.contains(firstEnemy)) {
-                            result = true;
-                            Square northOfNorth = northSquare.getNorthSquare();
-                            if (northOfNorth != null) {
-                                for (Player secondEnemy : northOfNorth.getPlayerOnSquare()) {
-                                    if (enemyChosenList.contains(secondEnemy)) {
-                                        secondCheck = true;
-                                        break;
-                                    }
-                                }
-                                result = result && secondCheck;
-                            }
-                        }
-                    }
-                }
-                //SOUTH CHECK
-                if (southSquare != null) {
-                    for (Player firstEnemy : southSquare.getPlayerOnSquare()) {
-                        if (enemyChosenList.contains(firstEnemy)) {
-                            result = true;
-                            Square southOfSouth = southSquare.getSouthSquare();
-                            if (southOfSouth != null){
-                                for (Player secondEnemy : southOfSouth.getPlayerOnSquare()) {
-                                    if (enemyChosenList.contains(secondEnemy)) {
-                                        secondCheck = true;
-                                        break;
-                                    }
-                                }
-                                result = result && secondCheck;
-                            }
-                        }
-                    }
-                }
-                //EAST CHECK
-                if (eastSquare != null) {
-                    for (Player firstEnemy : eastSquare.getPlayerOnSquare()) {
-                        if (enemyChosenList.contains(firstEnemy)) {
-                            result = true;
-                            Square eastOfEast = eastSquare.getEastSquare();
-                            if (eastOfEast != null) {
-                                for (Player secondEnemy : eastOfEast.getPlayerOnSquare()) {
-                                    if (enemyChosenList.contains(secondEnemy)) {
-                                        secondCheck = true;
-                                        break;
-                                    }
-                                }
-                                result = result && secondCheck;
-                            }
-                        }
-                    }
-                }
-                //WEST CHECK
-                if (westSquare != null) {
-                    for (Player firstEnemy : westSquare.getPlayerOnSquare()) {
-                        if (enemyChosenList.contains(firstEnemy)) {
-                            result = true;
-                            Square westOfWest = westSquare.getWestSquare();
-                            if (westOfWest != null) {
-                                for (Player secondEnemy : westOfWest.getPlayerOnSquare()) {
-                                    if (enemyChosenList.contains(secondEnemy)) {
-                                        secondCheck = true;
-                                        break;
-                                    }
-                                }
-                                result = result && secondCheck;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        else {
+            if (northEnemyList.containsAll(enemyChosenList) ||
+                southEnemyList.containsAll(enemyChosenList) ||
+                eastEnemyList.containsAll(enemyChosenList) ||
+                westEnemyList.containsAll(enemyChosenList))
+                result = true;
+        }else
             throw new EnemySizeLimitExceededException();
-        }
-
         return result;
-
     }
 
     /**

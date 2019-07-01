@@ -11,7 +11,8 @@ import javax.naming.SizeLimitExceededException;
 import java.util.List;
 
 public class ShiftOneMovementEffect extends WeaponEffect {
-    Square chosenPosition;
+    private Square chosenPosition;
+    private List<Square> positionList;
     /**
      * Constructor class
      * Read the weapon effect file and associate to paramater
@@ -53,7 +54,7 @@ public class ShiftOneMovementEffect extends WeaponEffect {
     //NOT TO BE TESTED
     @Override
     public List<Square> getMovementList(Player player, Player enemy) {
-        List<Square> positionList = distance.getTargetPosition(AreaOfEffect.UP_TO_ONE, enemy.getPosition());
+        positionList = distance.getTargetPosition(AreaOfEffect.UP_TO_ONE, enemy.getPosition());
 
         return positionList;
     }
@@ -71,10 +72,10 @@ public class ShiftOneMovementEffect extends WeaponEffect {
                    checkValidityMoveEnemyWrongTest
      */
     @Override
-    public boolean checkValidityMoveEnemy(Square chosenPosition, List<Player> enemyList) throws EnemySizeLimitExceededException {
+    public boolean checkValidityMoveEnemy(Square chosenPosition, Player weaponUser, List<Player> enemyList) throws EnemySizeLimitExceededException {
         boolean result = false;
         if(enemyList.size() <= 1) {
-            List<Square> positionList = distance.getTargetPosition(AreaOfEffect.UP_TO_ONE, enemyList.get(0).getPosition());
+            getMovementList(weaponUser, enemyList.get(0));
 
             if (positionList.contains(chosenPosition)) {
                 this.chosenPosition = chosenPosition;

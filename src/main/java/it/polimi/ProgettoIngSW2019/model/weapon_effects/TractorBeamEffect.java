@@ -73,10 +73,11 @@ public class TractorBeamEffect extends WeaponEffect {
 
      */
     @Override
-    public boolean checkValidityMoveEnemy(Square chosenPosition, List<Player> enemyList) throws EnemySizeLimitExceededException{
+    public boolean checkValidityMoveEnemy(Square chosenPosition, Player weaponUser, List<Player> enemyList) throws EnemySizeLimitExceededException{
         boolean result = false;
 
         if(enemyList.size() <= 1) {
+            getMovementList(weaponUser, enemyList.get(0));
             if (positionList.contains(chosenPosition)) {
                 this.chosenPosition = chosenPosition;
                 result = true;

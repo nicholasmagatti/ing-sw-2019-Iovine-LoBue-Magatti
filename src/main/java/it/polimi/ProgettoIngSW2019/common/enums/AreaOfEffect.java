@@ -8,6 +8,10 @@ import com.google.gson.annotations.SerializedName;
  * @Author: Luca Iovine
  */
 public enum AreaOfEffect {
+    NORTH_DIRECTION("north_direction"),
+    SOUTH_DIRECTION("south_direction"),
+    EAST_DIRECTION("east_direction"),
+    WEST_DIRECTION("west_direction"),
     @SerializedName("same_room")
     SAME_ROOM("same_room"),
     @SerializedName("can_see")

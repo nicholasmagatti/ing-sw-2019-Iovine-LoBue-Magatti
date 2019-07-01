@@ -66,6 +66,10 @@ public class DistanceDictionary{
         addDistance(AreaOfEffect.SAME_ROOM, new SameRoom(board));
         addDistance(AreaOfEffect.SAME_SQUARE, new SameSquare(board));
         addDistance(AreaOfEffect.UP_TO_TWO, new UpToTwoMovement(board));
+        addDistance(AreaOfEffect.NORTH_DIRECTION, new NorthDirection(board));
+        addDistance(AreaOfEffect.SOUTH_DIRECTION, new SouthDirection(board));
+        addDistance(AreaOfEffect.EAST_DIRECTION, new EastDirection(board));
+        addDistance(AreaOfEffect.WEST_DIRECTION, new WestDirection(board));
     }
 }
 

@@ -8,10 +8,7 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import it.polimi.ProgettoIngSW2019.model.weapon_effects.*;
 
 import javax.naming.SizeLimitExceededException;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +35,12 @@ public class WeaponCard extends Card {
      * @param effectFileName name of the file of the effect to associate
      * @author: Luca Iovine
      */
-    public WeaponCard(int idCard, DeckType cardType, String name, String description, List<AmmoType> reloadCost, String effectFileName){
+    public WeaponCard(int idCard, DeckType cardType, String name, String description, List<AmmoType> reloadCost, String effectFileName, DistanceDictionary distance){
         super(idCard, cardType);
         this.name  = name;
         this.description = description;
         this.reloadCost = reloadCost;
+        this.distance = distance;
         pathOfEffectFile = new File("").getAbsolutePath()+"\\resources\\json\\weaponeff\\"+effectFileName;
         setWeaponEffect(pathOfEffectFile);
     }
@@ -105,7 +103,8 @@ public class WeaponCard extends Card {
             file = new FileReader(pathOfEffectFile);
             br = new BufferedReader(file);
         } catch (FileNotFoundException e) {
-            System.out.println("File not found");
+            System.out.println("File non trovato, impossibile caricare il gioco.");
+            System.exit(-1);
         }
 
         JsonObject jsonObj = gson.fromJson(br, JsonObject.class);
@@ -144,6 +143,10 @@ public class WeaponCard extends Card {
                 case VORTEX:
                     baseEffect = new VortexEffect(jsonObj, distance);
                     baseEffect.setWeaponEffectType(WeaponEffectType.VORTEX);
+                    break;
+                case RAILGUN:
+                    baseEffect = new RailgunEffect(jsonObj, distance);
+                    baseEffect.setWeaponEffectType(WeaponEffectType.RAILGUN);
                     break;
                 case HELLION:
                     baseEffect = new HellionEffect(jsonObj, distance);
@@ -199,9 +202,7 @@ public class WeaponCard extends Card {
      */
     //NOT TO BE TESTED
     public boolean checkBaseEffectParameterValidity(Player weaponUser, List<Player> enemyChosenList) throws EnemySizeLimitExceededException {
-        boolean result = baseEffect.checkValidityEnemy(weaponUser, enemyChosenList);
-
-        return result;
+        return baseEffect.checkValidityEnemy(weaponUser, enemyChosenList);
     }
 
     /**
@@ -212,28 +213,9 @@ public class WeaponCard extends Card {
      * @author: Luca Iovine
      */
     //NOT TO BE TESTED
-    public boolean checkBaseEffectMovementPositionValidity(Square position, List<Player> enemyChosenList) throws EnemySizeLimitExceededException{
-        return baseEffect.checkValidityMoveEnemy(position, enemyChosenList);
+    public boolean checkBaseEffectMovementPositionValidity(Square position, Player weaponUser, List<Player> enemyChosenList) throws EnemySizeLimitExceededException{
+        return baseEffect.checkValidityMoveEnemy(position, weaponUser, enemyChosenList);
 
-    }
-
-    /**
-     * @return the are of effect of the base effect
-     * @author: Luca Iovine
-     */
-    //NOT TO BE TESTED
-    public AreaOfEffect getBaseEffectAoe(){
-        return baseEffect.getAoe();
-    }
-
-    /**
-     * @return true if it base effect has a movement side effect which involve an user choice,
-     * false otherwise
-     * @author: Luca Iovine
-     */
-    //NOT TO BE TESTED
-    public boolean hasToMoveInBaseEffect(){
-        return baseEffect.hasMoveOptions();
     }
 
     /**

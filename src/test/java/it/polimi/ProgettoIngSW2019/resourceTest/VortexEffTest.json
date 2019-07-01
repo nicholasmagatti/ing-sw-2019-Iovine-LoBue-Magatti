@@ -1,0 +1,15 @@
+{
+	"typeOfEffect":"vortex",
+	"dmg":{
+		"dmg":2,
+		"mark":2,
+		"aoe":"none",
+		"nrTarget":2
+	},
+	"move":{
+		"hasToMove":false,
+		"isMandatory":false,
+		"isEnemyMove":false,
+		"nrOfMovement":0
+	}
+}

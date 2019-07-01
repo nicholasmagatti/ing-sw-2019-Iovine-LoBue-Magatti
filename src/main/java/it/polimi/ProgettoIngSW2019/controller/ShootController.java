@@ -81,7 +81,7 @@ public class ShootController extends Controller{
                                                "Rifare la selezione.\n";
                                        sendInfo(EventType.ERROR, wrongChoiceErr, getHostNameCreateList().addOneHostName(weaponUser));
 
-                                   } else if (!weaponChosen.checkBaseEffectMovementPositionValidity(positionToMove, enemyChosenList)) {
+                                   } else if (!weaponChosen.checkBaseEffectMovementPositionValidity(positionToMove,  weaponUser, enemyChosenList)) {
                                        wrongChoiceErr = "Lo spostamento scelto non è valido.\n" +
                                                "Rifare la selezione.\n";
                                        sendInfo(EventType.ERROR, wrongChoiceErr, getHostNameCreateList().addOneHostName(weaponUser));
@@ -128,7 +128,6 @@ public class ShootController extends Controller{
      */
     private void sendWeaponInfo(){
         List<WeaponInfo> weaponInfoList = new ArrayList<>();
-        boolean hasToMove;
         WeaponEffectType effectType;
         int weaponId;
         String weaponName;
@@ -137,13 +136,12 @@ public class ShootController extends Controller{
         for(WeaponCard card: weaponUser.getLoadedWeapons()){
             List<EnemyInfo> enemyVisible = generateEnemyInfoList(card);
             if(!enemyVisible.isEmpty()) {
-                hasToMove = card.hasToMoveInBaseEffect();
                 effectType = card.getBaseEffectType();
                 weaponId = card.getIdCard();
                 weaponName = card.getName();
                 nrOfTargetHittable = card.getNrOfPlayerHittable();
 
-                weaponInfoList.add(new WeaponInfo(enemyVisible, hasToMove, effectType, weaponId, weaponName, nrOfTargetHittable));
+                weaponInfoList.add(new WeaponInfo(enemyVisible, effectType, weaponId, weaponName, nrOfTargetHittable));
             }
         }
 

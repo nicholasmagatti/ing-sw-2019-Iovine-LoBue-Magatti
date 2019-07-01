@@ -20,7 +20,10 @@ public enum WeaponEffectType {
     @SerializedName("tractor_beam")
     TRACTOR_BEAM("tractor_beam"),
     @SerializedName("hellion")
-    HELLION("hellion");
+    HELLION("hellion"),
+    @SerializedName("railgun")
+    RAILGUN("railgun");
+
 
     private String stringValue;
 

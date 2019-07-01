@@ -18,10 +18,7 @@ import java.util.List;
 public class WeaponEffect {
     private Gson gson = new Gson();
     protected DistanceDictionary distance;
-    private FileReader file;
-    private boolean hasMoveOptions = false;
     private WeaponDmg effect;
-    private WeaponMove moveDueToEffect;
     private WeaponEffectType weaponEffectType;
 
     /**
@@ -32,7 +29,6 @@ public class WeaponEffect {
      */
     public WeaponEffect(JsonObject jsonObj, DistanceDictionary distance){
         effect = gson.fromJson(jsonObj.getAsJsonObject("dmg"), WeaponDmg.class);
-        moveDueToEffect = gson.fromJson(jsonObj.getAsJsonObject("move"), WeaponMove.class);
         this.distance = distance;
     }
 
@@ -177,27 +173,8 @@ public class WeaponEffect {
      * @suthor: Luca Iovine
      */
     //NOT TO BE TESTED
-    public boolean checkValidityMoveEnemy(Square chosenPosition, List<Player> enemyList) throws EnemySizeLimitExceededException{
+    public boolean checkValidityMoveEnemy(Square chosenPosition, Player weaponUser, List<Player> enemyList) throws EnemySizeLimitExceededException{
         return true;
-    }
-
-    /**
-     * To check if the user/enemy should move or not
-     * @return true if it has to move, false otherwise
-     * @suthor: Luca Iovine
-     */
-    //NOT TO BE TESTED
-    public boolean hasMoveOptions(){
-        return moveDueToEffect.hasToMove();
-    }
-
-    /**
-     * @return the area of  effect of the weapon
-     * @suthor: Luca Iovine
-     */
-    //NOT TO BE TESTED
-    public AreaOfEffect getAoe(){
-        return effect.getAoe();
     }
 
     /**
@@ -239,23 +216,5 @@ class WeaponDmg{
 
     public WeaponEffectType getTypeOfEffect() {
         return typeOfEffect;
-    }
-}
-
-/**
- * Class that contains the information for effect with movement.
- *
- * @suthor: Luca Iovine
- */
-class WeaponMove{
-    private boolean hasToMove;
-    private int nrOfMovement;
-
-    public boolean hasToMove() {
-        return hasToMove;
-    }
-
-    public int getNrOfMovement() {
-        return nrOfMovement;
     }
 }

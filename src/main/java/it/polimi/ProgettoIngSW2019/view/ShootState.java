@@ -94,7 +94,8 @@ public class ShootState extends State {
             else if(weaponChosen.getEffectType().equals(WeaponEffectType.SAME_ROOM))
                 sameroomEffectMenu(weaponChosen);
             else if(weaponChosen.getEffectType().equals(WeaponEffectType.TRACTOR_BEAM) ||
-                    weaponChosen.getEffectType().equals(WeaponEffectType.SHIFT_ONE_MOVEMENT))
+                    weaponChosen.getEffectType().equals(WeaponEffectType.SHIFT_ONE_MOVEMENT) ||
+                    weaponChosen.getEffectType().equals(WeaponEffectType.VORTEX))
                 withMovementEffectMenu(weaponChosen);
             else if(weaponChosen.getEffectType().equals(WeaponEffectType.ONE_PER_SQUARE))
                 onepersquareEffectMenu(weaponChosen);
@@ -432,8 +433,6 @@ public class ShootState extends State {
             notifyEvent(shootChoiceRequest, EventType.REQUEST_SHOOT);
         }
     }
-
-    //TODO: Vortex (che forse rientra tra i "with movement") e railgun
 
     private void resetParam(){
         userChoice = null;
