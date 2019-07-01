@@ -26,7 +26,7 @@ public class LoginState extends State{
     private SetupGameState setupGameState;
 
     /**
-     *  Constructor
+     * Constructor
      * @param setupGameState
      */
     public LoginState(SetupGameState setupGameState){
@@ -120,6 +120,10 @@ public class LoginState extends State{
         password = "";
     }
 
+    /**
+     * Trigger the state of setup with the information needed.
+     * @param setupInfo
+     */
     void goToGameSetup(SetupInfo setupInfo){
         setupGameState.setInfoBeforeStartGame(name, hostname, setupInfo.getMapLMList(), setupInfo.getUsername());
         StateManager.triggerNextState(setupGameState);
@@ -150,6 +154,7 @@ public class LoginState extends State{
         System.out.print("Write your password: ");
         password = readPassword();
         //notify to server
+        System.out.println("Wait a moment...");
         LoginRequest loginRequest = new LoginRequest(name, password, hostname);
         notifyEvent(loginRequest, EventType.REQUEST_LOGIN);
     }

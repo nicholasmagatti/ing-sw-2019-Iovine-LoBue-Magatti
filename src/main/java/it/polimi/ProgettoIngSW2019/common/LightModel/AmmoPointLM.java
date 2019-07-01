@@ -5,6 +5,7 @@ import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import java.util.List;
 
 /**
+ * Ammo point for view
  * @author Nicholas Magatti
  */
 public class AmmoPointLM extends SquareLM {

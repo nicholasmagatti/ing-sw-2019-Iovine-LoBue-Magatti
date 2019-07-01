@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Killshot track for view
  * @author Nicholas Magatti
  */
 public class KillshotTrackLM {
@@ -22,10 +23,18 @@ public class KillshotTrackLM {
         this.initialNumberOfSkulls = initialNumberOfSkulls;
     }
 
+    /**
+     * Get the (copy of) the killshot track
+     * @return copy of the killshot track
+     */
     public List<KillToken> getTrack() {
         return track;
     }
 
+    /**
+     * Get the number of skulls set by the first user for the game
+     * @return the number of skulls for the game
+     */
     public int getInitialNumberOfSkulls() {
         return initialNumberOfSkulls;
     }

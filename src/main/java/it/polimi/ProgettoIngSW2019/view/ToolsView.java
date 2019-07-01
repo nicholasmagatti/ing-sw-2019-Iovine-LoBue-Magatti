@@ -20,6 +20,7 @@ import static org.fusesource.jansi.Ansi.ansi;
 /**
  * Abstract static class that make different static methods of general user available for all the other classes of the view.
  * @author Nicholas Magatti
+ * @author Luca Iovine
  */
 public abstract class ToolsView {
 
@@ -383,8 +384,6 @@ public abstract class ToolsView {
         }
     }
 
-    //ALL THE PRIVATE METHODS are below:
-
     /**
      * Return true if the string is a request from the user to visualize the description of a card.
      * @param string
@@ -600,7 +599,7 @@ public abstract class ToolsView {
     }
 
     /**
-     * Return the colored sqaure as a list of Ansi
+     * Return the colored square as a list of Ansi
      * @param squareOfStrings
      * @param squareLM
      * @return
@@ -838,9 +837,9 @@ public abstract class ToolsView {
         tmpAmmoInPowerUp.addAll(ammoInPowerUp);
 
         //Costruzione interazione utente
-        msg = "Devi pagare delle munizioni per proseguire con l'azione. \n" +
-                "Puoi utilizzare sia le munizioni che hai nella box delle ammo, che i power up.\n\n" +
-                "Questo è il costo che devi pagare: ";
+        msg = "You need to pay with ammo to proceed with this action. \n" +
+                "You can use ammo from you ammo box or your powerups.\n\n" +
+                "This is the cost you need to pay: ";
         paymentSB.append(msg);
 
         msg = ToolsView.costToString(costToPay) + "\n\n";
@@ -886,7 +885,6 @@ public abstract class ToolsView {
     /**
      * Check how many ammo are needed to accomplish the request and if a color is done, you won't be
      * able to choose that color anymore.
-     *
      * @param costToPayToCheck
      * @return
      * @authro: Luca Iovine
@@ -937,40 +935,40 @@ public abstract class ToolsView {
      * @author: Luca Iovine
      */
     private static void messageConstructor(){
-        msg = "Queste sono le munizioni che puoi spendere.\n" +
-                "Ogni volta che selezionerai il colore corrispondente, verrà scalata di uno la quantità: \n";
+        msg = "These are the ammo you can spend.\n" +
+                "Every time you select the corresponding color, the quantity will decrease: \n";
 
         paymentSB.append(msg);
         if (tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID] > 0) {
-            msg = red + ": Ammo rosse disponibili" + tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID] + "\n";
+            msg = red + ": Red ammo available" + tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID] + "\n";
             paymentSB.append(msg);
             responeForAmmo.add(red);
         }
         if (tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID] > 0) {
-            msg = blue + ": Ammo blu disponibili" + tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID] + "\n";
+            msg = blue + ": Blue ammo available" + tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID] + "\n";
             paymentSB.append(msg);
             responeForAmmo.add(blue);
         }
         if (tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID] > 0) {
-            msg = yellow + ": Ammo Gialle disponibili" + tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID] + "\n";
+            msg = yellow + ": Yellow ammo available" + tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID] + "\n";
             paymentSB.append(msg);
             responeForAmmo.add(yellow);
         }
 
         for (i = 0; i < tmpAmmoInPowerUp.size(); i++) {
-            msg = (i + 1) + ": " + tmpAmmoInPowerUp.get(i).getName() + " COLORE: " + tmpAmmoInPowerUp.get(i).getGainAmmoColor() + "\n";
+            msg = (i + 1) + ": " + tmpAmmoInPowerUp.get(i).getName() + " COLOR: " + tmpAmmoInPowerUp.get(i).getGainAmmoColor() + "\n";
             paymentSB.append(msg);
             responseForPowerUp.add(Integer.toString(i + 1));
         }
 
         if (!responeForAmmo.isEmpty()) {
             possibleChoice.addAll(responeForAmmo);
-            msg = "Scegli una lettera R/B/Y oppure ";
+            msg = "Chose a letter R/B/Y or ";
             paymentSB.append(msg);
         }
 
         possibleChoice.addAll(responseForPowerUp);
-        msg = "scegli un numero da 1 a " + i + ": ";
+        msg = "choose a number from 1 to " + i + ": ";
         paymentSB.append(msg);
     }
 

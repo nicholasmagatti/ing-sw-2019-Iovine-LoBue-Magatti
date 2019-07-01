@@ -130,9 +130,10 @@ public class GeneralMessageObserver implements Observer<Event> {
                 System.out.println(" bought " + buyInfo.getNameWeapon() + ".");
                 break;
             case MSG_WEAPON_SWAP:
-                MessageWeaponPay swapInfo = new Gson().fromJson(jsonMessage, MessageWeaponPay.class);
+                MessagePlayerSwapWeapons swapInfo = new Gson().fromJson(jsonMessage, MessagePlayerSwapWeapons.class);
                 printYouOrNameOther(swapInfo);
-                System.out.println(" left " + swapInfo.getNameWeapon() + "on the spawn point.");
+                System.out.println(" left " + swapInfo.getNameWeaponDiscarded() + "on the spawn point to get " +
+                        swapInfo.getNameWeapon());
                 break;
             case MSG_USE_POWERUP:
                 MessagePowerUpsDiscarded pwDiscardedToUseEffect = new Gson().fromJson(jsonMessage, MessagePowerUpsDiscarded.class);

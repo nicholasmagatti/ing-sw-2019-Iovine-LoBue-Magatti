@@ -19,7 +19,6 @@ import java.util.List;
 public class SpawnState extends State{
 
     private boolean firstSpawn = false;
-    private ActionState actionState;
 
     @Override
     public void startState() {

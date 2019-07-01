@@ -9,6 +9,7 @@ import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageScorePlayer;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.ScorePlayerWhoHit;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.custom_exception.IllegalAttributeException;
 import it.polimi.ProgettoIngSW2019.model.Deck;
 import it.polimi.ProgettoIngSW2019.model.Player;
@@ -30,6 +31,7 @@ public class EndTurnController extends Controller {
     private Player ownerPlayer;
     private List<MessageScorePlayer> messageScorePlayerList = new ArrayList<>();
     private List<Player> deadPlayers = new ArrayList<>();
+    private SpawnController spawnController;
 
 
     /**
@@ -40,10 +42,14 @@ public class EndTurnController extends Controller {
      * @param createJson                CreateJson
      * @param hostNameCreateList        HostNameCreateList
      */
-    public EndTurnController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList) {
+    public EndTurnController(TurnManager turnManager, VirtualView virtualView,
+                             IdConverter idConverter, CreateJson createJson,
+                             HostNameCreateList hostNameCreateList, SpawnController spawnController) {
+
         super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
         weaponDeck = turnManager.getGameTable().getWeaponDeck();
         ammoDeck = turnManager.getGameTable().getAmmoDeck();
+        this.spawnController = spawnController;
     }
 
 
@@ -74,41 +80,60 @@ public class EndTurnController extends Controller {
             if(checkHostNameCorrect(ownerPlayer, infoRequest.getHostNamePlayer())) {
                 if (checkCurrentPlayer(ownerPlayer)) {
                     if (checkNoActionLeft(ownerPlayer)) {
-                        checkScore();
-
-                        if(!deadPlayers.isEmpty()) {
-                            for (Player dp : deadPlayers) {
-                                String message = "";
-                                sendInfo(EventType.MSG_PLAYER_SPAWN, message, getHostNameCreateList().addOneHostName(dp));
-                            }
-                        }
-                        //if the game has to come to its end
-                        if(getTurnManager().getGameTable().isKillshotTrackFull()){
-                            new FinalScoreController(getTurnManager(), getVirtualView(), getIdConverter(),
-                                    getCreateJson(), getHostNameCreateList()).endGame();
-                        }
-                        else{
-                            resetMap();
-                            getTurnManager().changeCurrentPlayer();
-
-                            sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
-
-                            Player player = getTurnManager().getCurrentPlayer();
-                            sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(player), getHostNameCreateList().addAllHostName());
-
-                            if(player.getPosition() == null) {
-                                sendInfo(EventType.MSG_FIRST_TURN_PLAYER, getCreateJson().createMessageJson(player), getHostNameCreateList().addOneHostName(player));
-                            }
-                            else {
-                                String mess = "";
-                                sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(ownerPlayer));
-
-                                //inside there is the message for Nick
-                                msgActionLeft(ownerPlayer);
-                            }
-                        }
+                        endTurn(ownerPlayer);
                     }
                 }
+            }
+        }
+    }
+
+
+
+    /**
+     * All the proceedings to to perform at the en of the turn of a player.
+     * @param currentPlayer
+     */
+    public void endTurn(Player currentPlayer) {
+
+        ownerPlayer = currentPlayer;
+        checkScore();
+
+        //if the game has to come to its end
+        if(getTurnManager().getGameTable().isKillshotTrackFull() ||
+                getTurnManager().getGameTable().getNumberOfActivePlayers() < GeneralInfo.MIN_NUM_PLAYERS){
+
+            new FinalScoreController(getTurnManager(), getVirtualView(), getIdConverter(),
+                    getCreateJson(), getHostNameCreateList()).endGame();
+        }
+        else{
+            if(!deadPlayers.isEmpty()) {
+                for (Player dp : deadPlayers) {
+                    if(dp.isActive()) {
+                        String message = "";
+                        sendInfo(EventType.MSG_PLAYER_SPAWN, message, getHostNameCreateList().addOneHostName(dp));
+                    }
+                    else{
+                        spawnController.spawnInactivePlayer(dp);
+                    }
+                }
+            }
+            resetMap();
+            getTurnManager().changeCurrentPlayer();
+
+            sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
+
+            Player player = getTurnManager().getCurrentPlayer();
+            sendInfo(EventType.MSG_NEW_TURN, getCreateJson().createMessageJson(player), getHostNameCreateList().addAllHostName());
+
+            if(player.getPosition() == null) {
+                sendInfo(EventType.MSG_FIRST_TURN_PLAYER, getCreateJson().createMessageJson(player), getHostNameCreateList().addOneHostName(player));
+            }
+            else {
+                String mess = "";
+                sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(ownerPlayer));
+
+                //inside there is the message for Nick
+                msgActionLeft(ownerPlayer);
             }
         }
     }
@@ -133,10 +158,12 @@ public class EndTurnController extends Controller {
 
 
             for(Player deadPlayer: deadPlayers) {
+
                 String lastHitName = deadPlayer.getDamageLine().get(deadPlayer.getDamageLine().size() - 1);
                 Player player = getTurnManager().getPlayerFromCharaName(lastHitName);
-                if(player.getIdPlayer() != ownerPlayer.getIdPlayer())
+                if (player.getIdPlayer() != ownerPlayer.getIdPlayer())
                     throw new IllegalAttributeException("Something wrong with the killer");
+
             }
 
             scoreDeadPlayers();

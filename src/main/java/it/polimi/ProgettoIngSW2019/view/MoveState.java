@@ -6,6 +6,7 @@ import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.MoveChoiceRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MoveInfoResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class MoveState extends State{
             MoveInfoResponse moveInfo = gsonReader.fromJson(event.getMessageInJsonFormat(), MoveInfoResponse.class);
             List<int[]> movementList = moveInfo.getCoordinates();
 
-            msg = "Puoi muoverti in una di queste caselle: \n";
+            msg = "You can move to one of these squares: \n";
             sb.append(msg);
 
             for(i = 0; i < movementList.size(); i++){
@@ -48,7 +49,7 @@ public class MoveState extends State{
                 sb.append(msg);
             }
 
-            msg = "Scegli un numero (da 1 a" + i + ") per indicare dove vuoi muoverti: ";
+            msg = GeneralInfo.CHOOSE_OPTION + i + ") to indicate where you want to move to: ";
             sb.append(msg);
             System.out.print(sb);
 

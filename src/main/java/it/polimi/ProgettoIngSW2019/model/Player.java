@@ -39,6 +39,10 @@ public class Player{
 
     /**
      * Constructor
+     * @param idPlayer
+     * @param charaName
+     * @param gameTable
+     * @param hostname
      */
     public Player(int idPlayer, String charaName, GameTable gameTable, String hostname){
         this.idPlayer = idPlayer;

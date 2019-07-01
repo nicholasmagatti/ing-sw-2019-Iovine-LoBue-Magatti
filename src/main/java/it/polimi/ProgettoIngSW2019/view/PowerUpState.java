@@ -111,6 +111,10 @@ public class PowerUpState extends State {
         }
     }
 
+    /**
+     * Ask the player if he/she wants to use a powerup and proceed if the answer is yes
+     * @param jsonMessage
+     */
     private void askUsePowerUpAndTriggerStateIfYes(String jsonMessage){
         ShootPowerUpInfo shootPowerUpInfo = new Gson().fromJson(jsonMessage, ShootPowerUpInfo.class);
         String userAnswer = askUsePowerup(shootPowerUpInfo.getPowerUpUsableList());

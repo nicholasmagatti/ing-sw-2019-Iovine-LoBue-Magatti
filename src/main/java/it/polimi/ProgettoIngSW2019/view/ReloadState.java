@@ -43,6 +43,11 @@ public class ReloadState extends State{
         }
     }
 
+    /**
+     * Ask the player to choose the weapon to reload if possible, notify the server of
+     * the end of the process of reload otherwise.
+     * @param reloadInfo
+     */
     private void chooseWeaponIfPossible(WeaponsCanPayResponse reloadInfo){
 
         if(reloadInfo.getWeaponsCanReload().isEmpty()){
@@ -54,6 +59,10 @@ public class ReloadState extends State{
         }
     }
 
+    /**
+     * Make the player choose the weapon to reload
+     * @param reloadInfo
+     */
     private void chooseWeaponToReload(WeaponsCanPayResponse reloadInfo){
         int chosenOption; //typed by user
         int idWeapon; // chosen weapon to send to view
@@ -98,6 +107,9 @@ public class ReloadState extends State{
         }
     }
 
+    /**
+     * Notify server that the user finished the reload process.
+     */
     private void notifyEndTurn(){
         InfoRequest infoToSend = new InfoRequest(InfoOnView.getHostname(), InfoOnView.getMyId());
         notifyEvent(infoToSend, EventType.REQUEST_ENDTURN_INFO);

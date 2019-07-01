@@ -48,8 +48,8 @@ public class ShootState extends State {
             case RESPONSE_REQUEST_WEAPON_INFO:
                 List<WeaponInfo> weaponInfoList = gsonReader.fromJson(event.getMessageInJsonFormat(), List.class);
                 if(weaponInfoList.isEmpty()){
-                    msg = "Non hai armi valide con cui colpire dei nemici.\n" +
-                            "Verrai riportato alla selezione delle azioni.";
+                    msg = "You have no valid weapon to hit any enemy.\n" +
+                            "You will sent back to the selection of the action.";
                     System.out.println(msg);
                     actionState.startState();
                 }else
@@ -65,8 +65,8 @@ public class ShootState extends State {
         /*
             Creazione del messaggio da stampare
          */
-        msg = "Quali delle seguenti "+ weaponInfoList.size() + " armi vuoi usare?\n" +
-                "Indicare il numero corrispondente: \n";
+        msg = "Which one of the following "+ weaponInfoList.size() + " do you want to use?\n" +
+                "Indicate the corresponding number: \n";
         sb.append(msg);
 
         for(WeaponInfo weapon: weaponInfoList){
@@ -82,7 +82,7 @@ public class ShootState extends State {
         ToolsView.printGeneralOptions();
 
         resetParam();
-        System.out.print("Fai la tua scelta: ");
+        System.out.print("Make your choice: ");
         /*
             Input utente
          */
@@ -110,7 +110,7 @@ public class ShootState extends State {
         /*
             Costruzione del messaggio
          */
-        msg = "Puoi colpire fino a " + weaponChosen.getNumberOfTargetHittable() + " giocatori.\n";
+        msg = "You can target to " + weaponChosen.getNumberOfTargetHittable() + " players.\n";
         sb.append(msg);
         for (i = weaponChosen.getNumberOfTargetHittable(); i > 0; i--){
             for (EnemyInfo enemy : weaponChosen.getEnemyVisible()) {
@@ -119,8 +119,8 @@ public class ShootState extends State {
                 choiceNumber++;
             }
             choiceNumber = 1;
-            msg = "Puoi scegliere ancora "+ i + " giocatori.\n" +
-                    "Scegli il numero corrispondente al nome di chi vuoi colpire: ";
+            msg = "You can still choose "+ i + " players.\n" +
+                    "Choose the number corresponding to the name of the player you want to hit: ";
             sb.append(msg);
 
             System.out.println(sb);
@@ -152,7 +152,7 @@ public class ShootState extends State {
         List<EnemyInfo> eastEnemy = new ArrayList<>();
         List<EnemyInfo> westEnemy = new ArrayList<>();
 
-        msg = "Con quest'arma puoi colpire dei nemici in una delle quattro direzioni cardinali.\n";
+        msg = "With this weapon you can shoot enemies in one of the four cardinal directions.\n";
         sb.append(msg);
 
         //Recupero la posizione del giocatore
@@ -179,14 +179,19 @@ public class ShootState extends State {
             }
         }
 
-        //Le quattro possibilità sono "nord, sud, ovest, est"
-        possibleChoice.add("nord");
-        possibleChoice.add("sud");
-        possibleChoice.add("ovest");
-        possibleChoice.add("est");
+        final String NORTH = "north";
+        final String SOUTH = "south";
+        final String EAST = "east";
+        final String WEAST = "west";
+
+        //Le quattro possibilità sono "north, south, west, east"
+        possibleChoice.add(NORTH);
+        possibleChoice.add(SOUTH);
+        possibleChoice.add(WEAST);
+        possibleChoice.add(EAST);
 
         //Costruisco il messaggio
-        msg = "Nord: ";
+        msg = "North: ";
         sb.append(msg);
         for(i = 0; i < northEnemy.size() - 1; i++){
            msg = northEnemy.get(i).getName() + ", ";
@@ -195,7 +200,7 @@ public class ShootState extends State {
         msg = northEnemy.get(i).getName() + ", ";
         sb.append(msg);
 
-        msg = "\nSud: ";
+        msg = "\nSouth: ";
         sb.append(msg);
         for(i = 0; i < southEnemy.size() - 1; i++){
             msg = southEnemy.get(i).getName() + ", ";
@@ -204,7 +209,7 @@ public class ShootState extends State {
         msg = southEnemy.get(i).getName() + ", ";
         sb.append(msg);
 
-        msg = "\nEst: ";
+        msg = "\nEast: ";
         sb.append(msg);
         for(i = 0; i < eastEnemy.size() - 1; i++){
             msg = eastEnemy.get(i).getName() + ", ";
@@ -213,7 +218,7 @@ public class ShootState extends State {
         msg = eastEnemy.get(i).getName() + ", ";
         sb.append(msg);
 
-        msg = "\nOvest: ";
+        msg = "\nWest: ";
         sb.append(msg);
         for(i = 0; i < westEnemy.size() - 1; i++){
             msg = westEnemy.get(i).getName() + ", ";
@@ -222,7 +227,7 @@ public class ShootState extends State {
         msg = westEnemy.get(i).getName() + ", ";
         sb.append(msg);
 
-        msg = "Scrivi una delle quattro direzioni per colpire quei nemici: ";
+        msg = "Type one of the four directions to shoot the corresponding enemies: ";
         sb.append(msg);
         System.out.println(sb);
 
@@ -232,25 +237,25 @@ public class ShootState extends State {
         userChoice = ToolsView.readUserChoice(possibleChoice, false);
         if(userChoice != null) {
             switch(userChoice.toLowerCase()){
-                case "nord":
+                case NORTH:
                     for(EnemyInfo enemyChosen: northEnemy){
                         enemyChosenInfoList.add(enemyChosen);
                         idEnemyChosen.add(enemyChosen.getId());
                     }
                     break;
-                case "sud":
+                case SOUTH:
                     for(EnemyInfo enemyChosen: southEnemy){
                         enemyChosenInfoList.add(enemyChosen);
                         idEnemyChosen.add(enemyChosen.getId());
                     }
                     break;
-                case "est":
+                case EAST:
                     for(EnemyInfo enemyChosen: eastEnemy){
                         enemyChosenInfoList.add(enemyChosen);
                         idEnemyChosen.add(enemyChosen.getId());
                     }
                     break;
-                case "ovest":
+                case WEAST:
                     for(EnemyInfo enemyChosen: westEnemy){
                         enemyChosenInfoList.add(enemyChosen);
                         idEnemyChosen.add(enemyChosen.getId());
@@ -294,13 +299,13 @@ public class ShootState extends State {
         /*
             Costruzione messaggio
          */
-        msg = "Per ogni quadrato, puoi selezionare un solo nemico.\n" +
-                "Puoi colpire fino a "+ weaponChosen.getNumberOfTargetHittable() + " giocatori.\n";
+        msg = "For each square, you can select only one target.\n" +
+                "You can hit to "+ weaponChosen.getNumberOfTargetHittable() + "players.\n";
         sb.append(msg);
 
         for (int s = weaponChosen.getNumberOfTargetHittable(); s > 0; s--) {
             for (i = 0; i < enemyDividedBySquare.size(); i++) {
-                msg = "Quadrato " + (i + 1) + ": ";
+                msg = "Square " + (i + 1) + ": ";
                 sb.append(msg);
                 for (j = 0; j < enemyDividedBySquare.get(i).size() - 1; j++) {
                     possibleChoice.add(enemyDividedBySquare.get(i).get(j));
@@ -312,8 +317,8 @@ public class ShootState extends State {
                 sb.append(msg);
             }
 
-            msg = "Puoi scegliere ancora "+ s + " giocatori.\n" +
-                    "Scegli il nome del giocatore che vuoi colpire: ";
+            msg = "You can still choose "+ s + " players.\n" +
+                    "Choose the name of the player you want to shoot: ";
             sb.append(msg);
 
             System.out.println(sb);
@@ -368,7 +373,7 @@ public class ShootState extends State {
         }
 
         for (i = 0; i < enemyDividedByRoom.size(); i++) {
-            msg = "Stanza numero " + (i + 1) + ": ";
+            msg = "Room number " + (i + 1) + ": ";
             possibleChoice.add(Integer.toString(i+1));
             sb.append(msg);
             for (j = 0; j < enemyDividedByRoom.get(i).size() - 1; j++) {
@@ -379,7 +384,7 @@ public class ShootState extends State {
             sb.append(msg);
         }
 
-        msg = "Scegli il numero della stanza (da 1 a " + (i-1) + ") per colpire tutti i nemici al suo interno: ";
+        msg = "Choose the number of the room (from 1 to " + (i-1) + ") to hit all the enemies in it: ";
         sb.append(msg);
 
         System.out.println(sb);
@@ -404,7 +409,7 @@ public class ShootState extends State {
     private void withMovementEffectMenu(WeaponInfo weaponChosen){
         generalEffectMenu(weaponChosen);
 
-        msg = "Con quest'arma puoi far muovere l'avversario in una di queste posizioni: \n";
+        msg = "With this weapon you can move the opponent to one of this positions: \n";
         sb.append(msg);
 
         for(i= 0; i < enemyChosenInfoList.get(0).getMovement().size(); i++){
@@ -413,11 +418,11 @@ public class ShootState extends State {
             sb.append(msg);
             if(enemyChosenInfoList.get(0).getMovement().get(i)[0] == enemyChosenInfoList.get(0).getPosition()[0] &&
                     enemyChosenInfoList.get(0).getMovement().get(i)[1] == enemyChosenInfoList.get(0).getPosition()[1])
-                sb.append(" (Stessa posizione)\n");
+                sb.append(" (Same position)\n");
             else
                 sb.append("\n");
         }
-        msg = "Indica il numero (da 1 a " + i + ") per decidere dove muoverlo: ";
+        msg = "Choose a number(from 1 to " + i + ") to indicate where to move the target to: ";
         sb.append(msg);
 
         System.out.println(msg);
