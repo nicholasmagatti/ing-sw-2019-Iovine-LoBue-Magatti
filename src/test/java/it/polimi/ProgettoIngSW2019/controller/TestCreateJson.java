@@ -7,6 +7,8 @@ import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.DeckType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.model.*;
+import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
+import it.polimi.ProgettoIngSW2019.model.powerup_effects.NewtonEff;
 import it.polimi.ProgettoIngSW2019.model.powerup_effects.TagbackGrenadeEff;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +38,7 @@ public class TestCreateJson {
     private AmmoCardLM ammoCardLM1, ammoCardLM2;
     private Player player1;
     private PlayerDataLM playerLM1;
+    private DistanceDictionary distanceDictionary;
 
 
     @Before
@@ -46,8 +49,9 @@ public class TestCreateJson {
         when(turnManager.getGameTable()).thenReturn(gameTable);
         createJson = spy(new CreateJson(turnManager));
 
+        distanceDictionary = new DistanceDictionary(maps.getMaps()[0]);
         //Weapon - WeaponLM
-        weaponCard1 = new WeaponCard(0, DeckType.WEAPON_CARD, "LOCK RIFLE","", Arrays.asList(AmmoType.BLUE, AmmoType.BLUE), "LockRifleEff.json");
+        weaponCard1 = new WeaponCard(0, DeckType.WEAPON_CARD, "LOCK RIFLE","", Arrays.asList(AmmoType.BLUE, AmmoType.BLUE), "LockRifleEff.json", distanceDictionary);
 
         int[] ammoCostReload1 = new int[3];
         int[] ammoCostBuy1 = new int[3];
@@ -57,8 +61,8 @@ public class TestCreateJson {
 
 
         //Weapon List - WeaponLM List
-        weaponCard2 = new WeaponCard(1, DeckType.WEAPON_CARD, "ELECTROSCYTHE", "", Arrays.asList(AmmoType.BLUE), "ElectroSchyteEff.json");
-        weaponCard3 = new WeaponCard(2, DeckType.WEAPON_CARD, "MACHINE GUN", "", Arrays.asList(AmmoType.BLUE, AmmoType.RED), "MachineGunEff.json");
+        weaponCard2 = new WeaponCard(1, DeckType.WEAPON_CARD, "ELECTROSCYTHE", "", Arrays.asList(AmmoType.BLUE), "ElectroSchyteEff.json", distanceDictionary);
+        weaponCard3 = new WeaponCard(2, DeckType.WEAPON_CARD, "MACHINE GUN", "", Arrays.asList(AmmoType.BLUE, AmmoType.RED), "MachineGunEff.json", distanceDictionary);
 
         int[] ammoCostReload2 = new int[3];
         int[] ammoCostBuy2 = new int[3];
@@ -468,6 +472,33 @@ public class TestCreateJson {
         for(int i = 0; i < messageDrawMyPowerUp.getIdPowerUp().length; i++) {
             assertEquals(messageDrawMyPowerUp.getIdPowerUp()[i], messageDrawMyPowerUpCreated.getIdPowerUp()[i]);
         }
+    }
+
+
+    @Test
+    public void createMessageActionLeftEmptyTest() {
+        when(turnManager.getActionsLeft()).thenReturn(2);
+        when(turnManager.getCurrentPlayer()).thenReturn(player1);
+
+        List<PowerUp> powerUpsCanUse = new ArrayList<>();
+        MessageActionLeft messageActionLeftCreated = createJson.createMessageActionsLeft(player1, powerUpsCanUse);
+
+        assertEquals(2, messageActionLeftCreated.getnActionsLeft());
+        assertTrue(messageActionLeftCreated.getPowerUpsCanUse().isEmpty());
+    }
+
+
+    @Test
+    public void createMessageActionLeftPPTest() {
+        when(turnManager.getActionsLeft()).thenReturn(2);
+        when(turnManager.getCurrentPlayer()).thenReturn(player1);
+        PowerUp powerUp = new PowerUp(4,DeckType.POWERUP_CARD, AmmoType.YELLOW, GeneralInfo.NEWTON, "", new NewtonEff());
+
+        MessageActionLeft messageActionLeftCreated = createJson.createMessageActionsLeft(player1, Arrays.asList(powerUp));
+        assertEquals(2, messageActionLeftCreated.getnActionsLeft());
+        assertEquals(powerUp.getIdCard(), messageActionLeftCreated.getPowerUpsCanUse().get(0).getIdPowerUp());
+        assertEquals(powerUp.getName(), messageActionLeftCreated.getPowerUpsCanUse().get(0).getName());
+        assertEquals(powerUp.getGainAmmoColor(), messageActionLeftCreated.getPowerUpsCanUse().get(0).getGainAmmoColor());
     }
 
 

@@ -187,22 +187,36 @@ abstract class Controller implements Observer<Event> {
 
         WeaponCard weaponCard;
 
-        try {
-            if(unloadedWeapon)
+        if(unloadedWeapon) {
+            try {
                 weaponCard = idConverter.getUnloadedWeaponById(player.getIdPlayer(), idWeapon);
-            else
-                weaponCard = idConverter.getLoadedWeaponById(player.getIdPlayer(), idWeapon);
-        } catch (IllegalIdException e) {
-            String messageError = "Ops, qualcosa è andato storto!";
-            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
-            return null;
+            }
+            catch (IllegalIdException e) {
+                String messageError = "Ops, qualcosa è andato storto!";
+                sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
+                return null;
+            }
         }
+        else {
+            try {
+                weaponCard = idConverter.getLoadedWeaponById(player.getIdPlayer(), idWeapon);
+            }
+            catch (IllegalIdException e) {
+                String messageError = "Ops, qualcosa è andato storto!";
+                sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
+                return null;
+            }
+        }
+
         return weaponCard;
     }
 
 
 
     Square convertSquare(Player player, int[] coordinates) {
+        if(player == null)
+            throw new NullPointerException("player cannot be null");
+
         Square square;
         try {
             square = idConverter.getSquareByCoordinates(coordinates);
@@ -222,7 +236,7 @@ abstract class Controller implements Observer<Event> {
             return true;
         else {
             String messageError = "ERROR: Non è il tuo turno";
-            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
+            sendInfo(EventType.ERROR, messageError, Arrays.asList(hostName));
             return false;
         }
     }
@@ -293,28 +307,6 @@ abstract class Controller implements Observer<Event> {
 //CHECK CONTAINS
     /**
      *
-     * @param player        player
-     * @param powerUp       powerUp of the player
-     * @return              boolean if the player has the powerUp
-     */
-    boolean checkContainsPowerUp(Player player, PowerUp powerUp) {
-        if(player == null)
-            throw new NullPointerException("player cannot be null");
-
-        if(powerUp == null)
-            throw new NullPointerException("powerUp cannot be null");
-
-        if (!player.getPowerUps().contains(powerUp)) {
-            String messageError = "ERROR: Non hai questo PowerUp: " + powerUp.getName();
-            sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
-            return false;
-        }
-        return true;
-    }
-
-
-    /**
-     *
      * @param player            player
      * @param weaponCard        weapon card
      * @param unloadedWeapon    boolean if is an unloaded Weapon
@@ -331,7 +323,7 @@ abstract class Controller implements Observer<Event> {
             if (player.getUnloadedWeapons().contains(weaponCard))
                 return true;
             else {
-                String messageError = "ERROR: Non hai questa arma: " + weaponCard.getIdCard() + ", scegli un'altra";
+                String messageError = "ERROR: Non hai questa arma: " + weaponCard.getName() + " tra le armi scariche, scegli un'altra";
                 sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
                 return false;
             }
@@ -339,7 +331,7 @@ abstract class Controller implements Observer<Event> {
             if (player.getLoadedWeapons().contains(weaponCard))
                 return true;
             else {
-                String messageError = "ERROR: Non hai questa arma: " + weaponCard.getIdCard() + ", scegli un'altra";
+                String messageError = "ERROR: Non hai questa arma: " + weaponCard.getName() + " tra le armi cariche, scegli un'altra";
                 sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
                 return false;
             }
@@ -358,9 +350,6 @@ abstract class Controller implements Observer<Event> {
     boolean checkHasEnoughAmmo(Player player, List<AmmoType> ammoToPay) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
-
-        if(ammoToPay == null)
-            throw new NullPointerException("ammoToPay cannot be null");
 
         if(!player.hasEnoughAmmo(ammoToPay)) {
             String messageError = "ERROR: Non puoi pagare il costo";

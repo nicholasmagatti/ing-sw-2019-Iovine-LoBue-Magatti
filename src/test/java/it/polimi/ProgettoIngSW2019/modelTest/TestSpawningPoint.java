@@ -6,6 +6,7 @@ import it.polimi.ProgettoIngSW2019.common.enums.DeckType;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import org.junit.*;
 import static org.junit.Assert.*;
 
@@ -13,11 +14,14 @@ public class TestSpawningPoint {
     private SpawningPoint spawn;
     private Deck weaponDeck;
     private List<WeaponCard> weaponCardOnHand;
+    private DistanceDictionary distanceDictionary;
 
     @Before
     public void setup(){
+        Maps maps = new Maps();
+        distanceDictionary = new DistanceDictionary(maps.getMaps()[0]);
         weaponCardOnHand = new ArrayList<>();
-        DeckFactory d = new DeckFactory();
+        DeckFactory d = new DeckFactory(distanceDictionary);
         weaponDeck = new Deck(DeckType.WEAPON_CARD, d);
         spawn = new SpawningPoint(0, true,true,true,true);
         spawn.reset(weaponDeck);

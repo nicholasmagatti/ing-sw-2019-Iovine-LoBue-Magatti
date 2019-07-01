@@ -42,7 +42,6 @@ public enum EventType {
     SCORE_DEAD_PLAYERS,                             //toView: send info score at the end of the turn
     INPUT_TIME_EXPIRED,
     ERROR,                                          //toView: send message error
-    PLAYER_IN_SPAWN_STATE,                          //toView: move player in spawnState
     WEAPONS_CAN_BUY,                                //toView: send the weapons can buy in the sp
     DISCARD_WEAPON,                                 //toView: send to the player his weapon to choose one to discard before buying another
     GO_IN_GAME_SETUP,                               //toView: to alert clients that they need to move into the game setup state
@@ -58,6 +57,7 @@ public enum EventType {
     TARGETING_SCOPE,
     CAN_USE_TARGETING_SCOPE,
     CAN_USE_TAGBACK,
+    TEST,
 
 
 
@@ -85,4 +85,8 @@ public enum EventType {
     MSG_BEFORE_ENEMY_ACTION_OR_RELOAD,
     MSG_USE_POWERUP,
     MSG_PLAYER_SPAWN,
+    MSG_CONCLUSION,
+    MSG_SCORE_ALIVE_PLAYER,
+    MSG_SCORE_KILLSHOT_TRACK,
+    MSG_FINAL_RESULTS,
 }

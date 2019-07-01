@@ -178,7 +178,7 @@ public class SpawnController extends Controller {
                     String messageError = "ERROR: Non puoi spawnare";
                     sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(spawnPlayer));
                 } else
-                    respawn();
+                    respawn(spawnPlayer);
             }
             else {
                 String messageError = "ERROR: Qualcosa è andato storto";
@@ -191,7 +191,8 @@ public class SpawnController extends Controller {
     /**
      * respawn actions
      */
-    private void respawn() {
+    private void respawn(Player player) {
+        spawnPlayer = player;
         //save ammo color and associated color with idRoom
         AmmoType colorToSpawn = powerUpToDiscard.getGainAmmoColor();
         int idRoom = AmmoType.intFromAmmoType(colorToSpawn);
@@ -237,5 +238,22 @@ public class SpawnController extends Controller {
         sendInfo(EventType.MSG_POWERUP_DISCARDED_TO_SPAWN, msgPowerUpDiscardedLMJson, getHostNameCreateList().addAllHostName());
         sendInfo(EventType.UPDATE_MAP, updateMapLMJson, getHostNameCreateList().addAllHostName());
         sendInfo(EventType.UPDATE_MY_POWERUPS, updateMyPowerUpLMJson, getHostNameCreateList().addOneHostName(spawnPlayer));
+    }
+
+
+    /**
+     * spawn for an inactive player
+     * @param player    inactive player to spawn
+     */
+    public void spawnInactivePlayer(Player player) {
+        powerUpsDraw.clear();
+
+        //draw 1 powerUp and add it on powerUps list of the spawnPlayer
+        powerUpsDraw.add((PowerUp) getTurnManager().getGameTable().getPowerUpDeck().drawCard());
+
+        String messageEnemyDrawPowerUp = getCreateJson().createMessageEnemyDrawPowerUpJson(player, powerUpsDraw.size());
+        sendInfo(EventType.MSG_ENEMY_DRAW_POWERUP, messageEnemyDrawPowerUp, getHostNameCreateList().addAllExceptOneHostName(player));
+
+        powerUpToDiscard = powerUpsDraw.get(0);
     }
 }

@@ -2,10 +2,12 @@ package it.polimi.ProgettoIngSW2019.modelTest;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.spy;
 
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.DeckType;
+import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import it.polimi.ProgettoIngSW2019.model.powerup_effects.TagbackGrenadeEff;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,11 +20,15 @@ public class TestDeck {
     private Deck powerUpDeck;
     private Deck ammoDeck;
     private int nCardsExp;
-    private DeckFactory deckFactory = new DeckFactory();
+    private DeckFactory deckFactory;
+    private DistanceDictionary distanceDictionary;
 
 
     @Before
     public void setUp() {
+        Maps maps = new Maps();
+        distanceDictionary = new DistanceDictionary(maps.getMaps()[0]);
+        deckFactory = new DeckFactory(distanceDictionary);
         ammoDeck = new Deck(DeckType.AMMO_CARD, deckFactory);
         powerUpDeck = new Deck(DeckType.POWERUP_CARD, deckFactory);
         weaponDeck = new Deck(DeckType.WEAPON_CARD, deckFactory);

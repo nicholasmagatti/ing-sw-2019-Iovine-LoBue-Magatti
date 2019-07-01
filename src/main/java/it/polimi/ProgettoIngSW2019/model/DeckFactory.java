@@ -2,6 +2,7 @@ package it.polimi.ProgettoIngSW2019.model;
 
 import it.polimi.ProgettoIngSW2019.common.enums.*;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import it.polimi.ProgettoIngSW2019.model.id_generators.IdCardGenerator;
 import it.polimi.ProgettoIngSW2019.model.powerup_effects.NewtonEff;
 import it.polimi.ProgettoIngSW2019.model.powerup_effects.TagbackGrenadeEff;
@@ -20,6 +21,7 @@ import java.util.List;
 public class DeckFactory {
     private List<Card> deck;
     private IdCardGenerator idCardGenerator = new IdCardGenerator();
+    private DistanceDictionary distanceDictionary;
 
     private static int firstIdAmmo = 0;
     private static int lastIdAmmo = 0;
@@ -34,12 +36,18 @@ public class DeckFactory {
     private static final String descrTagbackGrenade = "";
     private static final String descrTeleporter = "";
 
+
+    public  DeckFactory(DistanceDictionary distanceDictionary) {
+        this.distanceDictionary = distanceDictionary;
+    }
+
+
     /**
      * creates the deck from the deckType with all the cards
      * @param deckType      type of the deck
      * @return              deck, list of cards
      */
-    public List<Card> setDeck(DeckType deckType){
+    List<Card> setDeck(DeckType deckType){
         switch(deckType){
             case AMMO_CARD:
                 deck = new ArrayList<>();
@@ -134,27 +142,27 @@ public class DeckFactory {
             case WEAPON_CARD:
                 deck = new ArrayList<>();
                 firstIdWeapon = idCardGenerator.getId();
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "LOCK RIFLE", "", Arrays.asList(AmmoType.BLUE, AmmoType.BLUE), "LockRifleEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "ELECTROSCYTHE", "", Arrays.asList(AmmoType.BLUE), "ElectroSchyteEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "MACHINE GUN", "", Arrays.asList(AmmoType.BLUE, AmmoType.RED), "MachineGunEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "TRACTOR BEAM", "", Arrays.asList(AmmoType.BLUE), "TractorBeamEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "T.H.O.R.", "", Arrays.asList(AmmoType.BLUE, AmmoType.RED), "ThorEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "VORTEX CANNON", "", Arrays.asList(AmmoType.RED, AmmoType.BLUE), "VortexCannonEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "FURNACE", "", Arrays.asList(AmmoType.RED, AmmoType.BLUE), "FurnaceEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "PLASMA GUN", "", Arrays.asList(AmmoType.BLUE, AmmoType.YELLOW), "PlasmaGunEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "HEATSEEKER", "", Arrays.asList(AmmoType.RED, AmmoType.RED, AmmoType.YELLOW), "HeatSeekerEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "WHISPER", "", Arrays.asList(AmmoType.BLUE, AmmoType.BLUE, AmmoType.YELLOW), "WhisperEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "HELLION", "", Arrays.asList(AmmoType.RED, AmmoType.YELLOW), "HellionEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "FLAMETHROWER", "", Arrays.asList(AmmoType.RED), "FalmeThrowerEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "ZX-2", "", Arrays.asList(AmmoType.YELLOW, AmmoType.RED), "ZX2Eff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "GRENADE LAUNCHER", "", Arrays.asList(AmmoType.RED), "GrenadeLauncherEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "SHOTGUN", "", Arrays.asList(AmmoType.YELLOW, AmmoType.YELLOW), "ShotGunEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "ROCKET LAUNCHER", "", Arrays.asList(AmmoType.RED, AmmoType.RED), "RocketLauncherEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "POWER GLOVE", "", Arrays.asList(AmmoType.YELLOW, AmmoType.BLUE), "PowerGlowEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "RAILGUN", "", Arrays.asList(AmmoType.YELLOW, AmmoType.YELLOW, AmmoType.BLUE), "RailGunEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "SHOCKWAVE", "", Arrays.asList(AmmoType.YELLOW), "ShockWaveEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "CYBERBLADE", "", Arrays.asList(AmmoType.YELLOW, AmmoType.RED), "CyberBladeEff.json"));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "SLEDGEHAMMER", "", Arrays.asList(AmmoType.YELLOW), "SledgeHammerEff.json"));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "LOCK RIFLE", "", Arrays.asList(AmmoType.BLUE, AmmoType.BLUE), "LockRifleEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "ELECTROSCYTHE", "", Arrays.asList(AmmoType.BLUE), "ElectroSchyteEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "MACHINE GUN", "", Arrays.asList(AmmoType.BLUE, AmmoType.RED), "MachineGunEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "TRACTOR BEAM", "", Arrays.asList(AmmoType.BLUE), "TractorBeamEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "T.H.O.R.", "", Arrays.asList(AmmoType.BLUE, AmmoType.RED), "ThorEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "VORTEX CANNON", "", Arrays.asList(AmmoType.RED, AmmoType.BLUE), "VortexCannonEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "FURNACE", "", Arrays.asList(AmmoType.RED, AmmoType.BLUE), "FurnaceEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "PLASMA GUN", "", Arrays.asList(AmmoType.BLUE, AmmoType.YELLOW), "PlasmaGunEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "HEATSEEKER", "", Arrays.asList(AmmoType.RED, AmmoType.RED, AmmoType.YELLOW), "HeatSeekerEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "WHISPER", "", Arrays.asList(AmmoType.BLUE, AmmoType.BLUE, AmmoType.YELLOW), "WhisperEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "HELLION", "", Arrays.asList(AmmoType.RED, AmmoType.YELLOW), "HellionEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "FLAMETHROWER", "", Arrays.asList(AmmoType.RED), "FalmeThrowerEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "ZX-2", "", Arrays.asList(AmmoType.YELLOW, AmmoType.RED), "ZX2Eff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "GRENADE LAUNCHER", "", Arrays.asList(AmmoType.RED), "GrenadeLauncherEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "SHOTGUN", "", Arrays.asList(AmmoType.YELLOW, AmmoType.YELLOW), "ShotGunEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "ROCKET LAUNCHER", "", Arrays.asList(AmmoType.RED, AmmoType.RED), "RocketLauncherEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "POWER GLOVE", "", Arrays.asList(AmmoType.YELLOW, AmmoType.BLUE), "PowerGlowEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "RAILGUN", "", Arrays.asList(AmmoType.YELLOW, AmmoType.YELLOW, AmmoType.BLUE), "RailGunEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "SHOCKWAVE", "", Arrays.asList(AmmoType.YELLOW), "ShockWaveEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "CYBERBLADE", "", Arrays.asList(AmmoType.YELLOW, AmmoType.RED), "CyberBladeEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, "SLEDGEHAMMER", "", Arrays.asList(AmmoType.YELLOW), "SledgeHammerEff.json", distanceDictionary));
                 lastIdWeapon = idCardGenerator.getId() - 1;
                 break;
 
