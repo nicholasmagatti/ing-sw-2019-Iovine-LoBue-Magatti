@@ -1,7 +1,8 @@
 package it.polimi.ProgettoIngSW2019.view;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.LoginRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.LoginResponse;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupInfo;
@@ -10,9 +11,7 @@ import it.polimi.ProgettoIngSW2019.common.utilities.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Nicholas Magatti
@@ -122,7 +121,7 @@ public class LoginState extends State{
         }
 
         if (command == EventType.GO_IN_GAME_SETUP) {
-            setupInfo = new Gson().fromJson(jsonMessage, SetupInfo.class);
+            setupInfo = deserialize(event.getMessageInJsonFormat());
         }
     }
 
@@ -229,6 +228,14 @@ public class LoginState extends State{
 
     public void setIsLocalOnly(boolean isLocalOnly){
         this.isLocalOnly = isLocalOnly;
+    }
+
+    public SetupInfo deserialize(String json){
+        Gson gsonReader = new GsonBuilder()
+                .registerTypeAdapter(SquareLM.class, new TypeAdapterSquareLM())
+                .create();
+
+        return gsonReader.fromJson(json, SetupInfo.class);
     }
 }
 

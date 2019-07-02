@@ -3,6 +3,7 @@ package it.polimi.ProgettoIngSW2019.virtual_view;
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageConnection;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupInfo;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.IClientMessageReceiver;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
@@ -100,6 +101,14 @@ public class VirtualView extends Observable<Event> implements IVirtualView, Obse
             try {
                 clientMessageReceiver.get(msg.getHostname()).send(event);
                 notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
+            }catch(RemoteException e){
+                notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
+            }
+        }
+        if(event.getCommand().equals((EventType.GO_IN_GAME_SETUP))){
+            SetupInfo setupInfo = (SetupInfo) deserialize(event.getMessageInJsonFormat(), SetupInfo.class);
+            try {
+                clientMessageReceiver.get(setupInfo.getHostname()).send(event);
             }catch(RemoteException e){
                 notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
             }

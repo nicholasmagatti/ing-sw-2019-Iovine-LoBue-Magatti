@@ -1,16 +1,14 @@
 package it.polimi.ProgettoIngSW2019.model;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import it.polimi.ProgettoIngSW2019.common.Event;
-import it.polimi.ProgettoIngSW2019.common.LightModel.AmmoPointLM;
-import it.polimi.ProgettoIngSW2019.common.LightModel.MapLM;
-import it.polimi.ProgettoIngSW2019.common.LightModel.SpawnPointLM;
-import it.polimi.ProgettoIngSW2019.common.LightModel.SquareLM;
+import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageConnection;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupInfo;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
+import it.polimi.ProgettoIngSW2019.common.utilities.TypeAdapterSquareLM;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -57,7 +55,9 @@ public class LoginHandler extends Observable<Event> {
         sessions.put(hostname, s);
         usernameConnected.add(username);
         nrOfPlayerConnected++;
+        System.out.println("Giocatori connessi: " + nrOfPlayerConnected);
         if(nrOfPlayerConnected == 3){
+            System.out.println("Timer started");
             timer = new Timer();
             timerTask = new TimerTask() {
                 @Override
@@ -151,6 +151,7 @@ public class LoginHandler extends Observable<Event> {
      */
     //NOT TO BE TESTED
     void goInSetup(){
+        System.out.println("Going in setup");
         gameStarted = true;
         String username = entryIterator.next().getValue().getUsername();
 
@@ -159,7 +160,6 @@ public class LoginHandler extends Observable<Event> {
             List<MapLM> mapLMList = generateMapLMListForGameSetup();
             SetupInfo msg = new SetupInfo(username, hostname, mapLMList);
 
-            //TODO: Rivedere --> non invia in parallelo il messaggio
             notify(new Event(EventType.GO_IN_GAME_SETUP, serialize(msg)));
         }
     }
@@ -247,10 +247,11 @@ public class LoginHandler extends Observable<Event> {
         int rowCounter;
         int colCounter;
         List<MapLM> mapLMList = new ArrayList<>();
-        SquareLM[][] mapLMTmp = new SquareLM[3][4];
+        SquareLM[][] mapLMTmp;
         Maps maps = new Maps();
 
         for(Square[][] map: maps.getMaps()){
+            mapLMTmp = new SquareLM[3][4];
             rowCounter = 0;
             for(Square[] row: map){
                 colCounter = 0;
@@ -341,9 +342,10 @@ public class LoginHandler extends Observable<Event> {
      */
     //NOT TO BE TESTED
     private String serialize(Object objToSerialize){
-        Gson gsonReader = new Gson();
-        String serializedObj = gsonReader.toJson(objToSerialize, objToSerialize.getClass());
+        Gson gsonReader = new GsonBuilder()
+                .registerTypeAdapter(SquareLM.class, new TypeAdapterSquareLM())
+                .create();
 
-        return serializedObj;
+        return gsonReader.toJson(objToSerialize, objToSerialize.getClass());
     }
 }

@@ -7,6 +7,7 @@ import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.common.utilities.InputScanner;
+import it.polimi.ProgettoIngSW2019.model.AmmoPoint;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
@@ -615,19 +616,19 @@ public abstract class ToolsView {
             if(squareLM.getIdRoom() == GeneralInfo.RED_ROOM_ID){
                 background = RED;
             }
-            if(squareLM.getIdRoom() == GeneralInfo.BLUE_ROOM_ID){
+            else if(squareLM.getIdRoom() == GeneralInfo.BLUE_ROOM_ID){
                 background = BLUE;
             }
-            if(squareLM.getIdRoom() == GeneralInfo.YELLOW_ROOM_ID){
+            else if(squareLM.getIdRoom() == GeneralInfo.YELLOW_ROOM_ID){
                 background = YELLOW;
             }
-            if(squareLM.getIdRoom() == GeneralInfo.GRAY_ROOM_ID){
+            else if(squareLM.getIdRoom() == GeneralInfo.GRAY_ROOM_ID){
                 background = WHITE;
             }
-            if(squareLM.getIdRoom() == GeneralInfo.PURPLE_ROOM_ID){
+            else if(squareLM.getIdRoom() == GeneralInfo.PURPLE_ROOM_ID){
                 background = MAGENTA;
             }
-            if(squareLM.getIdRoom() == GeneralInfo.GREEN_ROOM_ID){
+            else if(squareLM.getIdRoom() == GeneralInfo.GREEN_ROOM_ID){
                 background = GREEN;
             }
             else {
@@ -660,7 +661,9 @@ public abstract class ToolsView {
             //third and fourth lines:
             String [] otherInfoSquare;
             if(squareLM.getSquareType() == SquareType.AMMO_POINT){
-                otherInfoSquare = specificInfoAmmoPointToDraw((AmmoPointLM)squareLM);
+                System.out.println(squareLM.getIdRoom() + " " + squareLM.getPlayers()
+                + " " + squareLM.getSquareType());
+                otherInfoSquare = specificInfoAmmoPointToDraw((AmmoPointLM) squareLM);
                 bodyLines[2] = otherInfoSquare[0];
                 bodyLines[3] = otherInfoSquare[1];
             }

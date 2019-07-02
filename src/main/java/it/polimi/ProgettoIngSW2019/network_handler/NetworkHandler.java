@@ -86,13 +86,13 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
     //NOT TO BE TESTED
     @Override
     public void update(Event event) {
-        if(event.getCommand().equals(EventType.REQUEST_LOGIN)) {
+        if(event.getCommand().equals(EventType.REQUEST_GAME_IS_STARTED)) {
             try {
                 hostname = ((LoginRequest) new Gson().fromJson(event.getMessageInJsonFormat(), LoginRequest.class)).getHostname();
                 clientMessageReceiver = new ClientMessageReceiver(this);
                 virtualView.registerMessageReceiver(hostname, clientMessageReceiver);
             }catch(RemoteException e) {
-                //TODO: persa connessione con il server
+                //TODO: non riesce a contattare il server
                 e.printStackTrace();
             }
         }

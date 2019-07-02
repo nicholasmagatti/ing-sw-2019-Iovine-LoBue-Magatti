@@ -41,7 +41,7 @@ public class MainClass {
                 System.exit(-1);
             }
         }else if(args[0].equalsIgnoreCase("--Client") || args[0].equalsIgnoreCase("--C")
-        || args[0].equalsIgnoreCase("--localClient")){
+        || args[0].equalsIgnoreCase("--L")){
             try {
                 IVirtualView virtualView = (IVirtualView) Naming.lookup(RMISettings.SERVICE_NAME);
                 IdleState idleState = new IdleState();
@@ -61,7 +61,30 @@ public class MainClass {
 
                 NetworkHandler networkHandler = new NetworkHandler(virtualView);
 
-                if(args[0].equalsIgnoreCase("--localClient"))
+                networkHandler.addObserver(idleState);
+                networkHandler.addObserver(reloadState);
+                networkHandler.addObserver(powerUpState);
+                networkHandler.addObserver(actionState);
+                networkHandler.addObserver(grabState);
+                networkHandler.addObserver(shootState);
+                networkHandler.addObserver(moveState);
+                networkHandler.addObserver(spawnState);
+                networkHandler.addObserver(setupGameState);
+                networkHandler.addObserver(loginState);
+                networkHandler.addObserver(generalMessageObserver);
+
+                idleState.addObserver(networkHandler);
+                reloadState.addObserver(networkHandler);
+                powerUpState.addObserver(networkHandler);
+                actionState.addObserver(networkHandler);
+                grabState.addObserver(networkHandler);
+                shootState.addObserver(networkHandler);
+                moveState.addObserver(networkHandler);
+                spawnState.addObserver(networkHandler);
+                setupGameState.addObserver(networkHandler);
+                loginState.addObserver(networkHandler);
+
+                if(args[0].equalsIgnoreCase("--L"))
                     loginState.setIsLocalOnly(true);
 
                 StateManager stateManager = new StateManager();
