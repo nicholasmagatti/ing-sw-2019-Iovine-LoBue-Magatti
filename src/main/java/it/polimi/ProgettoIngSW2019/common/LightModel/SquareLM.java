@@ -5,6 +5,7 @@ import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import java.util.List;
 
 /**
+ * Square for view
  * @author Nicholas Magatti
  */
 public abstract class SquareLM {

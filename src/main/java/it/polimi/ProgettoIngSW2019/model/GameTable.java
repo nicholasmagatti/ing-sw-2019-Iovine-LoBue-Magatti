@@ -25,7 +25,6 @@ public class GameTable{
     private Square[][] map;
     private List<KillToken> killshotTrack = new ArrayList<>();
     private int numberOfSkullsForTheGame; //chosen by the first user
-    private boolean frenzyMode = false;
 
     /**
      * Constructor
@@ -241,17 +240,5 @@ public class GameTable{
      */
     void decreaseNumberOfActivePlayers(){
         activePlayers--;
-    }
-
-    /**
-     * Return true if is frenzyMode is on, false otherwise
-     * @return true if is frenzyMode is on
-     */
-    public boolean isFrenzyMode() {
-        return frenzyMode;
-    }
-
-    public void setFrenzyModeOn(){
-        frenzyMode = true;
     }
 }

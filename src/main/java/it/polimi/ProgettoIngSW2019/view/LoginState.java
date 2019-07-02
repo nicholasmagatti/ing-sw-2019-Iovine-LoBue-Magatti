@@ -10,6 +10,7 @@ import it.polimi.ProgettoIngSW2019.common.utilities.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -27,9 +28,10 @@ public class LoginState extends State{
     private IdleState idleState;
 
     private SetupGameState setupGameState;
+    private boolean isLocalOnly = false;
 
     /**
-     *  Constructor
+     * Constructor
      * @param setupGameState
      */
     public LoginState(SetupGameState setupGameState, IdleState idleState){
@@ -45,8 +47,12 @@ public class LoginState extends State{
     public void startState(){
         //try to get the name of the host
         try {
-            hostname = InetAddress.getLocalHost().getHostName();
+            if(!isLocalOnly)
+                hostname = InetAddress.getLocalHost().getHostName();
+            else
+                hostname = "host" + new Random().nextInt(10000);
 
+            System.out.println(hostname);
             System.out.println("##########  WELCOME ON ADRENALINE!  ###########\n");
             //notify to server that you want to see if there is an ongoing game or not, sending your hostname
             LoginRequest loginRequest = new LoginRequest("", "", hostname);
@@ -129,6 +135,10 @@ public class LoginState extends State{
         password = "";
     }
 
+    /**
+     * Trigger the state of setup with the information needed.
+     * @param setupInfo
+     */
     void goToGameSetup(SetupInfo setupInfo){
         setupGameState.setInfoBeforeStartGame(name, hostname, setupInfo.getMapLMList(), setupInfo.getUsername());
         StateManager.triggerNextState(setupGameState);
@@ -160,6 +170,7 @@ public class LoginState extends State{
         System.out.print("Write your password: ");
         password = readPassword();
         //notify to server
+        System.out.println("Wait a moment...");
         LoginRequest loginRequest = new LoginRequest(name, password, hostname);
         notifyEvent(loginRequest, EventType.REQUEST_LOGIN);
     }
@@ -214,6 +225,10 @@ public class LoginState extends State{
         }while(!exit);
 
         return inputFromUser;
+    }
+
+    public void setIsLocalOnly(boolean isLocalOnly){
+        this.isLocalOnly = isLocalOnly;
     }
 }
 

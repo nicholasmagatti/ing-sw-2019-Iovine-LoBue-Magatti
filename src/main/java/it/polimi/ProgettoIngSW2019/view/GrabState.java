@@ -2,7 +2,6 @@ package it.polimi.ProgettoIngSW2019.view;
 
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
-import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
 import it.polimi.ProgettoIngSW2019.common.LightModel.WeaponLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.GrabChoiceRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.GrabWeaponChoiceRequest;
@@ -11,7 +10,6 @@ import it.polimi.ProgettoIngSW2019.common.Message.toController.PaymentChoiceInfo
 import it.polimi.ProgettoIngSW2019.common.Message.toView.GrabInfoResponse;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.PayAmmoList;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponsCanPayResponse;
-import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 
@@ -26,6 +24,12 @@ public class GrabState extends State{
 
     List<WeaponLM> weaponToDiscardList;
     List<String> possibleChoice;
+    GrabInfoResponse grabInfo;
+    WeaponsCanPayResponse weaponInfo;
+    boolean youAreInSpawningPoint = false;
+    boolean youHaveToDiscardWeapon = false;
+
+    final String EXPLANATION_GRAB = ") to indicate where you want to move and grab: ";
 
     /**
      * @author: Luca Iovine
@@ -38,6 +42,12 @@ public class GrabState extends State{
     void startState() {
         InfoRequest infoRequest = new InfoRequest(InfoOnView.getHostname(), InfoOnView.getMyId());
         notifyEvent(infoRequest, EventType.REQUEST_GRAB_INFO);
+
+        sendPositionToGrab(grabInfo);
+
+        if(youAreInSpawningPoint){
+            sendWeaponToBuy(weaponInfo, weaponToDiscardList);
+        }
     }
 
     @Override
@@ -45,21 +55,23 @@ public class GrabState extends State{
         possibleChoice= new ArrayList<>();
         sb = new StringBuilder();
         if(event.getCommand().equals(EventType.RESPONSE_REQUEST_GRAB_INFO)){
-            weaponToDiscardList = null;
-            sendPositionToGrab(event.getMessageInJsonFormat());
+            youAreInSpawningPoint = false;
+            youHaveToDiscardWeapon = false;
+            grabInfo = gsonReader.fromJson(event.getMessageInJsonFormat(), GrabInfoResponse.class);
         }else if(event.getCommand().equals(EventType.WEAPONS_CAN_BUY)){
-            sendWeaponToBuy(event.getMessageInJsonFormat());
+            youAreInSpawningPoint = true;
+            weaponInfo = gsonReader.fromJson(event.getMessageInJsonFormat(), WeaponsCanPayResponse.class);
         }else if(event.getCommand().equals(EventType.DISCARD_WEAPON)){
+            youHaveToDiscardWeapon = true;
             weaponToDiscardList = gsonReader.fromJson(event.getMessageInJsonFormat(), List.class);
         }
     }
 
-    private void sendPositionToGrab(String jsonMessage){
+    private void sendPositionToGrab(GrabInfoResponse grabInfo){
         int i;
         int[] positionChosen;
-        GrabInfoResponse grabInfo = gsonReader.fromJson(jsonMessage, GrabInfoResponse.class);
 
-        msg = "Puoi scegliere una di queste posizioni dove spostarti e poi raccogliere ciò che c'è a terra: \n";
+        msg = "You can choose one of this positions to move to and grab what's on that square\n";
         sb.append(msg);
 
         for(i = 0; i < grabInfo.getCoordinatesSquareToGrab().size(); i++){
@@ -68,7 +80,7 @@ public class GrabState extends State{
             sb.append(msg);
         }
 
-        msg = "Scegli un numero (da 1 a" + i + ") per indicare dove vuoi muoverti e raccogliere: ";
+        msg = GeneralInfo.CHOOSE_OPTION + i + EXPLANATION_GRAB;
         sb.append(msg);
         System.out.print(sb);
 
@@ -82,22 +94,23 @@ public class GrabState extends State{
         }
     }
 
-    private void sendWeaponToBuy(String jsonMessage){
+    private void sendWeaponToBuy(WeaponsCanPayResponse weaponInfo, List<WeaponLM> weaponToDiscardList){
         int idWeaponChosen;
         int idWeaponToDiscard = -2;
         PaymentChoiceInfo payment = null;
 
-        WeaponsCanPayResponse weaponInfo = gsonReader.fromJson(jsonMessage, WeaponsCanPayResponse.class);
+        //
 
         idWeaponChosen = askWeapon(weaponInfo);
-        if(weaponToDiscardList != null)
+        if(youHaveToDiscardWeapon)
             idWeaponToDiscard = askDiscardWeapon(weaponToDiscardList);
 
         //Cerco l'arma corrispondente
         for(PayAmmoList payAmmo: weaponInfo.getListPaymentReload()){
-            if(payAmmo.getIdWeapon() == idWeaponChosen)
+            if(payAmmo.getIdWeapon() == idWeaponChosen) {
                 payment = ToolsView.askPayment(payAmmo.getAmmoCost(), payAmmo.getAmmoInAmmoBox(), payAmmo.getAmmoInPowerUp());
                 break;
+            }
         }
         if(idWeaponChosen != -1 && idWeaponToDiscard != - 1 && payment != null) {
             GrabWeaponChoiceRequest grabWeapon = new GrabWeaponChoiceRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), idWeaponToDiscard, idWeaponChosen, payment.getAmmoToDiscard(), payment.getIdPowerUpToDiscard());
@@ -124,11 +137,11 @@ public class GrabState extends State{
         for (i = 0; i < weaponInfo.getWeaponsCanReload().size(); i++) {
             cost = getCost(weaponInfo.getWeaponsCanReload().get(i), weaponInfo.getListPaymentReload());
             possibleChoice.add(Integer.toString(i+1));
-            msg = (i+1) + ": " + weaponInfo.getWeaponsCanReload().get(i).getName() + " Costo di ricarica: " + cost + "\n";
+            msg = (i+1) + ": " + weaponInfo.getWeaponsCanReload().get(i).getName() + "Reload cost: " + cost + "\n";
             sb.append(msg);
         }
 
-        msg = "Scegli un numero (da 1 a" + i + ") per indicare dove vuoi muoverti e raccogliere: ";
+        msg = GeneralInfo.CHOOSE_OPTION + i + EXPLANATION_GRAB;
         sb.append(msg);
         System.out.print(sb);
 
@@ -143,7 +156,7 @@ public class GrabState extends State{
     private int askDiscardWeapon( List<WeaponLM> weaponToDiscardList){
         int i;
         int idWeaponToDiscard = -1;
-        msg = "Hai troppe carte in mano, scegline una da scartare tra le seguenti: \n";
+        msg = "Too many cards on your hand! Choose one to discard between the following:\n";
         sb.append(msg);
 
         for(i = 0; i < weaponToDiscardList.size(); i++){
@@ -152,7 +165,7 @@ public class GrabState extends State{
             sb.append(msg);
         }
 
-        msg = "Scegli un numero (da 1 a" + i + ") per indicare dove vuoi muoverti e raccogliere: ";
+        msg = GeneralInfo.CHOOSE_OPTION + i + EXPLANATION_GRAB;
         sb.append(msg);
         System.out.print(sb);
 

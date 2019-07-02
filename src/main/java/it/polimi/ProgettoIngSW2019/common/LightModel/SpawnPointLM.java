@@ -6,6 +6,7 @@ import it.polimi.ProgettoIngSW2019.model.SpawningPoint;
 import java.util.List;
 
 /**
+ * Spawn point for view
  * @author Nicholas Magatti
  */
 public class SpawnPointLM extends SquareLM {

@@ -47,4 +47,7 @@ public abstract class GeneralInfo {
     public static final String PREFIX_COMMAND_DESCRIPTION = "description ";
     public static final char[] ILLEGAL_CHARACTERS_FOR_USERNAME = {'.', ':', ',', ';'};
     public static final String ASK_INPUT = "Type the chosen option: ";
+    public static final String CHOOSE_OPTION = "Choose a number (from 1 to ";
+
+    public static String MSG_ERROR = "Ops, something wrong :/";
 }

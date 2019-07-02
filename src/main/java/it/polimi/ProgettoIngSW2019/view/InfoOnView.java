@@ -35,31 +35,66 @@ public class InfoOnView implements Observer<Event> {
     private static KillshotTrackLM killshotTrack;
 
 
-
+    /**
+     * Get id player of this client
+     * @return id player of this client
+     */
     static int getMyId() {
         return myId;
     }
 
+    /**
+     * Get name of the player belonging to this client
+     * @return name of the player belonging to this client
+     */
     static String getMyNickname() {
         return myNickname;
     }
 
+    /**
+     * Get the hostname of this client
+     * @return hostname of this client
+     */
     static String getHostname() {
         return hostname;
     }
 
+    /**
+     * Get the public information about the players
+     * @return array with public information about the players
+     */
     static PlayerDataLM[] getPlayers() {
         return players;
     }
 
+    /**
+     * Get the information about the weapons on the hand of the user
+     * @return weapons on the hand of the user
+     */
     static MyLoadedWeaponsLM getMyLoadedWeapons() {
         return myLoadedWeapons;
     }
 
+    /**
+     * Get the information about the powerups on the hand of the user
+     * @return powerups on the hand of the user
+     */
     static MyPowerUpLM getMyPowerUps() {
         return myPowerUps;
     }
 
+    /**
+     * Create the first version of the 'light' model, with all the information
+     * that this user is allowed to see.
+     * @param id
+     * @param username
+     * @param hostName
+     * @param allPlayers
+     * @param loadedWeapons
+     * @param powerUps
+     * @param mapUsed
+     * @param killshotTrackGame
+     */
     static void createFirstLightModel(
                         int id, String username, String hostName, PlayerDataLM[] allPlayers,
                         MyLoadedWeaponsLM loadedWeapons, MyPowerUpLM powerUps,
@@ -179,6 +214,9 @@ public class InfoOnView implements Observer<Event> {
         System.out.print("\n");
     }
 
+    /**
+     * Print weapons present in the spawn points.
+     */
     private static void printWeaponsOnSpawnPoints(){
         //array of spawn points at the position X where X is the id room that represents a specific color
         SpawnPointLM[] spawnPoints = spawnPoints();
@@ -199,6 +237,10 @@ public class InfoOnView implements Observer<Event> {
         System.out.print("\n");
     }
 
+    /**
+     * Print the public information relative to the specified player
+     * @param player
+     */
     private static void printPublicInfoOnPlayer(PlayerDataLM player){
         char markerPlayer;
         String activeOrNot;
@@ -255,6 +297,9 @@ public class InfoOnView implements Observer<Event> {
         System.out.print("\n");
     }
 
+    /**
+     * Print the cards on the user's hand (loaded weapons and powerups)
+     */
     private static void printMyPowerupsAndLoadedWeapons(){
         System.out.print("Powerups: ");
         ToolsView.printListOfPowerups(myPowerUps.getPowerUps());

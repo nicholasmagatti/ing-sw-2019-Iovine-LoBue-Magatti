@@ -2,6 +2,7 @@ package it.polimi.ProgettoIngSW2019.network_handler;
 
 import com.google.gson.Gson;
 import it.polimi.ProgettoIngSW2019.common.Event;
+import it.polimi.ProgettoIngSW2019.common.Message.toController.LoginRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.LoginResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.ClientMessageReceiver;
@@ -23,6 +24,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class NetworkHandler extends Observable<Event> implements Observer<Event> {
     private IVirtualView virtualView;
     private ClientMessageReceiver clientMessageReceiver;
+    String hostname;
 
     /**
      * Constructor of the class.
@@ -67,16 +69,13 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
             LoginResponse response = (LoginResponse) deserialize(event.getMessageInJsonFormat(), LoginResponse.class);
             if (!response.isLoginSuccessfull()) {
                 try {
-                    virtualView.deregisterMessageReceiver(InetAddress.getLocalHost().getHostName());
+                    virtualView.deregisterMessageReceiver(hostname);
                     UnicastRemoteObject.unexportObject(clientMessageReceiver, true);
                 } catch (NoSuchObjectException e) {
                     //TODO: eccezione bloccante, chiudere l'applicazione
                     e.printStackTrace();
                 }catch(RemoteException e) {
                     //TODO: persa connessione con il server, riavviare il gioco
-                    e.printStackTrace();
-                }catch(UnknownHostException e){
-                    //TODO: l'ip del giocatore non può essere risolto, quindi non può giocare
                     e.printStackTrace();
                 }
             }
@@ -89,13 +88,11 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
     public void update(Event event) {
         if(event.getCommand().equals(EventType.REQUEST_LOGIN)) {
             try {
+                hostname = ((LoginRequest) new Gson().fromJson(event.getMessageInJsonFormat(), LoginRequest.class)).getHostname();
                 clientMessageReceiver = new ClientMessageReceiver(this);
-                virtualView.registerMessageReceiver(InetAddress.getLocalHost().getHostName(),clientMessageReceiver);
-            }catch(RemoteException e){
+                virtualView.registerMessageReceiver(hostname, clientMessageReceiver);
+            }catch(RemoteException e) {
                 //TODO: persa connessione con il server
-                e.printStackTrace();
-            }catch(UnknownHostException e){
-                //TODO: l'ip del giocatore non può essere risolto, quindi non può giocare
                 e.printStackTrace();
             }
         }

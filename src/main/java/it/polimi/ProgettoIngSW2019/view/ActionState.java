@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * State that manages the actions in a player's turn and also the use of
+ * those powerups whose use is available before/after an action.
  * @author Nicholas Magatti
  */
 public class ActionState extends State {
@@ -88,6 +90,8 @@ public class ActionState extends State {
         } else {
             proceedWithActionOrReload();
         }
+
+        StateManager.triggerNextState(this);
     }
 
     @Override
@@ -118,6 +122,9 @@ public class ActionState extends State {
         }
     }
 
+    /**
+     * Make the user choose the specific action an proceed with it.
+     */
     private void chooseAction() {
         String userAnswer;
         List<String> acceptableInputs = new ArrayList<>();

@@ -3,6 +3,7 @@ package it.polimi.ProgettoIngSW2019.common.LightModel;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 
 /**
+ * Map for view
  * @author Nicholas Magatti
  */
 public class MapLM {

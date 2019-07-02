@@ -34,8 +34,9 @@ public class VirtualView extends Observable<Event> implements IVirtualView, Obse
      */
     //NOT TO BE TESTED
     @Override
-    public void registerMessageReceiver(String hostname, IClientMessageReceiver<Event> clientMessageReceiver) {
+    public synchronized void registerMessageReceiver(String hostname, IClientMessageReceiver<Event> clientMessageReceiver) {
         this.clientMessageReceiver.put(hostname, clientMessageReceiver);
+        notifyAll();
     }
 
     /**
@@ -45,8 +46,9 @@ public class VirtualView extends Observable<Event> implements IVirtualView, Obse
      */
     //NOT TO BE TESTED
     @Override
-    public void deregisterMessageReceiver(String hostname){
+    public synchronized void deregisterMessageReceiver(String hostname){
         clientMessageReceiver.remove(hostname);
+        notifyAll();
     }
 
     /**
@@ -57,8 +59,9 @@ public class VirtualView extends Observable<Event> implements IVirtualView, Obse
      */
     //NOT TO BE TESTED
     @Override
-    public void forwardEvent(Event event) {
+    public synchronized void forwardEvent(Event event) {
         notify(event);
+        notifyAll();
     }
 
     /**
@@ -70,13 +73,15 @@ public class VirtualView extends Observable<Event> implements IVirtualView, Obse
      * @author: Luca Iovine
      */
     //NOT TO BE TESTED
-    public void sendMessage(Event event, List<String> hostnameList) {
+    public synchronized void sendMessage(Event event, List<String> hostnameList) {
         try {
             for(String hostname: hostnameList)
                 clientMessageReceiver.get(hostname).send(event);
         } catch (RemoteException ex) {
             //TODO: non riesce a contattare il client e lo disconnette
             ex.printStackTrace();
+        }finally{
+            notifyAll();
         }
     }
 

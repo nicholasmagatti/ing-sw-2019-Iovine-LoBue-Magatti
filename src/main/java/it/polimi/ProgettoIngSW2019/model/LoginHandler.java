@@ -23,7 +23,6 @@ public class LoginHandler extends Observable<Event> {
     private final HashMap<String, Session> sessions;
     private List<String> usernameConnected;
     private boolean gameStarted = false;
-    private boolean inSetupState = false;
     private int nrOfPlayerConnected = 0;
     private final int timeForPing = 100;
     private final int timeBeforeStartingGame = 5000;
@@ -63,7 +62,6 @@ public class LoginHandler extends Observable<Event> {
             timerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    inSetupState = true;
                     entryIterator = sessions.entrySet().iterator();
                     goInSetup();
                 }
@@ -161,6 +159,7 @@ public class LoginHandler extends Observable<Event> {
             List<MapLM> mapLMList = generateMapLMListForGameSetup();
             SetupInfo msg = new SetupInfo(username, hostname, mapLMList);
 
+            //TODO: Rivedere --> non invia in parallelo il messaggio
             notify(new Event(EventType.GO_IN_GAME_SETUP, serialize(msg)));
         }
     }
@@ -206,10 +205,9 @@ public class LoginHandler extends Observable<Event> {
         if(!isGameStarted()){
             usernameConnected.remove(sessions.get(hostname).getUsername());
             sessions.remove(hostname);
-        }
-        else if(inSetupState){
-            goInSetup();
-        }
+        }else
+            notify(new Event(EventType.END_TURN_DUE_USER_DISCONNECTION, ""));
+
     }
 
     /**
@@ -332,17 +330,6 @@ public class LoginHandler extends Observable<Event> {
     //NOT TO BE TESTED
     public void setTurnManager(TurnManager turnManager){
         this.turnManager = turnManager;
-    }
-
-    /**
-     * Set if the player are in setup state or are alredy in game.
-     *
-     * @param inSetupState boolean value
-     * @author: Luca Iovine
-     */
-    //NOT TO BE TESTED
-    public void setInSetupState(boolean inSetupState) {
-        this.inSetupState = inSetupState;
     }
 
     /**

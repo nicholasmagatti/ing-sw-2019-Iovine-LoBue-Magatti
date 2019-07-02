@@ -19,9 +19,12 @@ import java.util.List;
  * @author Nicholas Magatti
  */
 public class PowerUpState extends State {
-
-
+    private IdleState idleState;
     private ShootPowerUpInfo shootPowerUpInfo = null;
+
+    public PowerUpState(IdleState idleState){
+        this.idleState = idleState;
+    }
 
     @Override
     void startState() {
@@ -111,6 +114,10 @@ public class PowerUpState extends State {
         }
     }
 
+    /**
+     * Ask the player if he/she wants to use a powerup and proceed if the answer is yes
+     * @param jsonMessage
+     */
     private void askUsePowerUpAndTriggerStateIfYes(String jsonMessage){
         ShootPowerUpInfo shootPowerUpInfo = new Gson().fromJson(jsonMessage, ShootPowerUpInfo.class);
         String userAnswer = askUsePowerup(shootPowerUpInfo.getPowerUpUsableList());
@@ -312,6 +319,7 @@ public class PowerUpState extends State {
             TagBackGrenadeRequest tagBackGrenadeRequest =
                     new TagBackGrenadeRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), idPowerUp, idTarget);
             notifyEvent(tagBackGrenadeRequest, EventType.TAGBACK_GRENADE);
+            StateManager.triggerNextState(idleState);
         }
         else{//reset shootPowerUpInfo to null
             shootPowerUpInfo = null;

@@ -32,7 +32,13 @@ public class SetupGameState extends State {
         this.idleState = idleState;
     }
 
-
+    /**
+     * Initial settings for this state
+     * @param myName
+     * @param hostname
+     * @param maps
+     * @param playerWhoSetsTheGame
+     */
     void setInfoBeforeStartGame(String myName, String hostname, List<MapLM> maps, String playerWhoSetsTheGame){
         this.myName = myName;
         this.hostname = hostname;
@@ -41,6 +47,11 @@ public class SetupGameState extends State {
         gotInfoBeforeStartGame = true;
     }
 
+    /**
+     * In case of attempted reconnection, set the inserted acceptable credentials.
+     * @param myName
+     * @param hostname
+     */
     void setInfoForReconnection(String myName, String hostname){
         this.myName = myName;
         this.hostname = hostname;
@@ -109,6 +120,10 @@ public class SetupGameState extends State {
         }
     }
 
+    /**
+     * Make the first player choose the map to use for this game and return the chosen option as a number.
+     * @return number that represent the chosen map.
+     */
     private String chooseMap(){
         //print maps
         List<String> allowedAnswers = new ArrayList<>();
@@ -124,6 +139,10 @@ public class SetupGameState extends State {
         return ToolsView.readUserChoice(allowedAnswers, false);
     }
 
+    /**
+     * Make the first player choose number of skulls to use for this game and return the chosen option as a number.
+     * @return chosen number of skulls for the game
+     */
     private String chooseNrSkulls(){
         System.out.println("Choose a number of skulls for the killsho track between " +
                 GeneralInfo.MIN_SKULLS + " and " + GeneralInfo.MAX_SKULLS +".");

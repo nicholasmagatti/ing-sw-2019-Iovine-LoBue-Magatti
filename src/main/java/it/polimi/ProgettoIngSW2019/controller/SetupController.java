@@ -32,7 +32,6 @@ public class SetupController implements Observer<Event> {
     @Override
     public void update(Event event) {
         if(event.getCommand().equals(EventType.REQUEST_SETUP)){
-            loginHandler.setInSetupState(false);
             SetupRequest setup = (SetupRequest)deserialize(event.getMessageInJsonFormat(), SetupRequest.class);
             setModel(setup);
             setController();
@@ -70,12 +69,11 @@ public class SetupController implements Observer<Event> {
      */
     //NOT TO BE TESTED
     private void setController(){
-        CreateJson createJson = new CreateJson(turnManager);
+        createJson = new CreateJson(turnManager);
         IdConverter idConverter = new IdConverter(gt);
         HostNameCreateList hostNameCreateList = new HostNameCreateList(turnManager);
         DistanceDictionary distance = new DistanceDictionary(gt.getMap());
 
-        EndTurnController endTurnController = new EndTurnController(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
         PayAmmoController payAmmoController = new PayAmmoController(createJson);
         GrabController grabController = new GrabController(turnManager, virtualView, idConverter, createJson, hostNameCreateList, payAmmoController);
         MoveController moveController = new MoveController(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
@@ -83,6 +81,7 @@ public class SetupController implements Observer<Event> {
         ReloadController reloadController = new ReloadController(turnManager, virtualView, idConverter, createJson, hostNameCreateList, payAmmoController);
         ShootController shootController = new ShootController(turnManager, idConverter, virtualView, createJson, hostNameCreateList, distance);
         SpawnController spawnController = new SpawnController(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
+        EndTurnController endTurnController = new EndTurnController(turnManager, virtualView, idConverter, createJson, hostNameCreateList, spawnController);
 
         virtualView.addObserver(endTurnController);
         virtualView.addObserver(grabController);

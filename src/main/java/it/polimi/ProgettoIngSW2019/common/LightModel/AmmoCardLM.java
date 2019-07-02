@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Ammo card for view
  * @author Nicholas Magatti
  */
 public class AmmoCardLM {
@@ -32,6 +33,10 @@ public class AmmoCardLM {
     }
 
 
+    /**
+     * Get id of the card
+     * @return id of the card
+     */
     public int getIdAmmoCard() {
         return idAmmoCard;
     }
@@ -51,10 +56,18 @@ public class AmmoCardLM {
         this.powerUp = true;
     }
 
+    /**
+     * Return list of ammo the card provides
+     * @return list of ammo the card provides
+     */
     public List<AmmoType> getAmmo() {
         return ammo;
     }
 
+    /**
+     * Return the powerup provided by the card, if there is one
+     * @return the powerup provided by the card, if there is one
+     */
     public boolean hasPowerup(){
         return powerUp;
     }
