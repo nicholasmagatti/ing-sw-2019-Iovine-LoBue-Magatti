@@ -19,7 +19,12 @@ import java.util.List;
 public class SpawnState extends State{
 
     private boolean firstSpawn = false;
-    private ActionState actionState;
+    private IdleState idleState;
+    DrawCardsInfoResponse drawCardsInfo;
+
+    public SpawnState(IdleState idleState){
+        this.idleState = idleState;
+    }
 
     @Override
     public void startState() {
@@ -30,11 +35,16 @@ public class SpawnState extends State{
         EventType eventType;
         if(firstSpawn){
             eventType = EventType.REQUEST_INITIAL_SPAWN_CARDS;
+            System.out.println("Before start your first turn, you have to spawn!");
         }
         else{
             eventType = EventType.REQUEST_SPAWN_CARDS;
         }
         notifyEvent(infoRequest, eventType);
+
+        choosePowerupToDiscard(drawCardsInfo.getDrawnPowerUps());
+        StateManager.triggerNextState(idleState);
+
     }
 
     @Override
@@ -43,18 +53,6 @@ public class SpawnState extends State{
 
         EventType command = event.getCommand();
         String jsonMessage = event.getMessageInJsonFormat();
-
-        //trigger first spawn
-        if(command == EventType.MSG_FIRST_TURN_PLAYER){
-            System.out.println("Before start your first turn, you have to spawn!");
-            triggerFirstSpawn();
-        }
-
-        //trigger standard spawn
-        if(command == EventType.MSG_PLAYER_SPAWN){
-            System.out.println("You died so now you will spawn again.");
-            StateManager.triggerNextState(this);
-        }
 
         if(command == EventType.RESPONSE_REQUEST_INITIAL_SPAWN_CARDS || command == EventType.RESPONSE_REQUEST_SPAWN_CARDS){
             /*
@@ -65,8 +63,7 @@ public class SpawnState extends State{
             if(!firstSpawn && command == EventType.RESPONSE_REQUEST_INITIAL_SPAWN_CARDS){
                 firstSpawn = true;
             }
-            DrawCardsInfoResponse drawCardsInfo = new Gson().fromJson(jsonMessage, DrawCardsInfoResponse.class);
-            choosePowerupToDiscard(drawCardsInfo.getDrawnPowerUps());
+            drawCardsInfo = new Gson().fromJson(jsonMessage, DrawCardsInfoResponse.class);
         }
 
         //if first spawn is true, after your successful spawn, reset firstSpawn to false

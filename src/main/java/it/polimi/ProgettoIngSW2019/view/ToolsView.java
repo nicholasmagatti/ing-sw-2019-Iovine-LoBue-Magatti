@@ -974,4 +974,13 @@ public abstract class ToolsView {
         paymentSB.append(msg);
     }
 
+
+    static void waitServerResponse(){
+        try {
+            Thread.sleep(5000);
+        }catch(InterruptedException e){
+            System.out.println("The application close due to an error.");
+            System.exit(-1);
+        }
+    }
 }

@@ -22,6 +22,9 @@ public class ActionState extends State {
     private MoveState moveState;
     private PowerUpState powerUpState;
     private ReloadState reloadState;
+    private IdleState idleState;
+
+    private  int actionsLeft;
 
 
     /**
@@ -58,21 +61,20 @@ public class ActionState extends State {
         InfoOnView.printEverythingVisible();
 
         String userAnswer;
-        int actionsLeft = infoStart.getnActionsLeft();
+
+        actionsLeft = infoStart.getnActionsLeft();
         if (actionsLeft > 0) {
             String actionOrActions;
             if (actionsLeft > 1) {
                 actionOrActions = "actions";
-            }
-            else{
+            } else {
                 actionOrActions = "action";
             }
             System.out.println("You have " + actionsLeft + " " + actionOrActions + " available for this turn.");
-        }
-        else{ //no actions left
+        } else { //no actions left
             System.out.println("You don't have any action left for this turn. You can only reload now.");
         }
-        if(!infoStart.getPowerUpsCanUse().isEmpty()){
+        if (!infoStart.getPowerUpsCanUse().isEmpty()) {
             System.out.print("But first: ");
             userAnswer = powerUpState.askUsePowerup(infoStart.getPowerUpsCanUse());
             if (userAnswer != null) {
@@ -83,8 +85,7 @@ public class ActionState extends State {
                     proceedWithActionOrReload();
                 }
             }
-        }
-        else{
+        } else {
             proceedWithActionOrReload();
         }
     }
@@ -95,10 +96,14 @@ public class ActionState extends State {
         EventType command = event.getCommand();
         String jsonMessage = event.getMessageInJsonFormat();
 
-        if (command == EventType.MSG_MY_N_ACTION_LEFT) {
+        if (command == EventType.MSG_MY_N_ACTION_LEFT &&
+                !StateManager.getCurrentState().equals(idleState)) {
             infoStart = new Gson().fromJson(jsonMessage, MessageActionLeft.class);
-            StateManager.triggerNextState(this);
         }
+    }
+
+    void setInfoStart(MessageActionLeft infoStart){
+        this.infoStart = infoStart;
     }
 
     /**

@@ -23,11 +23,13 @@ public class SetupGameState extends State {
     private String hostname;
     private String playerWhoSetsTheGame;
     private List<MapLM> maps;
+    private IdleState idleState;
 
     private SpawnState spawnState;
 
-    public SetupGameState(SpawnState spawnState){
+    public SetupGameState(SpawnState spawnState, IdleState idleState){
         this.spawnState = spawnState;
+        this.idleState = idleState;
     }
 
 
@@ -58,9 +60,11 @@ public class SetupGameState extends State {
 
         if(playerWhoSetsTheGame.equals(myName)){
             chooseSetting();
+            spawnState.triggerFirstSpawn();
         }
         else{
             System.out.println(playerWhoSetsTheGame + " is setting the game. Wait...");
+            StateManager.triggerNextState(idleState);
         }
 
     }
@@ -70,7 +74,8 @@ public class SetupGameState extends State {
         EventType command = event.getCommand();
         String jsonMessage = event.getMessageInJsonFormat();
 
-        if(command == EventType.RESPONSE_GAME_DATA){
+        if(command == EventType.RESPONSE_GAME_DATA ||
+                command == EventType.RESPONSE_SETUP){
             SetupResponse setupResponse = new Gson().fromJson(jsonMessage, SetupResponse.class);
             createLocalLightModelAndStart(setupResponse);
         }
@@ -150,8 +155,6 @@ public class SetupGameState extends State {
             System.out.println("The game starts now. Good luck!");
             InfoOnView.printEverythingVisible();
             //if the first player is the one on this client, trigger the first spawn for him/her
-            spawnState.triggerFirstSpawn();
-
         }
     }
 

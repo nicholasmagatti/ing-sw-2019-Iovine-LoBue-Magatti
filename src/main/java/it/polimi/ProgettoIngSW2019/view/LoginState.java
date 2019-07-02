@@ -19,9 +19,12 @@ import java.util.Set;
 public class LoginState extends State{
 
     private boolean ongoingGame;
+    private boolean succesfullLogin;
     private String name;
     private String password;
     private String hostname;
+    private SetupInfo setupInfo = null;
+    private IdleState idleState;
 
     private SetupGameState setupGameState;
 
@@ -29,7 +32,8 @@ public class LoginState extends State{
      *  Constructor
      * @param setupGameState
      */
-    public LoginState(SetupGameState setupGameState){
+    public LoginState(SetupGameState setupGameState, IdleState idleState){
+        this.idleState = idleState;
         this.setupGameState = setupGameState;
     }
 
@@ -47,6 +51,21 @@ public class LoginState extends State{
             //notify to server that you want to see if there is an ongoing game or not, sending your hostname
             LoginRequest loginRequest = new LoginRequest("", "", hostname);
             notifyEvent(loginRequest, EventType.REQUEST_GAME_IS_STARTED);
+
+            login(ongoingGame);
+
+            if(!succesfullLogin)
+                askCredentials();
+
+            if(ongoingGame){
+                StateManager.triggerNextState(idleState);
+            }else{
+                while(setupInfo == null){
+                    ToolsView.waitServerResponse();
+                }
+                goToGameSetup(setupInfo);
+            }
+
         }
         catch (UnknownHostException e){
             System.out.println("There has been an error with your network.");
@@ -60,25 +79,25 @@ public class LoginState extends State{
 
         if (command == EventType.RESPONSE_GAME_IS_STARTED) {
             LoginResponse ongoingGame = new Gson().fromJson(jsonMessage, LoginResponse.class);
-            login(ongoingGame.isLoginSuccessfull());
+            this.ongoingGame = ongoingGame.isLoginSuccessfull();
         }
 
         if (command == EventType.RESPONSE_NEW_LOGIN) {
             LoginResponse loginResponse = new Gson().fromJson(jsonMessage, LoginResponse.class);
-            if(loginResponse.isLoginSuccessfull()){
+            succesfullLogin = loginResponse.isLoginSuccessfull();
+            if(succesfullLogin){
                 System.out.println("You successfully logged in.");
                 System.out.println("Wait for the other players...");
             }
             else{
                 System.out.println("This name has already been taken. Choose another one.");
-
-                askCredentialsAgain();
             }
         }
 
         if (command == EventType.RESPONSE_RECONNECT) {
             LoginResponse loginResponse = new Gson().fromJson(jsonMessage, LoginResponse.class);
-            if(loginResponse.isLoginSuccessfull()){
+            succesfullLogin = loginResponse.isLoginSuccessfull();
+            if(succesfullLogin){
                 System.out.println("You successfully logged in. Welcome back!");
                 //inform the SetupGameState that this is a reconnection in an ongoing game
                 setupGameState.setInfoForReconnection(name, hostname);
@@ -88,8 +107,6 @@ public class LoginState extends State{
             }
             else{
                 System.out.println("Wrong name or password. Write them again.");
-
-                askCredentialsAgain();
             }
         }
 
@@ -99,18 +116,10 @@ public class LoginState extends State{
         }
 
         if (command == EventType.GO_IN_GAME_SETUP) {
-            SetupInfo setupInfo = new Gson().fromJson(jsonMessage, SetupInfo.class);
-            goToGameSetup(setupInfo);
+            setupInfo = new Gson().fromJson(jsonMessage, SetupInfo.class);
         }
     }
 
-    /**
-     * Erase previous values of name and password and ask credentials again.
-     */
-    private void askCredentialsAgain(){
-        cleanNameAndPassword();
-        askCredentials();
-    }
 
     /**
      * Clean name and password from previous values.
@@ -145,6 +154,7 @@ public class LoginState extends State{
      * Ask username and password to the user and send them to the server.
      */
     private void askCredentials(){
+        cleanNameAndPassword();
         System.out.print("Write the name of your character: ");
         name = readUsername().toLowerCase();
         System.out.print("Write your password: ");

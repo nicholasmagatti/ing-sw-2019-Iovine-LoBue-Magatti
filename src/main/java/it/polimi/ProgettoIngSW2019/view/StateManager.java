@@ -13,7 +13,6 @@ public class StateManager {
     /**
      * Get the current state
      * @return the current state set in StateManager. Note: it can be null.
-     * @deprecated
      */
     static State getCurrentState() {
         return currentState;
