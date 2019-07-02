@@ -1,0 +1,43 @@
+{
+  "LOCK RIFLE": "Deal 2 damage and 1 mark to 1 target  you can see.",
+
+  "MACHINE GUN": "Choose 1 or 2 targets you can see and deal 1 damage to each.",
+
+  "T.H.O.R.": "Deal 2 damage to 1 target you can see.",
+
+  "PLASMA GUN": "Deal 2 damage to 1 target you can see.",
+
+  "WHISPER": "Deal 3 damage and 1 mark to 1 target you can see. Your target must be at least 2 moves away from you.",
+
+  "ELECTROSCYTHE": "Deal 1 damage to every other player  on your square.",
+
+  "TRACTOR BEAM": "Move a target 0, 1, or 2 squares to a square you can see, and give it 1 damage.",
+
+  "VORTEX CANNON": "Choose a square you can see, but not your square. Call it \"the vortex\". Choose a target on the vortex or 1 move away from it. Move it onto the vortex and give it 2 damage.",
+
+  "FURNACE": "Choose a room you can see, but not the room you are in. Deal 1 damage to everyone in that room.",
+
+  "HEATSEEKER": "Choose 1 target you cannot see and deal 3 damage to it.",
+
+  "HELLION": "Deal 1 damage to 1 target you can see at least 1 move away. Then give 1 mark to that target and everyone else on that square.",
+
+  "FLAMETHROWER": "Choose a square 1 move away and possibly a second square 1 more move away in the same direction. On each square, you may choose 1 target and give it 1 damage.",
+
+  "GRENADE LAUNCHER": "Deal 1 damage to 1 target you can see. Then you may move the target 1 square.",
+
+  "ROCKET LAUNCHER": "Deal 2 damage to 1 target you can see that is not on your square. Then you may move the target 1 square.",
+
+  "RAILGUN": "Choose a cardinal direction and 1 target in that direction. Deal 3 damage to it.",
+
+  "CYBERBLADE": "Deal 2 damage to 1 target on your square.",
+
+  "ZX-2": "Deal 1 damage and 2 marks to 1 target you can see.",
+
+  "SHOTGUN": "Deal 3 damage to 1 target on your square. If you want, you may then move the target 1 square.",
+
+  "POWER GLOVE": "Choose 1 target on any square exactly 1 move away. Move onto that square and give the target 1 damage and 2 marks.",
+
+  "SHOCKWAVE": "Choose up to 3 targets on different squares, each exactly 1 move away. Deal 1 damage to each target.",
+
+  "SLEDGEHAMMER": "Deal 2 damage to 1 target on your square."
+}

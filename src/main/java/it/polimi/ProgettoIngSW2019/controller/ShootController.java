@@ -39,7 +39,7 @@ public class ShootController extends Controller{
     private WeaponCard weaponChosen;
     private List<Player> enemyChosenList;
     private Square positionToMove;
-    private String somethingWentWrong = "Ops, qualcosa è andato storto!";
+    private String somethingWentWrong = "Ops, something went wrong!";
     private String wrongChoiceErr;
 
     public ShootController(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson, HostNameCreateList hostNameCreateList, DistanceDictionary distance) {
@@ -77,13 +77,13 @@ public class ShootController extends Controller{
 
                                try {
                                    if (!weaponChosen.checkBaseEffectParameterValidity(weaponUser, enemyChosenList)) {
-                                       wrongChoiceErr = "I nemici scelti non sono validi.\n" +
+                                       wrongChoiceErr = "The chosen targets are not valid.\n" +
                                                "Rifare la selezione.\n";
                                        sendInfo(EventType.ERROR, wrongChoiceErr, getHostNameCreateList().addOneHostName(weaponUser));
 
                                    } else if (!weaponChosen.checkBaseEffectMovementPositionValidity(positionToMove,  weaponUser, enemyChosenList)) {
-                                       wrongChoiceErr = "Lo spostamento scelto non è valido.\n" +
-                                               "Rifare la selezione.\n";
+                                       wrongChoiceErr = "The chosen move is not valid.\n" +
+                                               "Redo the selection.\n";
                                        sendInfo(EventType.ERROR, wrongChoiceErr, getHostNameCreateList().addOneHostName(weaponUser));
                                    } else {
                                        activateEffect();
@@ -101,8 +101,8 @@ public class ShootController extends Controller{
                                        msgActionLeft(weaponUser);
                                    }
                                } catch (EnemySizeLimitExceededException e) {
-                                   wrongChoiceErr = "Troppi nemici scelti\n" +
-                                           "Rifare la selezione.\n";
+                                   wrongChoiceErr = "The selected targets are too many.\n" +
+                                           "Redo the selection.\n";
                                    sendInfo(EventType.ERROR, wrongChoiceErr, getHostNameCreateList().addOneHostName(weaponUser));
                                }
                            }
