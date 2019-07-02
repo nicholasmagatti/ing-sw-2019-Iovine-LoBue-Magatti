@@ -148,7 +148,7 @@ public class TestController {
     public void convertPlayerWrongTest() {
         Player playerCreated = controller.convertPlayer(3, hostname0);
 
-        String messageError = "Ops, qualcosa è andato storto!";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -191,7 +191,7 @@ public class TestController {
     public void convertPowerUpWrongTest() {
         PowerUp powerUpCreated = controller.convertPowerUp(player0, 2);
 
-        String messageError = "Ops, qualcosa è andato storto!";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -215,7 +215,7 @@ public class TestController {
     public void convertWeaponWrongTest() {
         WeaponCard weaponCardCreated = controller.convertWeapon(player0, 60, true);
 
-        String messageError = "Ops, qualcosa è andato storto!";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -250,7 +250,7 @@ public class TestController {
         Square squareCreated = controller.convertSquare(player0, coordinates);
 
         assertNull(squareCreated);
-        String messageError = "Ops, qualcosa è andato storto!";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -270,7 +270,7 @@ public class TestController {
     public void checkHostNameWrongTest() {
         assertFalse(controller.checkHostNameCorrect(player0, hostname1));
 
-        String messageError = "ERROR: Non è il tuo turno";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -290,7 +290,7 @@ public class TestController {
     public void checkIdWrongTest() {
         assertFalse(controller.checkIdCorrect(player0, player1.getIdPlayer(), hostname1));
 
-        String messageError = "ERROR: Qualcosa è andato storto";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -310,7 +310,7 @@ public class TestController {
     public void checkCurrentPlayerWrongTest() {
         assertFalse(controller.checkCurrentPlayer(player1));
 
-        String messageError = "ERROR: Non è il tuo turno";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -332,7 +332,7 @@ public class TestController {
         when(turnManager.getActionsLeft()).thenReturn(1);
         assertFalse(controller.checkNoActionLeft(player0));
 
-        String messageError = "ERROR: Non puoi finire il turno in questo momento.";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -354,7 +354,7 @@ public class TestController {
         when(turnManager.getActionsLeft()).thenReturn(0);
         assertFalse(controller.checkHasActionLeft(player0));
 
-        String messageError = "ERROR: Non hai più azioni a disposizione.";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -380,7 +380,7 @@ public class TestController {
     public void checkContainsUnloadedWeaponWrongTest() {
         assertFalse(controller.checkContainsWeapon(player0, weaponCard3, true));
 
-        String messageError = "ERROR: Non hai questa arma: " + weaponCard3.getName() + " tra le armi scariche, scegli un'altra";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -394,7 +394,7 @@ public class TestController {
     public void checkContainsLoadedWrongTest() {
         assertFalse(controller.checkContainsWeapon(player0, weaponCard1, false));
 
-        String messageError = "ERROR: Non hai questa arma: " + weaponCard1.getName() + " tra le armi cariche, scegli un'altra";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 
@@ -422,7 +422,7 @@ public class TestController {
 
         assertFalse(controller.checkHasEnoughAmmo(player2, ammoToPay));
 
-        String messageError = "ERROR: Non puoi pagare il costo";
+        String messageError = GeneralInfo.MSG_ERROR;
         verify(virtualView).sendMessage(eventCapture.capture(), hostnameListCapture.capture());
         String messageErrorReceived = eventCapture.getValue().getMessageInJsonFormat();
 

@@ -47,7 +47,8 @@ public class SpawnController extends Controller {
         if(event.getCommand().equals(EventType.REQUEST_SPAWN_CARDS)) {
             if(checkInfoFromView(event.getMessageInJsonFormat())) {
                 if (!spawnPlayer.isPlayerDown()) {
-                    String messageError = "ERROR: you are not dead, cannot spawn";
+                    //tested
+                    String messageError = GeneralInfo.MSG_ERROR;
                     sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(spawnPlayer));
                     return;
                 }
@@ -58,7 +59,8 @@ public class SpawnController extends Controller {
         if(event.getCommand().equals(EventType.REQUEST_INITIAL_SPAWN_CARDS)) {
             if(checkInfoFromView(event.getMessageInJsonFormat())) {
                 if (spawnPlayer.getPosition() != null) {
-                    String messageError = "ops! qualcosa è andato storto.";
+                    //tested
+                    String messageError = GeneralInfo.MSG_ERROR;
                     sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(spawnPlayer));
                     return;
                 }
@@ -70,6 +72,7 @@ public class SpawnController extends Controller {
             checkRespawnFromView(event.getMessageInJsonFormat());
 
             if(event.getCommand().equals(EventType.REQUEST_INITIAL_SPAWN)) {
+                //tested
                 String mess = "";
                 sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(spawnPlayer));
                 msgActionLeft(spawnPlayer);
@@ -83,11 +86,13 @@ public class SpawnController extends Controller {
      * @param messageJson       json from view
      * @return                  true if the data from view are correct
      */
-    private boolean checkInfoFromView(String messageJson) {
+    boolean checkInfoFromView(String messageJson) {
         InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
         spawnPlayer = convertPlayer(infoRequest.getIdPlayer(), infoRequest.getHostNamePlayer());
 
+        //tested
         if(spawnPlayer != null) {
+            //tested
             if(checkHostNameCorrect(spawnPlayer, infoRequest.getHostNamePlayer())) {
                 return true;
             }
@@ -100,6 +105,7 @@ public class SpawnController extends Controller {
     /**
      * spawn first time
      */
+    //tested
     private void spawnDrawTwoCards() {
         //spawnPlayer draw due powerUp all'inizio del game per lo spawn
         powerUpsDraw.clear();
@@ -124,6 +130,7 @@ public class SpawnController extends Controller {
     /**
      * spawn when you are dead
      */
+    //tested
     private void spawnDrawCard() {
         //clear the damage line of the player
         spawnPlayer.getDamageLine().clear();
@@ -159,6 +166,7 @@ public class SpawnController extends Controller {
      * check if the info are correct from the view
      * @param messageJson       json message form view
      */
+    //tested
     private void checkRespawnFromView(String messageJson) {
         SpawnChoiceRequest spawnChoiceRequest = new Gson().fromJson(messageJson, SpawnChoiceRequest.class);
 
@@ -167,6 +175,7 @@ public class SpawnController extends Controller {
             boolean found = false;
 
             for(PowerUp p:powerUpsDraw) {
+                //tested
                 if(spawnChoiceRequest.getIdPowerUpToDiscard() == p.getIdCard()) {
                     powerUpToDiscard = p;
                     found = true;
@@ -174,14 +183,12 @@ public class SpawnController extends Controller {
             }
 
             if (found) {
-                if (!spawnPlayer.isPlayerDown() || spawnPlayer.getPosition() != null) {
-                    String messageError = "ERROR: Non puoi spawnare";
-                    sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(spawnPlayer));
-                } else
-                    respawn(spawnPlayer);
+                //tested
+                respawn();
             }
             else {
-                String messageError = "ERROR: Qualcosa è andato storto";
+                //tested
+                String messageError = GeneralInfo.MSG_ERROR;
                 sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(spawnPlayer));
             }
         }
@@ -191,21 +198,22 @@ public class SpawnController extends Controller {
     /**
      * respawn actions
      */
-    private void respawn(Player player) {
-        spawnPlayer = player;
+    private void respawn() {
         //save ammo color and associated color with idRoom
         AmmoType colorToSpawn = powerUpToDiscard.getGainAmmoColor();
-        int idRoom = AmmoType.intFromAmmoType(colorToSpawn);
+        int idRoom = colorToSpawn.ordinal();
 
         //search the square to spawn
         Square[][] map = getTurnManager().getGameTable().getMap();
         boolean found = false;
 
-        for(int i = 0; i < GeneralInfo.ROWS_MAP; i++) {
+        for(int i = 0; i < GeneralInfo.ROWS_MAP && !found; i++) {
             for(int j = 0; j < GeneralInfo.COLUMNS_MAP && !found; j++) {
-                if((map[i][j].getSquareType() == SquareType.SPAWNING_POINT) && (map[i][j].getIdRoom() == idRoom)) {
-                    spawnPos = map[i][j];
-                    found = true;
+                if(map[i][j] != null) {
+                    if ((map[i][j].getSquareType() == SquareType.SPAWNING_POINT) && (map[i][j].getIdRoom() == idRoom)) {
+                        spawnPos = map[i][j];
+                        found = true;
+                    }
                 }
             }
         }
@@ -217,15 +225,18 @@ public class SpawnController extends Controller {
             spawnPlayer.risePlayerUp();
 
         if(spawnPlayer.getPowerUps().contains(powerUpToDiscard)) {
+            //tested
             spawnPlayer.getPowerUps().remove(powerUpToDiscard);
         }
         else {
             powerUpsDraw.remove(powerUpToDiscard);
-            for(PowerUp powerUp:powerUpsDraw) {
-                if(!spawnPlayer.getPowerUps().contains(powerUp)) {
-                    if(spawnPlayer.getNumberOfPoweUps() < 3)
-                        spawnPlayer.getPowerUps().add(powerUp);
-                }
+        }
+
+        for(PowerUp powerUp:powerUpsDraw) {
+            //tested
+            if(!spawnPlayer.getPowerUps().contains(powerUp)) {
+                if(spawnPlayer.getNumberOfPoweUps() < 3)
+                    spawnPlayer.getPowerUps().add(powerUp);
             }
         }
 
@@ -246,6 +257,8 @@ public class SpawnController extends Controller {
      * @param player    inactive player to spawn
      */
     public void spawnInactivePlayer(Player player) {
+        spawnPlayer = player;
+
         powerUpsDraw.clear();
 
         //draw 1 powerUp and add it on powerUps list of the spawnPlayer
@@ -255,5 +268,6 @@ public class SpawnController extends Controller {
         sendInfo(EventType.MSG_ENEMY_DRAW_POWERUP, messageEnemyDrawPowerUp, getHostNameCreateList().addAllExceptOneHostName(player));
 
         powerUpToDiscard = powerUpsDraw.get(0);
+        respawn();
     }
 }

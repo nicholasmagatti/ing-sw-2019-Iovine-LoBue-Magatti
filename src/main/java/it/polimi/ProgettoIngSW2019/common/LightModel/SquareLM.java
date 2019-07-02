@@ -8,7 +8,7 @@ import java.util.List;
  * Square for view
  * @author Nicholas Magatti
  */
-public abstract class SquareLM {
+public class SquareLM {
     private List<Integer> players;
     private SquareType squareType;
     private boolean blockedAtNorth;

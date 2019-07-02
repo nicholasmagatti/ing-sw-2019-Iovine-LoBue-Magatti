@@ -6,12 +6,14 @@ import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.MoveChoiceRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MoveInfoResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Controller when the player decide to move
  * @author Priscilla Lo Bue
  */
 public class MoveController extends Controller {
@@ -21,12 +23,23 @@ public class MoveController extends Controller {
     private Square squareToMove;
 
 
-
+    /**
+     * Constructor
+     * @param turnManager           TurnManager
+     * @param virtualView           VirtualView
+     * @param idConverter           IdConverter
+     * @param createJson            CreateJson
+     * @param hostNameCreateList    hostNameCreateList
+     */
     public MoveController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList) {
         super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
     }
 
 
+    /**
+     * update to receive the events
+     * @param event     event message from view
+     */
     public void update(Event event) {
         if (event.getCommand().equals(EventType.REQUEST_MOVE_INFO)) {
             checkInfoFromView(event.getMessageInJsonFormat());
@@ -38,6 +51,10 @@ public class MoveController extends Controller {
     }
 
 
+    /**
+     * Controls if the info from view are correct to request the squares into move
+     * @param messageJson       message from view in json format
+     */
     private void checkInfoFromView(String messageJson) {
         InfoRequest infoRequest = new Gson().fromJson(messageJson, InfoRequest.class);
 
@@ -53,20 +70,32 @@ public class MoveController extends Controller {
     }
 
 
+    /**
+     * Controls if the info from view are correct to do the move action
+     * @param messageJson       message from view in json format for the move action
+     */
     private void checkMoveFromView(String messageJson) {
         MoveChoiceRequest moveChoiceRequest = new Gson().fromJson(messageJson, MoveChoiceRequest.class);
 
         if(ownerPlayer.getIdPlayer() == moveChoiceRequest.getIdPlayer() && ownerPlayer.getHostname().equals(moveChoiceRequest.getHostNamePlayer())) {
             squareToMove = convertSquare(ownerPlayer, moveChoiceRequest.getCoordinates());
 
-            if((squareToMove != null) && (squaresAvailable.contains(squareToMove))) {
-                movePlayer();
+            if(squareToMove != null) {
+                if(squaresAvailable.contains(squareToMove)) {
+                    movePlayer();
+                }
+                else {
+                    String messageError = GeneralInfo.MSG_ERROR;
+                    sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(ownerPlayer));
+                }
             }
         }
     }
 
 
-
+    /**
+     * move player action
+     */
     private void movePlayer() {
         ownerPlayer.moveTo(squareToMove);
         getTurnManager().decreaseActionsLeft();
@@ -85,6 +114,11 @@ public class MoveController extends Controller {
     }
 
 
+    /**
+     * add consecutive squares not duplicated from a square
+     * @param square        square to check
+     * @return              list of consecutive squares not duplicated
+     */
     private List<Square> consecutiveSquares(Square square) {
         List<Square> squares = new ArrayList<>();
 
@@ -125,23 +159,25 @@ public class MoveController extends Controller {
                 west = true;
         }
 
-        if(!north)
+        if(!north && squareNorth!=null)
             squares.add(squareNorth);
 
-        if(!south)
+        if(!south && squareSouth!=null)
             squares.add(squareSouth);
 
-        if(!east)
+        if(!east && squareEast!=null)
             squares.add(squareEast);
 
-        if(!west)
+        if(!west && squareWest!=null)
             squares.add(squareWest);
 
         return squares;
     }
 
 
-
+    /**
+     * creates a list with all the squares the player can go with the move action
+     */
     private void getSquaresToGo(){
         Square squarePlayer = ownerPlayer.getPosition();
 
@@ -152,7 +188,7 @@ public class MoveController extends Controller {
         firstList.add(squarePlayer);
         queue.add(firstList);
 
-        for(int i = 0; i < 3; i++) {
+        for(int i = 0; i < 4; i++) {
             queueTemp = scoreListSquares(queue);
             queue.clear();
             queue = queueTemp;
@@ -170,6 +206,11 @@ public class MoveController extends Controller {
     }
 
 
+    /**
+     * from the consecutive squares of the square, check for each squares of the consecutive squares his not duplicated consecutive squares
+     * @param queue         list of consecutive squares to check
+     * @return              list of list of squares
+     */
     private List<List<Square>> scoreListSquares( List<List<Square>> queue) {
         List<List<Square>> queueNew = new ArrayList<>();
 
@@ -183,6 +224,9 @@ public class MoveController extends Controller {
     }
 
 
+    /**
+     * search into squaresAvailable some duplicated squares and remove it
+     */
     private void searchDuplicateSquare() {
         for(int i = 0; i < squaresAvailable.size(); i++) {
             for(int j = i+1; j < squaresAvailable.size()-1; j++ ) {
@@ -195,12 +239,12 @@ public class MoveController extends Controller {
     }
 
 
-
+    /**
+     * generates the message to the view with all the coordinates of the squares the player can move
+     * @return         message in json format
+     */
     private String createMoveInfoResponseJson() {
         MoveInfoResponse moveInfoResponse = new MoveInfoResponse(ownerPlayer.getIdPlayer(), coordinates);
         return new Gson().toJson(moveInfoResponse);
     }
-
-
-
 }

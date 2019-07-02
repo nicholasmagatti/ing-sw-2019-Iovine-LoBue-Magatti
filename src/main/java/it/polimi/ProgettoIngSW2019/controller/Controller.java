@@ -31,7 +31,11 @@ abstract class Controller implements Observer<Event> {
 
     /**
      * Constructor
-     * @param turnManager   access to TurnManger model
+     * @param turnManager           TurnManager
+     * @param virtualView           VirtualView
+     * @param idConverter           IdConverter
+     * @param createJson            CreateJson
+     * @param hostNameCreateList    hostNameCreateList
      */
     Controller(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList) {
         this.turnManager = turnManager;
@@ -113,7 +117,7 @@ abstract class Controller implements Observer<Event> {
         try {
             player = idConverter.getPlayerById(idPlayer);
         } catch(IllegalIdException e) {
-            String messageError = "Ops, qualcosa è andato storto!";
+            String messageError = GeneralInfo.MSG_ERROR;
             sendInfo(EventType.ERROR, messageError, Arrays.asList(hostName));
             return null;
         }
@@ -162,7 +166,7 @@ abstract class Controller implements Observer<Event> {
         try {
             powerUp = idConverter.getPowerUpCardById(player.getIdPlayer(), idPowerUp);
         } catch (IllegalIdException e) {
-            String messageError = "Ops, qualcosa è andato storto!";
+            String messageError = GeneralInfo.MSG_ERROR;
             sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return null;
         }
@@ -192,7 +196,7 @@ abstract class Controller implements Observer<Event> {
                 weaponCard = idConverter.getUnloadedWeaponById(player.getIdPlayer(), idWeapon);
             }
             catch (IllegalIdException e) {
-                String messageError = "Ops, qualcosa è andato storto!";
+                String messageError = GeneralInfo.MSG_ERROR;
                 sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
                 return null;
             }
@@ -202,7 +206,7 @@ abstract class Controller implements Observer<Event> {
                 weaponCard = idConverter.getLoadedWeaponById(player.getIdPlayer(), idWeapon);
             }
             catch (IllegalIdException e) {
-                String messageError = "Ops, qualcosa è andato storto!";
+                String messageError = GeneralInfo.MSG_ERROR;
                 sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
                 return null;
             }
@@ -212,7 +216,12 @@ abstract class Controller implements Observer<Event> {
     }
 
 
-
+    /**
+     * convert a square from his coordinates
+     * @param player            player who request
+     * @param coordinates       coordinates of the square
+     * @return                  the square converted by the coordinates
+     */
     Square convertSquare(Player player, int[] coordinates) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
@@ -221,7 +230,7 @@ abstract class Controller implements Observer<Event> {
         try {
             square = idConverter.getSquareByCoordinates(coordinates);
         } catch(NotPartOfBoardException e) {
-            String messageError = "Ops, qualcosa è andato storto!";
+            String messageError = GeneralInfo.MSG_ERROR;
             sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return null;
         }
@@ -231,22 +240,36 @@ abstract class Controller implements Observer<Event> {
 
 
 //CHECK TURN
+
+    /**
+     * Check if the hostName is equal to the hostName of the player
+     * @param player        player to check
+     * @param hostName      hostName from view
+     * @return              true if is correct, false otherwise
+     */
     boolean checkHostNameCorrect(Player player, String hostName) {
         if(player.getHostname().equals(hostName))
             return true;
         else {
-            String messageError = "ERROR: Non è il tuo turno";
+            String messageError = GeneralInfo.MSG_ERROR;
             sendInfo(EventType.ERROR, messageError, Arrays.asList(hostName));
             return false;
         }
     }
 
 
+    /**
+     * check if the id is equal to the id of the player
+     * @param player            player to check
+     * @param idPlayer          id from view
+     * @param hostName          hostName from view
+     * @return                  true if is correct, false otherwise
+     */
     boolean checkIdCorrect(Player player, int idPlayer, String hostName) {
         if(player.getIdPlayer() == idPlayer)
             return true;
         else {
-            String messageError = "ERROR: Qualcosa è andato storto";
+            String messageError = GeneralInfo.MSG_ERROR;
             sendInfo(EventType.ERROR, messageError, Arrays.asList(hostName));
             return false;
         }
@@ -265,7 +288,7 @@ abstract class Controller implements Observer<Event> {
             throw new NullPointerException("player cannot be null");
 
         if(player.getIdPlayer() != getTurnManager().getCurrentPlayer().getIdPlayer()) {
-            String messageError = "ERROR: Non è il tuo turno";
+            String messageError = GeneralInfo.MSG_ERROR;
             sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return false;
         }
@@ -282,7 +305,7 @@ abstract class Controller implements Observer<Event> {
             throw new NullPointerException("player cannot be null");
 
         if (getTurnManager().getActionsLeft() != 0) {
-            String messageError = "ERROR: Non puoi finire il turno in questo momento.";
+            String messageError = GeneralInfo.MSG_ERROR;
             sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return false;
         }
@@ -290,12 +313,17 @@ abstract class Controller implements Observer<Event> {
     }
 
 
+    /**
+     * check if the player has more then 0 action left
+     * @param player        player to check
+     * @return              true if is correct, false otherwise
+     */
     boolean checkHasActionLeft(Player player) {
         if(player == null)
             throw new NullPointerException("player cannot be null");
 
         if (getTurnManager().getActionsLeft() == 0) {
-            String messageError = "ERROR: Non hai più azioni a disposizione.";
+            String messageError = GeneralInfo.MSG_ERROR;
             sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return false;
         }
@@ -323,7 +351,7 @@ abstract class Controller implements Observer<Event> {
             if (player.getUnloadedWeapons().contains(weaponCard))
                 return true;
             else {
-                String messageError = "ERROR: Non hai questa arma: " + weaponCard.getName() + " tra le armi scariche, scegli un'altra";
+                String messageError = GeneralInfo.MSG_ERROR;
                 sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
                 return false;
             }
@@ -331,7 +359,7 @@ abstract class Controller implements Observer<Event> {
             if (player.getLoadedWeapons().contains(weaponCard))
                 return true;
             else {
-                String messageError = "ERROR: Non hai questa arma: " + weaponCard.getName() + " tra le armi cariche, scegli un'altra";
+                String messageError = GeneralInfo.MSG_ERROR;
                 sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
                 return false;
             }
@@ -352,7 +380,7 @@ abstract class Controller implements Observer<Event> {
             throw new NullPointerException("player cannot be null");
 
         if(!player.hasEnoughAmmo(ammoToPay)) {
-            String messageError = "ERROR: Non puoi pagare il costo";
+            String messageError = GeneralInfo.MSG_ERROR;
             sendInfo(EventType.ERROR, messageError, hostNameCreateList.addOneHostName(player));
             return false;
         }
@@ -361,7 +389,10 @@ abstract class Controller implements Observer<Event> {
     }
 
 
-
+    /**
+     * message to view with the actionLeft of the player and his powerUps he can use
+     * @param ownerPlayer       player to send the message
+     */
     void msgActionLeft(Player ownerPlayer) {
         List<PowerUp> powerUpsCanUse = new ArrayList<>();
 
