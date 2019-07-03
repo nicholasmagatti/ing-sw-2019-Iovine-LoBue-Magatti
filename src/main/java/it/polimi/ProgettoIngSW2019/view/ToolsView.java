@@ -33,11 +33,11 @@ public abstract class ToolsView {
     private static final char EMPTY_SPACE_CAR = ' ';
     private static final String EMPTY_LINE_INSIDE_SQUARE = "          ";
     //we call 'black squares' the ones that are null
-    private static final String BLACK_SQUARE_BORDER_EAST_WEST = "   ";
     private static final String BLACK_SQUARE_BORDER_NORTH_SOUTH = EMPTY_SPACE_CAR + EMPTY_LINE_INSIDE_SQUARE + EMPTY_SPACE_CAR;
     private static final String BLOCKED_AT_NORTH_SOUTH = "__________ ";
     private static final String DOOR_AT_NORTH_SOUTH = "___    ___ ";
     private static final String SAME_ROOM_AT_NORTH_SOUTH = ".......... ";
+    private static final String BLACK_SQUARE_BORDER_EAST_WEST = "    "; //verical
     private static final String BLOCKED_AT_EAST_WEST = "||||"; //vertical
     private static final String DOOR_AT_EAST_WEST = "|  |"; //vertical
     private static final String SAME_ROOM_AT_EAST_WEST = "...."; //vertical
@@ -362,12 +362,14 @@ public abstract class ToolsView {
                 number of rows (in other words, the same .size())
              */
             for(int squareRow=0; squareRow < mapAnsi.get(mapRow).get(0).size() ; squareRow++){
+                //for each square on the specified mapRow(mapRow is a list of squares)
                 for(List<Ansi> square: mapAnsi.get(mapRow)){
                     AnsiConsole.out.print(square.get(squareRow));
-                    /*at the last of the square row, at the second row of
-                        the square, print the vertical coordinate
+                    /*after the last character of the second line of the last square of
+                      each row of the map, print the corresponding vertical coordinate
                      */
-                    if((mapRow == GeneralInfo.ROWS_MAP -1) && squareRow == 1){
+                    if((/*last square of the foreach*/ square.equals(mapAnsi.get(mapRow).get(mapAnsi.get(mapRow).size()-1)))
+                            && squareRow == 1){
                         //print vertical coordinate coordinate
                         System.out.print("  " + verticalCoordinateForUser(mapRow));
                     }
@@ -564,7 +566,7 @@ public abstract class ToolsView {
             if(squareLM.isBlockedAtEast()){
                 rightBorder = BLOCKED_AT_EAST_WEST;
             }
-            else{ //door or not?
+            else{ //door or not? (check the square a right (col+1)
                 if(squareLM.getIdRoom() == mapLM[row][col+1].getIdRoom()){
                     rightBorder = SAME_ROOM_AT_EAST_WEST;
                 }
@@ -576,7 +578,7 @@ public abstract class ToolsView {
             if(squareLM.isBlockedAtSouth()){
                 bottomBorder = BLOCKED_AT_NORTH_SOUTH;
             }
-            else{
+            else{ //check the square down (row+1)
                 if(squareLM.getIdRoom() == mapLM[row+1][col].getIdRoom()){
                     bottomBorder = SAME_ROOM_AT_NORTH_SOUTH;
                 }
@@ -657,12 +659,11 @@ public abstract class ToolsView {
         else{ //if it is not empty
             //first line: players on the square
             bodyLines[0] = playersToDrawOnSquare(squareLM);
+            //second line: nothing (empty space)
             bodyLines[1] = EMPTY_LINE_INSIDE_SQUARE;
             //third and fourth lines:
             String [] otherInfoSquare;
             if(squareLM.getSquareType() == SquareType.AMMO_POINT){
-                System.out.println(squareLM.getIdRoom() + " " + squareLM.getPlayers()
-                + " " + squareLM.getSquareType());
                 otherInfoSquare = specificInfoAmmoPointToDraw((AmmoPointLM) squareLM);
                 bodyLines[2] = otherInfoSquare[0];
                 bodyLines[3] = otherInfoSquare[1];

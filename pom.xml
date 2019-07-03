@@ -75,7 +75,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>it.polimi.se2019.App</mainClass>
+              <mainClass>it.polimi.ProgettoIngSW2019.MainClass</mainClass>
             </manifest>
           </archive>
         </configuration>
