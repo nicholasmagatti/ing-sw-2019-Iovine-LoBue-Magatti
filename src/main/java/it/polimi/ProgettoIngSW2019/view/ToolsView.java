@@ -33,7 +33,7 @@ public abstract class ToolsView {
     private static final char EMPTY_SPACE_CAR = ' ';
     private static final String EMPTY_LINE_INSIDE_SQUARE = "          ";
     //we call 'black squares' the ones that are null
-    private static final String BLACK_SQUARE_BORDER_NORTH_SOUTH = EMPTY_SPACE_CAR + EMPTY_LINE_INSIDE_SQUARE + EMPTY_SPACE_CAR;
+    private static final String BLACK_SQUARE_BORDER_NORTH_SOUTH = EMPTY_SPACE_CAR + EMPTY_LINE_INSIDE_SQUARE;
     private static final String BLOCKED_AT_NORTH_SOUTH = "__________ ";
     private static final String DOOR_AT_NORTH_SOUTH = "___    ___ ";
     private static final String SAME_ROOM_AT_NORTH_SOUTH = ".......... ";

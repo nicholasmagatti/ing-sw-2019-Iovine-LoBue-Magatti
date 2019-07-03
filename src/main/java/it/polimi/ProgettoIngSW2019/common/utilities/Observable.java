@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.common.utilities;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class Observable <T>{
@@ -13,9 +14,10 @@ public abstract class Observable <T>{
     }
 
     protected void notify(T message){
-
-        for(Observer<T> observer : observers){
-            observer.update(message);
+        Iterator<Observer<T>> it = observers.iterator();
+        while(it.hasNext()){
+            Observer<T> obs = it.next();
+            obs.update(message);
         }
     }
 

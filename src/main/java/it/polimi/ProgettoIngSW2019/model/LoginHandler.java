@@ -23,7 +23,7 @@ public class LoginHandler extends Observable<Event> {
     private boolean gameStarted = false;
     private int nrOfPlayerConnected = 0;
     private final int timeForPing = 100;
-    private final int timeBeforeStartingGame = 15000;
+    private final int timeBeforeStartingGame = 7000;
     private boolean timerStarted = false;
     private Iterator<Map.Entry<String, Session>> entryIterator;
 

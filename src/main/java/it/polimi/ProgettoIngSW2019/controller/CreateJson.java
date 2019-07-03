@@ -1,10 +1,12 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+import it.polimi.ProgettoIngSW2019.common.utilities.TypeAdapterSquareLM;
 import it.polimi.ProgettoIngSW2019.custom_exception.IllegalAttributeException;
 import it.polimi.ProgettoIngSW2019.model.*;
 
@@ -294,7 +296,12 @@ public class CreateJson {
      * @return mapLM json
      */
     String createMapLMJson() {
-        return new Gson().toJson(createMapLM());
+        MapLM map = createMapLM();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(SquareLM.class, new TypeAdapterSquareLM())
+                .create();
+
+        return gson.toJson(map, map.getClass());
     }
 
 

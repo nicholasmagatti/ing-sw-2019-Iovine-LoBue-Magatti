@@ -321,8 +321,10 @@ public class InfoOnView implements Observer<Event> {
 
         for(SquareLM[] rowMap : mapLM){
             for(SquareLM square : rowMap){
-                if(square.getSquareType() == SquareType.SPAWNING_POINT){
-                    spawnPoints[square.getIdRoom()] = (SpawnPointLM)square;
+                if(square != null) {
+                    if (square.getSquareType() == SquareType.SPAWNING_POINT) {
+                        spawnPoints[square.getIdRoom()] = (SpawnPointLM) square;
+                    }
                 }
             }
         }

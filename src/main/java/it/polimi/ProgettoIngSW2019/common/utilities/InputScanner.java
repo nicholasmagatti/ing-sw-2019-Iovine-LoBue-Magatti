@@ -18,7 +18,6 @@ public class InputScanner extends Observable<Event>{
     public InputScanner(){
         timeExpired = false;
         keepTimerAlive = false;
-        inputThread = new Thread(new UserInputRunnable());
         isr = new InputStreamReader(System.in);
         br = new BufferedReader(isr);
     }
@@ -68,6 +67,7 @@ public class InputScanner extends Observable<Event>{
                 notify(new Event(EventType.START_ACTION_TIMER, ""));
                 keepTimerAlive = true;
             }
+            inputThread = new Thread(new UserInputRunnable());
             inputThread.start();
             inputThread.join();
         }catch(InterruptedException e){

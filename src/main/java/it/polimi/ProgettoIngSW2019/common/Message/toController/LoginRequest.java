@@ -1,9 +1,9 @@
 package it.polimi.ProgettoIngSW2019.common.Message.toController;
 
 public class LoginRequest {
-    String username;
-    String password;
-    String hostname;
+    private String username;
+    private String password;
+    private String hostname;
 
     public LoginRequest(String username, String password, String hostname){
         this.username = username;

@@ -81,8 +81,11 @@ public class TypeAdapterSquareLM extends TypeAdapter<SquareLM>{
                 switch (jsonReader.nextName()) {
                     case "players":
                         jsonReader.beginArray();
-                        while (jsonReader.hasNext())
-                            players.add(jsonReader.nextInt());
+                        if(jsonReader.hasNext()) {
+                            while (jsonReader.hasNext())
+                                players.add(jsonReader.nextInt());
+                        }else
+                            players = new ArrayList<>();
                         jsonReader.endArray();
                         break;
                     case "blockedAtNorth":

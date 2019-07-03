@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.LoginRequest;
@@ -8,6 +9,7 @@ import it.polimi.ProgettoIngSW2019.common.Message.toController.SetupRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
+import it.polimi.ProgettoIngSW2019.common.utilities.TypeAdapterSquareLM;
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
@@ -57,6 +59,7 @@ public class SetupController implements Observer<Event> {
     //NOT TO BE TESTED
     private void setModel(SetupRequest setup){
         gt = new GameTable(maps.getMaps()[setup.getMapChosen()], setup.getNrOfSkullChosen());
+        gt.setPlayersBeforeStart(loginHandler.getSessions());
         turnManager = new TurnManager(gt);
         loginHandler.setTurnManager(turnManager);
         gt.setPlayersBeforeStart(loginHandler.getSessions());
@@ -181,9 +184,10 @@ public class SetupController implements Observer<Event> {
      */
     //NOT TO BE TESTED
     private String serialize(Object objToSerialize){
-        Gson gsonReader = new Gson();
-        String serializedObj = gsonReader.toJson(objToSerialize, objToSerialize.getClass());
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(SquareLM.class, new TypeAdapterSquareLM())
+                .create();
 
-        return serializedObj;
+        return gson.toJson(objToSerialize, objToSerialize.getClass());
     }
 }

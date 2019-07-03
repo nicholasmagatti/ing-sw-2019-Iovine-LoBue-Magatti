@@ -249,7 +249,7 @@ public class DeckFactory {
      */
     private JsonObject prepareFile(String nameJsonFile){
         FileReader descPwUpsF;
-        String pathInProj = "\\resources\\json\\descritpions\\";
+        String pathInProj = "\\resources\\json\\weaponeff\\";
         String pathPowerUps = new File("").getAbsolutePath() + pathInProj + nameJsonFile + ".json";
         BufferedReader brPwUp = null;
         try {
@@ -276,7 +276,7 @@ public class DeckFactory {
      * @author Nicholas Magatti
      */
     private String getDescription(String name){
-        if(jsonObject != null){
+        if(jsonObject == null){
             throw new NullPointerException("this method should not have been called if the json object is null.");
         }
         return gson.fromJson(jsonObject.get(name), String.class);

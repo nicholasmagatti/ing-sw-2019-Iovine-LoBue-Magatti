@@ -1,12 +1,15 @@
 package it.polimi.ProgettoIngSW2019.view;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.MapLM;
+import it.polimi.ProgettoIngSW2019.common.LightModel.SquareLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.SetupRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupResponse;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
+import it.polimi.ProgettoIngSW2019.common.utilities.TypeAdapterSquareLM;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +90,10 @@ public class SetupGameState extends State {
 
         if(command == EventType.RESPONSE_GAME_DATA ||
                 command == EventType.RESPONSE_SETUP){
-            SetupResponse setupResponse = new Gson().fromJson(jsonMessage, SetupResponse.class);
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(SquareLM.class, new TypeAdapterSquareLM())
+                    .create();
+            SetupResponse setupResponse = gson.fromJson(jsonMessage, SetupResponse.class);
             createLocalLightModelAndStart(setupResponse);
         }
 
