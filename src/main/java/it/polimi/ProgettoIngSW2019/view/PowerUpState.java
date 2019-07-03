@@ -21,6 +21,7 @@ import java.util.List;
 public class PowerUpState extends State {
     private IdleState idleState;
     private ShootPowerUpInfo shootPowerUpInfo = null;
+    private int idPowerUp = -1;
 
     public PowerUpState(IdleState idleState){
         this.idleState = idleState;
@@ -40,7 +41,7 @@ public class PowerUpState extends State {
          */
         PowerUpLM chosenPwUp = choosePowerup(usablePowerups);
         if(chosenPwUp != null) { //timer not expired
-            int idPowerUp = chosenPwUp.getIdPowerUp();
+            idPowerUp = chosenPwUp.getIdPowerUp();
             //if NEWTON or TELEPORTER
             if (forBeforeOrAfterAction(usablePowerups)) {
 
@@ -52,10 +53,10 @@ public class PowerUpState extends State {
                                 usablePowerups.remove(pw);
                             }
                         }
-                        newtonInfoRequest(idPowerUp);
+                        newtonInfoRequest();
                         break;
                     case GeneralInfo.TELEPORTER:
-                        teleporter(idPowerUp);
+                        teleporter();
                         break;
                     default:
                         throw new Error("The chosen weapon has the wrong name: " + chosenPwUp.getName());
@@ -64,11 +65,11 @@ public class PowerUpState extends State {
             }
             else{//if GRENADE or TARGETING SCOPE
                 if (everyPowerupNameIs(usablePowerups, GeneralInfo.TAGBACK_GRENADE)) {
-                    grenade(idPowerUp);
+                    grenade();
                 }
                 else{
                     if (everyPowerupNameIs(usablePowerups, GeneralInfo.TARGETING_SCOPE)) {
-                        targetingScope(idPowerUp);
+                        targetingScope();
                     }
                     else{
                         throw new Error("Something went wrong.");
@@ -102,7 +103,8 @@ public class PowerUpState extends State {
             shootPowerUpInfo = new ShootPowerUpInfo(
                     shootPowerUpInfo.getPowerUpUsableList(), newtonInfoResponse.getEnemyInfoMovement(),
                     shootPowerUpInfo.getPowerUpAsPayment(), shootPowerUpInfo.getAmmoAsPayment());
-            newton(shootPowerUpInfo.getPowerUpUsableList().get(0).getIdPowerUp());
+                    idPowerUp = shootPowerUpInfo.getPowerUpUsableList().get(0).getIdPowerUp();
+            newton();
         }
 
         //reset inf in shootPowerUpInfo after the use of a powerup by THIS user has worked successfully
@@ -246,22 +248,20 @@ public class PowerUpState extends State {
 
     /**
      * Indicate the specific card to use and send this info to the server
-     * @param idPowerUp
      */
-    private void newtonInfoRequest(int idPowerUp){
+    private void newtonInfoRequest(){
         //set id
         //notify server
         PowerUpChoiceRequest powerUpChoiceRequest =
                 new PowerUpChoiceRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), idPowerUp);
-        notifyEvent(powerUpChoiceRequest, EventType.RESPONSE_NEWTON_INFO);
+        notifyEvent(powerUpChoiceRequest, EventType.REQUEST_NEWTON_INFO);
     }
 
     /**
      *  Ask the user to set what is necessary for the user of the Newton powerup and
      *  if the timer does not expire first, send the choice to the server
-     * @param idPowerUp
      */
-    private void newton(int idPowerUp){
+    private void newton(){
         Integer idTarget = ToolsView.readTargetChoice(shootPowerUpInfo.getEnemy());
         if(idTarget != null){//time not expired
             System.out.println("Where do you want to move the target?");
@@ -276,7 +276,7 @@ public class PowerUpState extends State {
             if(chosenDestination != null){
                 //notify server
                 NewtonRequest newtonRequest = new NewtonRequest(InfoOnView.getHostname(),
-                        InfoOnView.getMyId(), idTarget, chosenDestination);
+                        InfoOnView.getMyId(), idPowerUp,idTarget, chosenDestination);
                 notifyEvent(newtonRequest, EventType.NEWTON);
             }
             else{//reset shootPowerUpInfo (time expired)
@@ -291,9 +291,8 @@ public class PowerUpState extends State {
     /**
      *  Ask the user to set what is necessary for the user of the Teleporter and
      *  if the timer does not expire first, send the choice to the server
-     * @param idPowerUp
      */
-    private void teleporter(int idPowerUp){
+    private void teleporter(){
         System.out.println("Where do you want to teleport yourself?");
         int[] chosenDestination = ToolsView.chooseDestination(InfoOnView.allNonNullSquarePositions());
         if(chosenDestination != null){ //time not expired
@@ -310,9 +309,8 @@ public class PowerUpState extends State {
     /**
      *  Ask the user to set what is necessary for the user of the tagback grenade and
      *  if the timer does not expire first, send the choice to the server
-     * @param idPowerUp
      */
-    private void grenade(int idPowerUp){
+    private void grenade(){
         Integer idTarget = ToolsView.readTargetChoice(shootPowerUpInfo.getEnemy());
         if(idTarget != null){ //time not expired
             //send choice to server
@@ -329,9 +327,8 @@ public class PowerUpState extends State {
     /**
      *  Ask the user to set what is necessary for the user of the Targeting Scope and
      *  if the timer does not expire first, send the choice to the server
-     * @param idPowerUp
      */
-    private void targetingScope(int idPowerUp){
+    private void targetingScope(){
 
         AmmoType ammoToSpend = null; //it will be inserted if an ammo unit is chosen to pay
         int idPowerUpToSpend = -1; //it will be inserted if a powerup is chosen to pay

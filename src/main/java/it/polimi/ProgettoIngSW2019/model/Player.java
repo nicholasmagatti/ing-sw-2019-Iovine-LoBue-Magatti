@@ -389,7 +389,8 @@ public class Player{
      */
     public void discardPowerUps(List<PowerUp> powerUps){
         for(PowerUp element: powerUps){
-            powerUps.remove(element);
+            this.powerUps.remove(element);
+            gameTable.getPowerUpDiscarded().add(element);
         }
     }
 

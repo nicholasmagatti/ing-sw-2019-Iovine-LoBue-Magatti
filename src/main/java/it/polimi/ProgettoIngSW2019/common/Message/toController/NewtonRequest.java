@@ -16,8 +16,8 @@ public class NewtonRequest extends PowerUpChoiceRequest {
      * @param idTarget          id of the target player
      * @param coordinates       coordinates to move the player target
      */
-    public NewtonRequest(String hostName, int idPlayer, int idTarget, int[] coordinates) {
-        super(hostName, idPlayer, idTarget);
+    public NewtonRequest(String hostName, int idPlayer, int idPowerUp, int idTarget, int[] coordinates) {
+        super(hostName, idPlayer, idPowerUp);
         this.coordinatesMovement = coordinates;
         this.idTarget = idTarget;
     }

@@ -45,6 +45,7 @@ public class PayAmmoController {
      * @param ammoCost          ammo cost of the payment
      * @return                  the object with all the info
      */
+    //tested
     public PayAmmoList ammoToPay(Player player, WeaponCard weaponCard, List<AmmoType> ammoCost) {
         if(player == null)
             throw new NullPointerException("Player cannot be null");
@@ -205,6 +206,7 @@ public class PayAmmoController {
      * @param ammoToPay     ammo from ammo box to pay
      * @return              true if it is all correct
      */
+    //tested
     public boolean checkAmmoToPayFromView(List<AmmoType> ammoCost, List<PowerUp> powerUps, int[] ammoToPay) {
         if(ammoCost == null)
             throw new NullPointerException("ammo To Spend cannot be null");
