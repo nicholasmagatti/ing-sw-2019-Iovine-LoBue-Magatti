@@ -615,4 +615,51 @@ public class TestTurnManager {
         }
     }
 
+    @Test
+    public void testResetDecksIfNecessary(){
+        Deck ammoDeck, pwUpDeck;
+        ammoDeck = gameTable.getAmmoDeck();
+        pwUpDeck = gameTable.getPowerUpDeck();
+        List<AmmoCard> ammoCardsDiscarded = gameTable.getAmmoDiscarded();
+        List<PowerUp> pwUpsDiscarded = gameTable.getPowerUpDiscarded();
+
+        int nrAmmoCardsBefore = ammoDeck.getCards().size();
+        int nrPwUpsBefore = pwUpDeck.getCards().size();
+
+        //discard all the cards from the ammo deck
+        while(!ammoDeck.getCards().isEmpty()){
+            AmmoCard card = (AmmoCard) ammoDeck.getCards().get(0);
+            ammoCardsDiscarded.add(card);
+            ammoDeck.getCards().remove(card);
+        }
+        //discard some cards from the powerup deck but not all
+        for(int i=0; i < 3; i++){
+            PowerUp card = (PowerUp) pwUpDeck.getCards().get(0);
+            pwUpsDiscarded.add(card);
+            pwUpDeck.getCards().remove(card);
+        }
+        //the ammo deck should be reset but not the powerup deck
+        turnManager.resetDecksIfNecessary();
+        assertEquals(nrAmmoCardsBefore, ammoDeck.getCards().size());
+        assertEquals(nrPwUpsBefore - 3, pwUpDeck.getCards().size());
+
+
+        //then reset powerup deck and verify
+        while(!pwUpDeck.getCards().isEmpty()){
+            PowerUp card = (PowerUp) pwUpDeck.getCards().get(0);
+            pwUpsDiscarded.add(card);
+            pwUpDeck.getCards().remove(card);
+        }
+
+        AmmoCard card = (AmmoCard) ammoDeck.getCards().get(0);
+        ammoCardsDiscarded.add(card);
+        ammoDeck.getCards().remove(card);
+
+        turnManager.resetDecksIfNecessary();
+
+        assertEquals(nrAmmoCardsBefore - 1, ammoDeck.getCards().size());
+        assertEquals(nrPwUpsBefore , pwUpDeck.getCards().size());
+
+    }
+
 }

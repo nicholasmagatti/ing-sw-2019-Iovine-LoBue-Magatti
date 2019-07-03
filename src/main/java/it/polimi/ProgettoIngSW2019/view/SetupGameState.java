@@ -153,7 +153,7 @@ public class SetupGameState extends State {
         System.out.println("Choose a number of skulls for the killsho track between " +
                 GeneralInfo.MIN_SKULLS + " and " + GeneralInfo.MAX_SKULLS +".");
         System.out.println("The skulls represent the number of kills to get to the end of the game.");
-        System.out.println("Number of skulls: ");
+        System.out.print("Number of skulls: ");
         List<String> allowedAnswers = new ArrayList<>();
         for(int nSkulls = GeneralInfo.MIN_SKULLS; nSkulls <= GeneralInfo.MAX_SKULLS; nSkulls++){
             allowedAnswers.add(Integer.toString(nSkulls));

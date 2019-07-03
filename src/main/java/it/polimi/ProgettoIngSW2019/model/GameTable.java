@@ -54,10 +54,11 @@ public class GameTable{
         weaponDeck = new Deck(DeckType.WEAPON_CARD, deckFactory);
         powerUpDeck = new Deck(DeckType.POWERUP_CARD, deckFactory);
         ammoDeck = new Deck(DeckType.AMMO_CARD, deckFactory);
-
         weaponDeck.shuffle();
         powerUpDeck.shuffle();
         ammoDeck.shuffle();
+
+        setCardsOnGameTable();
     }
 
     /**
@@ -240,5 +241,32 @@ public class GameTable{
      */
     void decreaseNumberOfActivePlayers(){
         activePlayers--;
+    }
+
+    /**
+     * Set the cards on the table before starting: the weapons on the
+     * spawn points and the ammo cards on the spawn points.
+     */
+    void setCardsOnGameTable(){
+        //for each square that is not null
+        for(Square[]row : map) {
+            for(Square square : row) {
+                if (square != null) {
+                    Deck respectiveDeck;
+                    switch (square.getSquareType()){
+                        case SPAWNING_POINT:
+                            respectiveDeck = weaponDeck;
+                            break;
+                        case AMMO_POINT:
+                            respectiveDeck = ammoDeck;
+                            break;
+                            default:
+                                throw new RuntimeException("This square is not a spawn point or a ammo point but not even null. This should never happened.");
+                    }
+                    square.reset(respectiveDeck);
+
+                }
+            }
+        }
     }
 }

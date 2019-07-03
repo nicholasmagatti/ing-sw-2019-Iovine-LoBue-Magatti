@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.view;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
@@ -8,6 +9,7 @@ import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
+import it.polimi.ProgettoIngSW2019.common.utilities.TypeAdapterSquareLM;
 import it.polimi.ProgettoIngSW2019.model.KillToken;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
@@ -242,13 +244,13 @@ public class InfoOnView implements Observer<Event> {
      * @param player
      */
     private static void printPublicInfoOnPlayer(PlayerDataLM player){
-        char markerPlayer;
+        String markerPlayer;
         String activeOrNot;
         if(player.getDown()){
-            markerPlayer = 'p';
+            markerPlayer = "p";
         }
         else{
-            markerPlayer = 'P';
+            markerPlayer = "P";
         }
         if(player.getActive()){
             activeOrNot = "active";
@@ -283,17 +285,20 @@ public class InfoOnView implements Observer<Event> {
         System.out.print(";\t");
 
         System.out.print("Mark Line: ");
-        for(int i=0; i < player.getMarkLine().size(); i++){
-            System.out.print(player.getMarkLine().get(i));
-            if(i < player.getMarkLine().size()-1){
-                System.out.print(", ");
+        if(!printSignEmptyIfEmpty(player.getMarkLine()))
+            for(int i=0; i < player.getMarkLine().size(); i++){
+                System.out.print(player.getMarkLine().get(i));
+                if(i < player.getMarkLine().size()-1){
+                    System.out.print(", ");
+                }
             }
-        }
         System.out.print("\n");
-        System.out.print("Powerups: " + player.getnPowerUps() + "\t");
-        System.out.print("Loaded weapons: " + player.getnMyLoadedWeapons() + "\t");
+        System.out.print("Powerups: ");
+        System.out.print(player.getnPowerUps() + ",\t");
+        System.out.print("Loaded weapons: " + player.getnMyLoadedWeapons() + ",\t");
         System.out.print("Unloaded weapons: ");
-        ToolsView.printListOfWeapons(player.getUnloadedWeapons());
+        if(!printSignEmptyIfEmpty(player.getUnloadedWeapons()))
+            ToolsView.printListOfWeapons(player.getUnloadedWeapons());
         System.out.print("\n");
     }
 
@@ -302,11 +307,27 @@ public class InfoOnView implements Observer<Event> {
      */
     private static void printMyPowerupsAndLoadedWeapons(){
         System.out.print("Powerups: ");
-        ToolsView.printListOfPowerups(myPowerUps.getPowerUps());
-        System.out.print("\t");
+        if(!printSignEmptyIfEmpty(myPowerUps.getPowerUps()))
+            ToolsView.printListOfPowerups(myPowerUps.getPowerUps());
+        System.out.print(",\t");
         System.out.print("Loaded weapons: ");
-        ToolsView.printListOfWeapons(myLoadedWeapons.getLoadedWeapons());
+        if(!printSignEmptyIfEmpty(myLoadedWeapons.getLoadedWeapons()))
+            ToolsView.printListOfWeapons(myLoadedWeapons.getLoadedWeapons());
         System.out.print("\n");
+    }
+
+    /**
+     * Print the sign "- "  and return true if the received list is empty, return false otherwise.
+     * @param list
+     * @return true if the given list is empty, return false otherwise.
+     */
+    private static boolean printSignEmptyIfEmpty(List list){
+        if(list.isEmpty()){
+            System.out.print("- ");
+            return true;
+        }
+        else
+            return false;
     }
 
     /**
@@ -321,10 +342,9 @@ public class InfoOnView implements Observer<Event> {
 
         for(SquareLM[] rowMap : mapLM){
             for(SquareLM square : rowMap){
-                if(square != null) {
-                    if (square.getSquareType() == SquareType.SPAWNING_POINT) {
-                        spawnPoints[square.getIdRoom()] = (SpawnPointLM) square;
-                    }
+                if(square != null && square.getSquareType() == SquareType.SPAWNING_POINT) {
+                    spawnPoints[square.getIdRoom()] = (SpawnPointLM) square;
+
                 }
             }
         }
@@ -341,7 +361,10 @@ public class InfoOnView implements Observer<Event> {
         String jsonMessage = event.getMessageInJsonFormat();
 
         if(command == EventType.UPDATE_MAP){
-            map = new Gson().fromJson(jsonMessage, MapLM.class);
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(SquareLM.class, new TypeAdapterSquareLM())
+                    .create();
+            map = gson.fromJson(jsonMessage, MapLM.class);
         }
 
         if(command == EventType.UPDATE_KILLSHOTTRACK){

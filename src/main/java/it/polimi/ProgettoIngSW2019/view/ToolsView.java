@@ -297,6 +297,7 @@ public abstract class ToolsView {
         }
     }
 
+
     /**
      *  Ask the user to choose between the possible destinations and return the chosen option if
      *  the timer has not expired, null otherwise.
@@ -310,12 +311,7 @@ public abstract class ToolsView {
             int optionNr = i + 1;
             options.add(Integer.toString(optionNr));
             System.out.print(optionNr + ": ");
-
-            char [] cordForUser = coordinatesForUser(possibleDestinations.get(i));
-
-            for(char c : cordForUser){
-                System.out.print(c);
-            }
+            printCoordinatesForUser(possibleDestinations.get(i));
             System.out.print("\n");
 
         }
@@ -327,6 +323,24 @@ public abstract class ToolsView {
         }
         else{
             return null;
+        }
+    }
+
+    /**
+     * Print coordinates for user from the coordinates [row][col] starting from 0 used by developers
+     * @param coordinatesForDevelopers - array of dimension 2 that represents coordinates [row][col] starting from 0 used by developers
+     */
+    static void printCoordinatesForUser(int[] coordinatesForDevelopers){
+        printCoordinatesForUser(coordinatesForUser(coordinatesForDevelopers));
+    }
+
+    /**
+     * Print coordinates for user
+     * @param coordinatesForUser
+     */
+    static void printCoordinatesForUser(char[] coordinatesForUser){
+        for(char c : coordinatesForUser){
+            System.out.print(c);
         }
     }
 
@@ -691,12 +705,12 @@ public abstract class ToolsView {
         String stringToReturn = "";
         for(int idPlayer : squareLM.getPlayers()){
             //'P' if the player is up, 'p' if the player is down
-            char markerPlayer;
+            String markerPlayer;
             if(InfoOnView.getPlayers()[idPlayer].getDown()){
-                markerPlayer = 'p';
+                markerPlayer = "p";
             }
             else{
-                markerPlayer = 'P';
+                markerPlayer = "P";
             }
             //eg: the player with id 0 is the player 1
             stringToReturn += markerPlayer + (idPlayer + 1);

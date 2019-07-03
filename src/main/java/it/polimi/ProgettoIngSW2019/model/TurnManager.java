@@ -361,15 +361,20 @@ public class TurnManager{
      * respective deck of discarded cards.
      */
     public void resetDecksIfNecessary(){
-        if(gameTable.getPowerUpDeck().getCards().isEmpty()){
-            gameTable.getPowerUpDeck().getCards().addAll(gameTable.getPowerUpDiscarded());
-            gameTable.getPowerUpDeck().shuffle();
-            gameTable.getPowerUpDiscarded().clear();
-        }
-        if(gameTable.getAmmoDeck().getCards().isEmpty()){
-            gameTable.getAmmoDeck().getCards().addAll(gameTable.getAmmoDiscarded());
-            gameTable.getAmmoDeck().shuffle();
-            gameTable.getAmmoDiscarded().clear();
+        resetDeckIfNecessary(getGameTable().getAmmoDeck(), getGameTable().getAmmoDiscarded());
+        resetDeckIfNecessary(getGameTable().getPowerUpDeck(), getGameTable().getPowerUpDiscarded());
+    }
+
+    /**
+     * If the given deck is empty, rest it shuffling its discarded cards.
+     * @param deck
+     * @param discardedCards
+     */
+    private void resetDeckIfNecessary(Deck deck, List discardedCards){
+        if(deck.getCards().isEmpty()){
+            deck.getCards().addAll(discardedCards);
+            deck.shuffle();
+            discardedCards.clear();
         }
     }
 }
