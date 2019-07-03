@@ -55,12 +55,14 @@ public class MainClass {
                 SetupGameState setupGameState = new SetupGameState(spawnState, idleState);
                 LoginState loginState = new LoginState(setupGameState, idleState);
                 GeneralMessageObserver generalMessageObserver = new GeneralMessageObserver();
+                InfoOnView infoOnView = new InfoOnView();
 
                 idleState.linkState(actionState, spawnState);
                 actionState.linkToMoveGrabShoot(moveState, grabState, shootState);
 
                 NetworkHandler networkHandler = new NetworkHandler(virtualView);
 
+                networkHandler.addObserver(infoOnView);
                 networkHandler.addObserver(idleState);
                 networkHandler.addObserver(reloadState);
                 networkHandler.addObserver(powerUpState);

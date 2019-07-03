@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GrabState extends State{
-    Gson gsonReader;
+    Gson gsonReader = new Gson();
     ActionState actionState;
     StringBuilder sb;
     String msg;
@@ -76,7 +76,7 @@ public class GrabState extends State{
 
         for(i = 0; i < grabInfo.getCoordinatesSquareToGrab().size(); i++){
             possibleChoice.add(Integer.toString(i+1));
-            msg = (i+1) + ": " + ToolsView.coordinatesForUser(grabInfo.getCoordinatesSquareToGrab().get(i)) + "\n";
+            msg = (i+1) + ": " + ToolsView.coordinatesForUser(grabInfo.getCoordinatesSquareToGrab().get(i))[0] + ToolsView.coordinatesForUser(grabInfo.getCoordinatesSquareToGrab().get(i))[1]  + "\n";
             sb.append(msg);
         }
 

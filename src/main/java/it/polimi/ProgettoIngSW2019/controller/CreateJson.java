@@ -248,15 +248,15 @@ public class CreateJson {
     MapLM createMapLM() {
         Square[][] map = turnManager.getGameTable().getMap();
         SquareLM[][] mapLM = new SquareLM[GeneralInfo.ROWS_MAP][GeneralInfo.COLUMNS_MAP];
-        List<Integer> idPlayers = new ArrayList<>();
+        List<Integer> idPlayers;
 
 
         for(int i = 0; i < map.length; i++) {
             for(int j = 0; j < map[i].length; j++) {
 
                 if(map[i][j] != null) {
+                    idPlayers = new ArrayList<>();
                     for(Player player: map[i][j].getPlayerOnSquare()) {
-                        idPlayers.clear();
                         idPlayers.add(player.getIdPlayer());
                     }
 

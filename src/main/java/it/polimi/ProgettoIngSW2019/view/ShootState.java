@@ -59,6 +59,11 @@ public class ShootState extends State {
             msg = "You have no valid weapon to hit any enemy.\n" +
                     "You will sent back to the selection of the action.";
             System.out.println(msg);
+            try {
+                Thread.sleep(3000);
+            }catch(InterruptedException e){
+                e.printStackTrace();
+            }
             actionState.startState();
         }else
             askWhichWeapon(weaponInfoList);

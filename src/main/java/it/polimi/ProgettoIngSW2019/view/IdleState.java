@@ -37,7 +37,7 @@ public class IdleState extends State{
     @Override
     public void update(Event event) {
         EventType command = event.getCommand();
-        if(event.getCommand().equals(EventType.MSG_MY_N_ACTION_LEFT) && StateManager.getCurrentState().equals(this)) {
+        if(event.getCommand().equals(EventType.MSG_MY_N_ACTION_LEFT) && (StateManager.getCurrentState().equals(this) || StateManager.getCurrentState().equals(spawnState))) {
             actionState.setInfoStart(new Gson().fromJson(event.getMessageInJsonFormat(), MessageActionLeft.class));
             startAction = true;
         }

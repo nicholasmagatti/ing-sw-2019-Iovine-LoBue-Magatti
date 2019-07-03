@@ -2,6 +2,7 @@ package it.polimi.ProgettoIngSW2019.common.utilities;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
@@ -47,7 +48,7 @@ public class TypeAdapterSquareLM extends TypeAdapter<SquareLM>{
                 jsonWriter.name("blockedAtSouth").value(spwanPointLM.isBlockedAtSouth());
                 jsonWriter.name("blockedAtWest").value(spwanPointLM.isBlockedAtWest());
                 jsonWriter.name("idRoom").value(spwanPointLM.getIdRoom());
-                jsonWriter.name("weapons").value(new Gson().toJson(spwanPointLM.getWeapons()));
+                jsonWriter.name("weapons").value(new Gson().toJson(spwanPointLM.getWeapons(), new TypeToken<List<WeaponLM>>(){}.getType()));
                 jsonWriter.endObject();
                 jsonWriter.endObject();
             }
@@ -107,7 +108,7 @@ public class TypeAdapterSquareLM extends TypeAdapter<SquareLM>{
                         ammoCardLM = new Gson().fromJson(jsonReader.nextString(), AmmoCardLM.class);
                         break;
                     case "weapons":
-                        weaponLMList = new Gson().fromJson(jsonReader.nextString(), List.class);
+                        weaponLMList = new Gson().fromJson(jsonReader.nextString(), new TypeToken<List<WeaponLM>>(){}.getType());
                         break;
                 }
             }

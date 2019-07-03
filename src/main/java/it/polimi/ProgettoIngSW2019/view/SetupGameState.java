@@ -109,7 +109,7 @@ public class SetupGameState extends State {
         inputFromUser = chooseMap();
 
         if(inputFromUser != null){ //time not expired
-            map = Integer.parseInt(inputFromUser);
+            map = Integer.parseInt(inputFromUser) - 1;
 
             inputFromUser = chooseNrSkulls();
 

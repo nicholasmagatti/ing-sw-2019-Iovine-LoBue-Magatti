@@ -67,7 +67,7 @@ public class SpawnState extends State{
         }
 
         //if first spawn is true, after your successful spawn, reset firstSpawn to false
-        if(firstSpawn || command == EventType.MSG_POWERUP_DISCARDED_TO_SPAWN){
+        if(firstSpawn && command == EventType.MSG_POWERUP_DISCARDED_TO_SPAWN){
             MessagePowerUpsDiscarded messagePowerUpsDiscarded = new Gson().fromJson(jsonMessage, MessagePowerUpsDiscarded.class);
             int idPlayerJustSpawned = messagePowerUpsDiscarded.getIdPlayer();
             if(idPlayerJustSpawned == InfoOnView.getMyId()){
@@ -100,7 +100,12 @@ public class SpawnState extends State{
             int idPowerup = powerUps.get(Integer.parseInt(userInput) - 1).getIdPowerUp();
             SpawnChoiceRequest spawnChoiceRequest =
                     new SpawnChoiceRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), idPowerup);
-            notifyEvent(spawnChoiceRequest, EventType.REQUEST_SPAWN);
+            if(firstSpawn) {
+                notifyEvent(spawnChoiceRequest, EventType.REQUEST_INITIAL_SPAWN);
+                firstSpawn = false;
+            }
+            else
+                notifyEvent(spawnChoiceRequest, EventType.REQUEST_SPAWN);
         }
         else{//timer expired
             firstSpawn = false; //reset firstSpawn to false (in case it was true)

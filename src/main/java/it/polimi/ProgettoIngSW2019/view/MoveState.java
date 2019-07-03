@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MoveState extends State{
-    Gson gsonReader;
+    Gson gsonReader = new Gson();
     ActionState actionState;
     StringBuilder sb;
     String msg;
@@ -54,7 +54,7 @@ public class MoveState extends State{
 
         for(i = 0; i < movementList.size(); i++){
             possibleChoice.add(Integer.toString(i+1));
-            msg = (i+1) + ": " + ToolsView.coordinatesForUser(movementList.get(i)) + "\n";
+            msg = (i+1) + ": " + ToolsView.coordinatesForUser(movementList.get(i))[0] + ToolsView.coordinatesForUser(movementList.get(i))[1] + "\n";
             sb.append(msg);
         }
 
