@@ -1,5 +1,6 @@
 package it.polimi.ProgettoIngSW2019;
 
+import it.polimi.ProgettoIngSW2019.common.utilities.InputScanner;
 import it.polimi.ProgettoIngSW2019.controller.ConnectionController;
 import it.polimi.ProgettoIngSW2019.controller.SetupController;
 import it.polimi.ProgettoIngSW2019.model.GameTable;
@@ -9,6 +10,7 @@ import it.polimi.ProgettoIngSW2019.view.*;
 import it.polimi.ProgettoIngSW2019.virtual_view.IVirtualView;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 
+import javax.tools.Tool;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -61,6 +63,10 @@ public class MainClass {
                 actionState.linkToMoveGrabShoot(moveState, grabState, shootState);
 
                 NetworkHandler networkHandler = new NetworkHandler(virtualView);
+
+                InputScanner inputScanner = new InputScanner();
+                inputScanner.addObserver(networkHandler);
+                ToolsView.setInputScanner(inputScanner);
 
                 networkHandler.addObserver(infoOnView);
                 networkHandler.addObserver(idleState);

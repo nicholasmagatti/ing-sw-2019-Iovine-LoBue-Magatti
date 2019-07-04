@@ -78,11 +78,15 @@ public class VirtualView extends Observable<Event> implements IVirtualView, Obse
      */
     //NOT TO BE TESTED
     public synchronized void sendMessage(Event event, List<String> hostnameList) {
+        String host = "";
         try {
-            for(String hostname: hostnameList)
+            for(String hostname: hostnameList) {
+                host = hostname;
                 clientMessageReceiver.get(hostname).send(event);
+            }
         } catch (RemoteException ex) {
-            //TODO: non riesce a contattare il client e lo disconnette
+            MessageConnection msg = new MessageConnection("", host);
+            notify(new Event(EventType.NOT_ALIVE, new Gson().toJson(msg)));
             ex.printStackTrace();
         }finally{
             notifyAll();
@@ -100,6 +104,7 @@ public class VirtualView extends Observable<Event> implements IVirtualView, Obse
                 notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
             }
         }
+
         if(event.getCommand().equals(EventType.INPUT_TIME_EXPIRED)){
             try {
                 clientMessageReceiver.get(msg.getHostname()).send(event);

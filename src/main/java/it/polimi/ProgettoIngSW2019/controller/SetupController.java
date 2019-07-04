@@ -38,6 +38,8 @@ public class SetupController implements Observer<Event> {
             setModel(setup);
             setController();
 
+            loginHandler.setInSetupMode(false);
+
             for(String hostname: loginHandler.getUsersHostname()) {
                 setupResponse = createSetupResponse(hostname);
                 virtualView.sendMessage(new Event(EventType.RESPONSE_SETUP, serialize(setupResponse)), Arrays.asList(hostname));
@@ -93,6 +95,7 @@ public class SetupController implements Observer<Event> {
         virtualView.addObserver(reloadController);
         virtualView.addObserver(shootController);
         virtualView.addObserver(spawnController);
+        loginHandler.addObserver(endTurnController);
     }
 
     /**

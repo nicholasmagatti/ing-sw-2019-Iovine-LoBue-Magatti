@@ -28,6 +28,7 @@ public class LoginState extends State{
 
     private SetupGameState setupGameState;
     private boolean isLocalOnly = false;
+    private boolean isReconnection = false;
 
     /**
      * Constructor
@@ -62,6 +63,12 @@ public class LoginState extends State{
             while(!succesfullLogin) {
                 askCredentials();
             }
+
+            if(isReconnection) {
+                LoginRequest msg = new LoginRequest("", "", hostname);
+                notifyEvent(msg, EventType.REQUEST_GAME_DATA);
+            }
+
 
             if(ongoingGame){
                 StateManager.triggerNextState(idleState);
@@ -109,8 +116,7 @@ public class LoginState extends State{
                 //inform the SetupGameState that this is a reconnection in an ongoing game
                 setupGameState.setInfoForReconnection(name, hostname);
                 //ask the server to send me the light model
-                LoginRequest msg = new LoginRequest("", "", hostname);
-                notifyEvent(msg, EventType.REQUEST_GAME_DATA);
+                isReconnection = true;
             }
             else{
                 System.out.println("Wrong name or password. Write them again.");

@@ -26,7 +26,7 @@ import static org.fusesource.jansi.Ansi.ansi;
  */
 public abstract class ToolsView {
 
-    private static InputScanner inputScanner = new InputScanner();
+    private static InputScanner inputScanner;
 
     //to display map in vew
     private static final int ROWS_BODY_SQUARE = 4;
@@ -58,6 +58,10 @@ public abstract class ToolsView {
     private static List<String> possibleChoice;
     private static int i;
 
+
+    public static void setInputScanner(InputScanner scanner){
+        inputScanner = scanner;
+    }
 
     /**
      * Return the input scanner of this client.
@@ -175,17 +179,17 @@ public abstract class ToolsView {
         do {
             inputScanner.read();
             inputFromUser = inputScanner.getInputValue();
-            if(allowedAnswers.contains(inputFromUser)){
-                exit = true;
-            }
-            else{
-                if(generalOptionsEnabled && isDescriptionCommand(inputFromUser)){
-                    printDescription(inputFromUser);
-                    System.out.println("Answer the previous question or read another description.");
-                    System.out.print(GeneralInfo.ASK_INPUT);
-                }
-                else {
-                    System.out.print("Illegal input. Insert correct input: ");
+            if(!inputScanner.isTimeExpired()) {
+                if (allowedAnswers.contains(inputFromUser)) {
+                    exit = true;
+                } else {
+                    if (generalOptionsEnabled && isDescriptionCommand(inputFromUser)) {
+                        printDescription(inputFromUser);
+                        System.out.println("Answer the previous question or read another description.");
+                        System.out.print(GeneralInfo.ASK_INPUT);
+                    } else {
+                        System.out.print("Illegal input. Insert correct input: ");
+                    }
                 }
             }
         }while(!exit && !inputScanner.isTimeExpired());

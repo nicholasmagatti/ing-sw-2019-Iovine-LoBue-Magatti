@@ -107,7 +107,7 @@ public class DeckFactory {
                 deck = new ArrayList<>();
 
                 //for descriptions:
-                jsonObject = prepareFile("PowerupsDescriptions");
+                jsonObject = prepareFile("PowerupsDescriptions.json");
                 final String GRAN_DESC, NEWT_DESC, TARG_DESC, TELE_DESC;
                 GRAN_DESC = getDescription(GeneralInfo.TAGBACK_GRENADE);
                 NEWT_DESC = getDescription(GeneralInfo.NEWTON);
@@ -154,7 +154,7 @@ public class DeckFactory {
 
 
             case WEAPON_CARD:
-                jsonObject = prepareFile("WeaponsDescriptions");
+                jsonObject = prepareFile("WeaponsDescriptions.json");
                 deck = new ArrayList<>();
                 final String LOCK_RIFLE = "LOCK RIFLE";
                 final String ELECTROSCYTHE = "ELECTROSCYTHE";
@@ -193,7 +193,7 @@ public class DeckFactory {
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, FLAMETHROWER, getDescription(FLAMETHROWER), Arrays.asList(AmmoType.RED), "FalmeThrowerEff.json", distanceDictionary));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, ZX_2, getDescription(ZX_2), Arrays.asList(AmmoType.YELLOW, AmmoType.RED), "ZX2Eff.json", distanceDictionary));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, GRENADE_LAUNCHER, getDescription(GRENADE_LAUNCHER), Arrays.asList(AmmoType.RED), "GrenadeLauncherEff.json", distanceDictionary));
-                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, SHOTGUN, getDescription(SHOTGUN), Arrays.asList(AmmoType.YELLOW, AmmoType.YELLOW), "ShotGunEff.json", distanceDictionary));
+                deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, SHOTGUN, getDescription(SHOTGUN), Arrays.asList(AmmoType.YELLOW, AmmoType.YELLOW), "ShotgunEff.json", distanceDictionary));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, ROCKET_LAUNCHER, getDescription(ROCKET_LAUNCHER), Arrays.asList(AmmoType.RED, AmmoType.RED), "RocketLauncherEff.json", distanceDictionary));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, POWER_GLOVE, getDescription(POWER_GLOVE), Arrays.asList(AmmoType.YELLOW, AmmoType.BLUE), "PowerGlowEff.json", distanceDictionary));
                 deck.add(new WeaponCard(idCardGenerator.generateId(), DeckType.WEAPON_CARD, RAILGUN, getDescription(RAILGUN), Arrays.asList(AmmoType.YELLOW, AmmoType.YELLOW, AmmoType.BLUE), "RailGunEff.json", distanceDictionary));
@@ -248,21 +248,8 @@ public class DeckFactory {
      * @author Nicholas Magatti
      */
     private JsonObject prepareFile(String nameJsonFile){
-        FileReader descPwUpsF;
-        String pathInProj = "\\resources\\json\\weaponeff\\";
-        String pathPowerUps = new File("").getAbsolutePath() + pathInProj + nameJsonFile + ".json";
-        BufferedReader brPwUp = null;
-        try {
-            descPwUpsF = new FileReader(pathPowerUps);
-
-
-            brPwUp = new BufferedReader(descPwUpsF);
-
-        }
-        catch (FileNotFoundException e) {
-            System.out.println("Files for descriptions not found: we cannot start the game.");
-            System.exit(-1);
-        }
+        InputStream inputStream = getClass().getResourceAsStream("/description/"+nameJsonFile);
+        BufferedReader brPwUp = new BufferedReader(new InputStreamReader(inputStream));
 
         return gson.fromJson(brPwUp, JsonObject.class);
     }

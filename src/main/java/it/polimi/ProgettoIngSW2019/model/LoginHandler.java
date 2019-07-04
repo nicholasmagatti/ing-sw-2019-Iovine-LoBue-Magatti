@@ -21,9 +21,10 @@ public class LoginHandler extends Observable<Event> {
     private final HashMap<String, Session> sessions;
     private List<String> usernameConnected;
     private boolean gameStarted = false;
+    private boolean inSetupMode = false;
     private int nrOfPlayerConnected = 0;
     private final int timeForPing = 100;
-    private final int timeBeforeStartingGame = 7000;
+    private final int timeBeforeStartingGame = 10000;
     private boolean timerStarted = false;
     private Iterator<Map.Entry<String, Session>> entryIterator;
 
@@ -136,6 +137,8 @@ public class LoginHandler extends Observable<Event> {
 
         if(sessionToCheck != null) {
             if (username.equalsIgnoreCase(sessionToCheck.getUsername()) && password.equalsIgnoreCase(sessionToCheck.getPassword())) {
+                usernameConnected.add(username);
+                turnManager.getPlayerFromCharaName(sessions.get(hostname).getUsername()).reactivatePlayer();
                 result = true;
             }
         }
@@ -153,15 +156,19 @@ public class LoginHandler extends Observable<Event> {
     void goInSetup(){
         System.out.println("Going in setup");
         gameStarted = true;
+        inSetupMode = true;
         String username = entryIterator.next().getValue().getUsername();
 
-        for( Map.Entry<String, Session> entry: sessions.entrySet()){
-            String hostname = entry.getValue().gethostname();
+        for(String hostname: getActiveUsersHostname()) {
             List<MapLM> mapLMList = generateMapLMListForGameSetup();
             SetupInfo msg = new SetupInfo(username, hostname, mapLMList);
 
             notify(new Event(EventType.GO_IN_GAME_SETUP, serialize(msg)));
         }
+    }
+
+    public void setInSetupMode(boolean inSetupMode) {
+        this.inSetupMode = inSetupMode;
     }
 
     /**
@@ -181,9 +188,8 @@ public class LoginHandler extends Observable<Event> {
      */
     //NOT TO BE TESTED
     public void ping(){
-        for(Map.Entry<String, Session> entry: sessions.entrySet()) {
-            String hostname = entry.getValue().gethostname();
-            String username = entry.getValue().getUsername();
+        for(String hostname: getActiveUsersHostname()) {
+            String username = sessions.get(hostname).getUsername();
             MessageConnection msg = new MessageConnection(username, hostname);
 
             notify(new Event(EventType.CHECK_IS_ALIVE, serialize(msg)));
@@ -202,12 +208,16 @@ public class LoginHandler extends Observable<Event> {
     //TESTED --> disconnectBeforeGameStart
     public void disconnectPlayer(String hostname){
         nrOfPlayerConnected--;
+        turnManager.getPlayerFromCharaName(sessions.get(hostname).getUsername()).suspendPlayer();
         if(!isGameStarted()){
-            usernameConnected.remove(sessions.get(hostname).getUsername());
             sessions.remove(hostname);
-        }else
-            notify(new Event(EventType.END_TURN_DUE_USER_DISCONNECTION, ""));
+        }else {
+            if(turnManager.getCurrentPlayer().getHostname().equals(hostname)
+            || nrOfPlayerConnected < 3)
+                notify(new Event(EventType.END_TURN_DUE_USER_DISCONNECTION, ""));
+        }
 
+        usernameConnected.remove(sessions.get(hostname).getUsername());
     }
 
     /**
@@ -224,6 +234,15 @@ public class LoginHandler extends Observable<Event> {
         return hostnames;
     }
 
+    public List<String> getActiveUsersHostname(){
+        List<String> hostnames = new ArrayList<>();
+
+        for(Map.Entry<String, Session> entry: sessions.entrySet())
+            if(usernameConnected.contains(entry.getValue().getUsername()))
+                hostnames.add(entry.getValue().gethostname());
+
+        return hostnames;
+    }
     /**
      * @return the session list of the user that are currently playing
      * @author: Luca Iovine
@@ -317,7 +336,11 @@ public class LoginHandler extends Observable<Event> {
      */
     //NOT TO BE TESTED
     private void sendTimeExpired(){
-        MessageConnection msg = new MessageConnection(turnManager.getCurrentPlayer().getCharaName(), turnManager.getCurrentPlayer().getHostname());
+        MessageConnection msg = null;
+        if(!inSetupMode) {
+            msg = new MessageConnection(turnManager.getCurrentPlayer().getCharaName(), turnManager.getCurrentPlayer().getHostname());
+        }
+        stopActionTimer();
         notify(new Event(EventType.INPUT_TIME_EXPIRED, serialize(msg)));
     }
 

@@ -11,6 +11,7 @@ import it.polimi.ProgettoIngSW2019.model.LoginHandler;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ConnectionController implements Observer<Event> {
     private LoginHandler loginHandler;
@@ -83,9 +84,9 @@ public class ConnectionController implements Observer<Event> {
          */
         if(event.getCommand().equals(EventType.NOT_ALIVE)){
             MessageConnection msg = (MessageConnection) deserialize(event.getMessageInJsonFormat(), MessageConnection.class);
-            loginHandler.disconnectPlayer(msg.getHostname());
             MessageConnection disconnectedPlayer = new MessageConnection(msg.getUsername(), "");
-            virtualView.sendMessage(new Event(EventType.USER_HAS_DISCONNECTED, serialize(disconnectedPlayer)), loginHandler.getUsersHostname());
+            virtualView.sendMessage(new Event(EventType.USER_HAS_DISCONNECTED, serialize(disconnectedPlayer)), loginHandler.getActiveUsersHostname());
+            loginHandler.disconnectPlayer(msg.getHostname());
         }
 
         // --> NOT TO BE TESTED

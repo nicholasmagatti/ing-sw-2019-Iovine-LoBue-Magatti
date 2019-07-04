@@ -41,8 +41,7 @@ public class WeaponCard extends Card {
         this.description = description;
         this.reloadCost = reloadCost;
         this.distance = distance;
-        pathOfEffectFile = new File("").getAbsolutePath()+"\\resources\\json\\weaponeff\\"+effectFileName;
-        setWeaponEffect(pathOfEffectFile);
+        setWeaponEffect(effectFileName);
     }
 
     /**
@@ -97,15 +96,8 @@ public class WeaponCard extends Card {
                    assignWeaponEffectWrongTest
      */
     private void setWeaponEffect(String pathOfEffectFile){
-        FileReader file;
-        BufferedReader br = null;
-        try {
-            file = new FileReader(pathOfEffectFile);
-            br = new BufferedReader(file);
-        } catch (FileNotFoundException e) {
-            System.out.println("File non trovato, impossibile caricare il gioco.");
-            System.exit(-1);
-        }
+        InputStream inputStream = getClass().getResourceAsStream("/weapon/"+pathOfEffectFile);
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
         JsonObject jsonObj = gson.fromJson(br, JsonObject.class);
         WeaponEffectType type = gson.fromJson(jsonObj.get("typeOfEffect"), WeaponEffectType.class);

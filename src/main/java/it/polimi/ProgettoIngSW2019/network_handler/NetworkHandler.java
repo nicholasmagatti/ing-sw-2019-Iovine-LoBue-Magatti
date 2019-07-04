@@ -39,7 +39,9 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
         try {
             clientMessageReceiver = new ClientMessageReceiver(this);
         }catch(RemoteException e){
-            e.printStackTrace();
+            System.out.println();
+            System.out.println(virtualView);
+            //e.printStackTrace();
             System.exit(-1);
         }
     }
@@ -55,8 +57,9 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
         try {
             virtualView.forwardEvent(event);
         }catch(RemoteException ex){
-            //TODO: persa connessione con il server, riavviare il gioco
-            ex.printStackTrace();
+            System.out.println("Cannot reach the server.\n" +
+                    "You have been disconnected");
+            System.exit(-1);
         }
     }
 
@@ -81,8 +84,9 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
                 hostname =  (new Gson().fromJson(event.getMessageInJsonFormat(), LoginRequest.class)).getHostname();
                 virtualView.registerMessageReceiver(hostname, clientMessageReceiver);
             }catch(RemoteException e) {
-                //TODO: non riesce a contattare il server
-                e.printStackTrace();
+                System.out.println("Cannot reach the server.\n" +
+                        "You have been disconnected");
+                System.exit(-1);
             }
         }
         forwardEvent(event);

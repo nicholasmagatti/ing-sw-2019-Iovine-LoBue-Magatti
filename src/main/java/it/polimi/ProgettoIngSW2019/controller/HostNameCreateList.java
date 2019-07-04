@@ -41,7 +41,8 @@ public class HostNameCreateList {
         Player[] playersList = turnManager.getGameTable().getPlayers();
 
         for(Player player: playersList) {
-            hostNamePlayers.add(player.getHostname());
+            if(player.isActive())
+                hostNamePlayers.add(player.getHostname());
         }
         return hostNamePlayers;
     }
@@ -70,7 +71,8 @@ public class HostNameCreateList {
 
         for(Player p: playersList) {
             if(p.getIdPlayer() != player.getIdPlayer())
-                hostNamePlayers.add(p.getHostname());
+                if(p.isActive())
+                    hostNamePlayers.add(p.getHostname());
         }
         return hostNamePlayers;
     }
