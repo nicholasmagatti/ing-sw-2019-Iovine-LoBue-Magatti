@@ -7,6 +7,7 @@ import it.polimi.ProgettoIngSW2019.common.Message.toController.ReloadChoiceReque
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageWeaponPay;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.PayAmmoList;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
@@ -159,7 +160,7 @@ public class ReloadController extends Controller {
                         if(payAmmoController.checkAmmoToPayFromView(weaponToReload.getreloadCost(), powerUps, ammoToPay))
                             reloadWeapon(ammoToPay, powerUps);
                         else {
-                            String messageError ="ERROR: hai sbagliato input di pagamento.";
+                            String messageError = GeneralInfo.MSG_ERROR;
                             sendInfo(EventType.ERROR, messageError, getHostNameCreateList().addOneHostName(ownerPlayer));
                         }
                     }
@@ -183,6 +184,8 @@ public class ReloadController extends Controller {
         List<AmmoType> ammoToPay = convertAmmoToPay(ammoToPayInt);
 
         ownerPlayer.pay(ammoToPay, powerUpsToDiscard);
+        ownerPlayer.getLoadedWeapons().add(weaponToReload);
+        ownerPlayer.getUnloadedWeapons().remove(weaponToReload);
 
         if(!powerUpsToDiscard.isEmpty()) {
             String messagePowerUpDiscardedJson = getCreateJson().createMessagePowerUpsDiscardedJson(ownerPlayer, powerUpsToDiscard);
