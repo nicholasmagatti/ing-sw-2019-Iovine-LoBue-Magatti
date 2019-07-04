@@ -12,6 +12,7 @@ import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.fusesource.jansi.Ansi.Color.*;
@@ -897,13 +898,16 @@ public abstract class ToolsView {
      */
     private static boolean checkIfNeedMore(int[] costToPayToCheck){
         boolean result = false;
+        Iterator<PowerUpLM> iter = tmpAmmoInPowerUp.iterator();
+        PowerUpLM power;
 
         if(costToPayToCheck[GeneralInfo.RED_ROOM_ID] > 0){
             result = true;
         }
         else{
             tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID] = 0;
-            for(PowerUpLM power: tmpAmmoInPowerUp){
+            while(iter.hasNext()) {
+                power = iter.next();
                 if(power.getGainAmmoColor().equals(AmmoType.RED))
                     tmpAmmoInPowerUp.remove(power);
             }
@@ -914,8 +918,9 @@ public abstract class ToolsView {
         }
         else{
             tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID] = 0;
-            for(PowerUpLM power: tmpAmmoInPowerUp){
-                if(power.getGainAmmoColor().equals(AmmoType.BLUE))
+            while(iter.hasNext()) {
+                power = iter.next();
+                if (power.getGainAmmoColor().equals(AmmoType.BLUE))
                     tmpAmmoInPowerUp.remove(power);
             }
         }
@@ -925,7 +930,8 @@ public abstract class ToolsView {
         }
         else{
             tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID] = 0;
-            for(PowerUpLM power: tmpAmmoInPowerUp){
+            while(iter.hasNext()) {
+                power = iter.next();
                 if(power.getGainAmmoColor().equals(AmmoType.YELLOW))
                     tmpAmmoInPowerUp.remove(power);
             }

@@ -137,7 +137,7 @@ public class GrabState extends State{
         for (i = 0; i < weaponInfo.getWeaponsCanReload().size(); i++) {
             cost = getCost(weaponInfo.getWeaponsCanReload().get(i), weaponInfo.getListPaymentReload());
             possibleChoice.add(Integer.toString(i+1));
-            msg = (i+1) + ": " + weaponInfo.getWeaponsCanReload().get(i).getName() + "Reload cost: " + cost + "\n";
+            msg = (i+1) + ": " + weaponInfo.getWeaponsCanReload().get(i).getName() + " Buy cost: " + cost + "\n";
             sb.append(msg);
         }
 
