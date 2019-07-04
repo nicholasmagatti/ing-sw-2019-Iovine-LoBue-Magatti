@@ -94,17 +94,22 @@ public class PowerUpState extends State {
 
         if(command == EventType.RESPONSE_NEWTON_INFO){
             NewtonInfoResponse newtonInfoResponse = new Gson().fromJson(jsonMessage, NewtonInfoResponse.class);
+            if(newtonInfoResponse.getEnemyInfoMovement().isEmpty()){
+                System.out.println("You cannot use this powerup because you have no targets available for its effect.");
+            }
+            else {
             /*
             I insert the info here in the attribute of the class to avoid the situation in which the programmer
             tries to access the info about newtonInfoResponse.getEnemyInfoMovement() from the shootPowerUpInfo
             and gets an empty list instead of the correct one. But inserting it in the shootPowerUpInfo this
             possible mistake is prevented.
              */
-            shootPowerUpInfo = new ShootPowerUpInfo(
-                    shootPowerUpInfo.getPowerUpUsableList(), newtonInfoResponse.getEnemyInfoMovement(),
-                    shootPowerUpInfo.getPowerUpAsPayment(), shootPowerUpInfo.getAmmoAsPayment());
-                    idPowerUp = shootPowerUpInfo.getPowerUpUsableList().get(0).getIdPowerUp();
-            newton();
+                shootPowerUpInfo = new ShootPowerUpInfo(
+                        shootPowerUpInfo.getPowerUpUsableList(), newtonInfoResponse.getEnemyInfoMovement(),
+                        shootPowerUpInfo.getPowerUpAsPayment(), shootPowerUpInfo.getAmmoAsPayment());
+                idPowerUp = shootPowerUpInfo.getPowerUpUsableList().get(0).getIdPowerUp();
+                newton();
+            }
         }
 
         //reset inf in shootPowerUpInfo after the use of a powerup by THIS user has worked successfully
@@ -142,6 +147,7 @@ public class PowerUpState extends State {
         }
         System.out.println("Do you want to use one of these powerups?");
         ToolsView.printListOfPowerups(usablePowerups);
+        System.out.print("\n");
         System.out.println(GeneralInfo.YES_COMMAND + ": use powerup");
         System.out.println(GeneralInfo.NO_COMMAND + ": don't");
         ToolsView.printGeneralOptions();

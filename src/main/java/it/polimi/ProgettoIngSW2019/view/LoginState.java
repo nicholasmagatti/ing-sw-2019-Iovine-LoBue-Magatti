@@ -59,8 +59,9 @@ public class LoginState extends State{
 
             login(ongoingGame);
 
-            if(!succesfullLogin)
+            while(!succesfullLogin) {
                 askCredentials();
+            }
 
             if(ongoingGame){
                 StateManager.triggerNextState(idleState);
@@ -83,8 +84,9 @@ public class LoginState extends State{
         String jsonMessage = event.getMessageInJsonFormat();
 
         if (command == EventType.RESPONSE_GAME_IS_STARTED) {
-            LoginResponse ongoingGame = new Gson().fromJson(jsonMessage, LoginResponse.class);
-            this.ongoingGame = ongoingGame.isLoginSuccessfull();
+            LoginResponse loginResponse = new Gson().fromJson(jsonMessage, LoginResponse.class);
+            ongoingGame = loginResponse.isLoginSuccessfull();
+
         }
 
         if (command == EventType.RESPONSE_NEW_LOGIN) {
@@ -165,7 +167,7 @@ public class LoginState extends State{
     private void askCredentials(){
         cleanNameAndPassword();
         System.out.print("Write the name of your character: ");
-        name = readUsername().toLowerCase();
+        name = readUsername().toUpperCase();
         System.out.print("Write your password: ");
         password = readPassword();
         //notify to server

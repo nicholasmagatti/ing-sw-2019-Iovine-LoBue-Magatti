@@ -38,8 +38,8 @@ public class GeneralMessageObserver implements Observer<Event> {
 
         switch (command){
             case ERROR:
-                String messageError = new Gson().fromJson(jsonMessage, String.class);
-                printErrorAndRestart(messageError);
+                //this is not really a json message: this is already the string to print
+                printErrorAndRestart(jsonMessage);
                 break;
 
             case INPUT_TIME_EXPIRED:
@@ -65,7 +65,7 @@ public class GeneralMessageObserver implements Observer<Event> {
                 break;
             case MSG_DRAW_MY_POWERUP:
                 MessageDrawMyPowerUp messageDrawMyPowerUp = new Gson().fromJson(jsonMessage, MessageDrawMyPowerUp.class);
-                System.out.print("You draw ");
+                System.out.print("You drew ");
                 for(int i=0; i < messageDrawMyPowerUp.getNamePowerUps().size(); i++){
                     System.out.print(messageDrawMyPowerUp.getNamePowerUps().get(i));
                     if(i < messageDrawMyPowerUp.getNamePowerUps().size() - 2){ //not last one or second last
@@ -137,7 +137,6 @@ public class GeneralMessageObserver implements Observer<Event> {
                 break;
             case MSG_USE_POWERUP:
                 MessagePowerUpsDiscarded pwDiscardedToUseEffect = new Gson().fromJson(jsonMessage, MessagePowerUpsDiscarded.class);
-                printYouOrNameOther(pwDiscardedToUseEffect);
                 //the powerups are a list but we know they are only one in this specific context
                 PowerUpLM pwUseEffect = pwDiscardedToUseEffect.getPowerUpsToDiscard().get(0);
                 printYouOrNameOther(pwDiscardedToUseEffect);

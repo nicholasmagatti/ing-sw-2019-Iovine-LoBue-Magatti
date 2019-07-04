@@ -20,7 +20,7 @@ public class SpawnState extends State{
 
     private boolean firstSpawn = false;
     private IdleState idleState;
-    DrawCardsInfoResponse drawCardsInfo;
+    private DrawCardsInfoResponse drawCardsInfo;
 
     public SpawnState(IdleState idleState){
         this.idleState = idleState;
@@ -41,6 +41,8 @@ public class SpawnState extends State{
             eventType = EventType.REQUEST_SPAWN_CARDS;
         }
         notifyEvent(infoRequest, eventType);
+
+        InfoOnView.getMyPowerUps().getPowerUps().addAll(drawCardsInfo.getDrawnPowerUps());
 
         choosePowerupToDiscard(drawCardsInfo.getDrawnPowerUps());
         StateManager.triggerNextState(idleState);
@@ -93,7 +95,7 @@ public class SpawnState extends State{
                     ToolsView.ammoTypeToString(powerUps.get(i).getGainAmmoColor()) + ")");
         }
         ToolsView.printGeneralOptions();
-        System.out.println(GeneralInfo.ASK_INPUT);
+        System.out.print(GeneralInfo.ASK_INPUT);
         userInput = ToolsView.readUserChoice(options, true);
         if(userInput != null){
             //notify answer to server

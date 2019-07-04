@@ -150,7 +150,7 @@ public class SetupGameState extends State {
      * @return chosen number of skulls for the game
      */
     private String chooseNrSkulls(){
-        System.out.println("Choose a number of skulls for the killsho track between " +
+        System.out.println("Choose a number of skulls for the killshot track between " +
                 GeneralInfo.MIN_SKULLS + " and " + GeneralInfo.MAX_SKULLS +".");
         System.out.println("The skulls represent the number of kills to get to the end of the game.");
         System.out.print("Number of skulls: ");

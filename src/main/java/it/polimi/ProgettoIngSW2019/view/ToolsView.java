@@ -154,7 +154,6 @@ public abstract class ToolsView {
      * @author Nicholas Magatti
      */
     static void printGeneralOptions(){
-        //System.out.println(GeneralInfo.EXIT_COMMAND + ": exit from game");
         System.out.println(GeneralInfo.PREFIX_COMMAND_DESCRIPTION + "NameWeapon/Powerup: read the description of that weapon/powerup");
     }
 
@@ -169,10 +168,7 @@ public abstract class ToolsView {
      * @author Nicholas Magatti
      */
     static String readUserChoice(List<String> allowedAnswers, boolean generalOptionsEnabled){
-        /*
-        if(generalOptionsEnabled) {
-            allowedAnswers.add(GeneralInfo.EXIT_COMMAND);
-        }*/
+
         boolean exit = false;
         String inputFromUser;
         do {
@@ -188,7 +184,7 @@ public abstract class ToolsView {
                     System.out.print(GeneralInfo.ASK_INPUT);
                 }
                 else {
-                    System.out.println("Illegal input. Insert correct input.");
+                    System.out.print("Illegal input. Insert correct input: ");
                 }
             }
         }while(!exit && !inputScanner.isTimeExpired());
@@ -199,14 +195,7 @@ public abstract class ToolsView {
             return null;
         }
         else {
-            /*
-            if(generalOptionsEnabled && inputFromUser.equals(GeneralInfo.EXIT_COMMAND)){
-                method to disconnect
-                return null;
-            }
-            else {*/
-                return inputFromUser;
-            /*}*/
+            return inputFromUser;
         }
     }
 
@@ -437,14 +426,13 @@ public abstract class ToolsView {
      * @author Nicholas Magatti
      */
     private static void printDescription(String inputFromUser){
-        String descrCommmand = GeneralInfo.PREFIX_COMMAND_DESCRIPTION;
-        for(int index = 0; index < descrCommmand.length(); index++){
-            if(inputFromUser.charAt(index) != descrCommmand.charAt(index)){
+        for(int index = 0; index < GeneralInfo.PREFIX_COMMAND_DESCRIPTION.length(); index++){
+            if(inputFromUser.charAt(index) != GeneralInfo.PREFIX_COMMAND_DESCRIPTION.charAt(index)){
                 throw new IllegalArgumentException("The input is not a description request. It " +
                         "this method should not have been called");
             }
         }
-        String nameCard = descrCommmand.substring(GeneralInfo.PREFIX_COMMAND_DESCRIPTION.length());
+        String nameCard = inputFromUser.substring(GeneralInfo.PREFIX_COMMAND_DESCRIPTION.length());
         printDescriptionCard(nameCard);
     }
 
@@ -470,7 +458,7 @@ public abstract class ToolsView {
             else{
                 descToPrint = descPowerUpFound;
             }
-            System.out.println(descToPrint);
+            System.out.println("\"" + descToPrint + "\"");
         }
     }
 
