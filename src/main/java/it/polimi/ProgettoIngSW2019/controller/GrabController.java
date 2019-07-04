@@ -216,7 +216,7 @@ public class GrabController extends Controller {
         }
 
         if(squareToCheck.getSquareType() == SquareType.AMMO_POINT) {
-            AmmoPoint ammoPoint = (AmmoPoint) grabberPlayer.getPosition().getWestSquare();
+            AmmoPoint ammoPoint = (AmmoPoint) squareToCheck;
 
             if(ammoPoint.getAmmoCard() != null)
                 ammoPointToGrabList.add(ammoPoint);
@@ -245,8 +245,6 @@ public class GrabController extends Controller {
             }
             else {
                 grabberPlayer.moveTo(squareToGrab);
-                String updateMapLM = getCreateJson().createMapLMJson();
-                sendInfo(EventType.UPDATE_MAP, updateMapLM, getHostNameCreateList().addAllHostName());
             }
         }
 
@@ -364,6 +362,9 @@ public class GrabController extends Controller {
         String updateMyLoadedWeapons = getCreateJson().createMyLoadedWeaponsListLMJson(grabberPlayer);
         sendInfo(EventType.UPDATE_MY_LOADED_WEAPONS, updateMyLoadedWeapons, getHostNameCreateList().addOneHostName(grabberPlayer));
 
+        String updateMapLM = getCreateJson().createMapLMJson();
+        sendInfo(EventType.UPDATE_MAP, updateMapLM, getHostNameCreateList().addAllHostName());
+
         String mess = "";
         sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(grabberPlayer));
 
@@ -405,6 +406,9 @@ public class GrabController extends Controller {
         }
 
         getTurnManager().decreaseActionsLeft();
+
+        String updateMapLM = getCreateJson().createMapLMJson();
+        sendInfo(EventType.UPDATE_MAP, updateMapLM, getHostNameCreateList().addAllHostName());
 
         String mess = "";
         sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(grabberPlayer));

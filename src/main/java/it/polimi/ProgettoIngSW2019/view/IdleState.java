@@ -44,6 +44,7 @@ public class IdleState extends State{
 
         //trigger first spawn
         if(event.getCommand().equals(EventType.MSG_FIRST_TURN_PLAYER)){
+            InfoOnView.printEverythingVisible();
             System.out.println("Before start your first turn, you have to spawn!");
             firstSpawn = true;
         }

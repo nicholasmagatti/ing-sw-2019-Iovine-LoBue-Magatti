@@ -958,17 +958,17 @@ public abstract class ToolsView {
 
         paymentSB.append(msg);
         if (tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID] > 0) {
-            msg = red + ": Red ammo available" + tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID] + "\n";
+            msg = red + ": Red ammo available: " + tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID] + "\n";
             paymentSB.append(msg);
             responeForAmmo.add(red);
         }
         if (tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID] > 0) {
-            msg = blue + ": Blue ammo available" + tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID] + "\n";
+            msg = blue + ": Blue ammo available: " + tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID] + "\n";
             paymentSB.append(msg);
             responeForAmmo.add(blue);
         }
         if (tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID] > 0) {
-            msg = yellow + ": Yellow ammo available" + tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID] + "\n";
+            msg = yellow + ": Yellow ammo available: " + tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID] + "\n";
             paymentSB.append(msg);
             responeForAmmo.add(yellow);
         }
