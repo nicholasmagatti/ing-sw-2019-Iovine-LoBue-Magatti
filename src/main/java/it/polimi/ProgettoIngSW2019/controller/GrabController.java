@@ -117,13 +117,13 @@ public class GrabController extends Controller {
                     }
 
                     if (weaponToDiscard == null) {
-                        String message = "ERROR: hai più di 3 armi in mano, per pescarne una devi lasciare una carta arma nello Spawning Point.";
+                        String message = GeneralInfo.MSG_ERROR;
                         sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
                         return;
                     }
                 }
                 else {
-                    String message = "ERROR: hai più di 3 armi in mano, per pescarne una devi lasciare una carta arma nell0 Spawning Point.";
+                    String message = GeneralInfo.MSG_ERROR;
                     sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
                     return;
                 }
@@ -155,7 +155,7 @@ public class GrabController extends Controller {
                     grabWeapon(powerUps);
                 }
                 else {
-                    String message = "ERROR: Hai sbagliato il pagamento: ";
+                    String message = GeneralInfo.MSG_ERROR;
                     sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
                 }
             }
@@ -168,6 +168,9 @@ public class GrabController extends Controller {
      */
     private void grabInfo() {
         if(grabberPlayer.getPosition().getSquareType() != null) {
+
+            ammoPointToGrabList = new ArrayList<>();
+            spawningPointToGrab = null;
 
             Square playerSquare = grabberPlayer.getPosition();
             addSquare(playerSquare);
@@ -239,7 +242,7 @@ public class GrabController extends Controller {
             }
 
             if(!found) {
-                String message = "ERROR: Hai non puoi scegliere questo Square per fare il grab";
+                String message = GeneralInfo.MSG_ERROR;
                 sendInfo(EventType.ERROR, message, getHostNameCreateList().addOneHostName(grabberPlayer));
                 return;
             }

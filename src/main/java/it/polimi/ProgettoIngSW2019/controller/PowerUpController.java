@@ -225,6 +225,14 @@ public class PowerUpController extends Controller {
                             NewtonInfoResponse newtonInfoResponse = new NewtonInfoResponse(ownerPlayer.getIdPlayer(), enemyInfos);
                             String newtonInfoResponseJson = new Gson().toJson(newtonInfoResponse);
                             sendInfo(EventType.RESPONSE_NEWTON_INFO, newtonInfoResponseJson, getHostNameCreateList().addOneHostName(ownerPlayer));
+
+                            if(enemyInfos.isEmpty()) {
+                                String updateMyPowerUpsJson = getCreateJson().createMyPowerUpsLMJson(ownerPlayer);
+                                sendInfo(EventType.UPDATE_MY_POWERUPS, updateMyPowerUpsJson, getHostNameCreateList().addOneHostName(ownerPlayer));
+
+                                String mess = "";
+                                sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(ownerPlayer));
+                            }
                         }
                         else {
                             String messageError = GeneralInfo.MSG_ERROR;
