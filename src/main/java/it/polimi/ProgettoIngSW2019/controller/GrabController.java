@@ -132,7 +132,7 @@ public class GrabController extends Controller {
             SpawningPoint spawningPoint = (SpawningPoint) squareToGrab;
 
             for(int i = 0; i < spawningPoint.getWeaponCards().size(); i++) {
-                if(spawningPoint.getWeaponCards().get(i).getIdCard() == grabWeaponChoiceRequest.getIdWeaponToDiscard())
+                if(spawningPoint.getWeaponCards().get(i).getIdCard() == grabWeaponChoiceRequest.getIdWeaponToGrab())
                     weaponToGrab = spawningPoint.getWeaponCards().get(i);
             }
 
@@ -368,6 +368,7 @@ public class GrabController extends Controller {
         String mess = "";
         sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, mess, getHostNameCreateList().addAllExceptOneHostName(grabberPlayer));
 
+        getTurnManager().decreaseActionsLeft();
         //inside there is the message for Nick
         msgActionLeft(grabberPlayer);
     }

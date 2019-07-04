@@ -1,7 +1,6 @@
 package it.polimi.ProgettoIngSW2019.controller;
 
 import com.google.gson.Gson;
-import com.sun.javafx.scene.control.skin.IntegerFieldSkin;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.PowerUpLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;

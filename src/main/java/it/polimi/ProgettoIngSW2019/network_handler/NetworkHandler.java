@@ -36,6 +36,12 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
      */
     public NetworkHandler(IVirtualView virtualView) {
         this.virtualView = virtualView;
+        try {
+            clientMessageReceiver = new ClientMessageReceiver(this);
+        }catch(RemoteException e){
+            e.printStackTrace();
+            System.exit(-1);
+        }
     }
 
     /**
@@ -64,22 +70,6 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
      */
     //NOT TO BE TESTED
     public void sendDataToView(Event event){
-        if (event.getCommand().equals(EventType.RESPONSE_NEW_LOGIN) ||
-                event.getCommand().equals(EventType.RESPONSE_RECONNECT)) {
-            LoginResponse response = (LoginResponse) deserialize(event.getMessageInJsonFormat(), LoginResponse.class);
-            if (!response.isLoginSuccessfull()) {
-                try {
-                    virtualView.deregisterMessageReceiver(hostname);
-                    UnicastRemoteObject.unexportObject(clientMessageReceiver, true);
-                } catch (NoSuchObjectException e) {
-                    //TODO: eccezione bloccante, chiudere l'applicazione
-                    e.printStackTrace();
-                }catch(RemoteException e) {
-                    //TODO: persa connessione con il server, riavviare il gioco
-                    e.printStackTrace();
-                }
-            }
-        }
         notify(event);
     }
 
@@ -88,8 +78,7 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
     public void update(Event event) {
         if(event.getCommand().equals(EventType.REQUEST_GAME_IS_STARTED)) {
             try {
-                hostname = ((LoginRequest) new Gson().fromJson(event.getMessageInJsonFormat(), LoginRequest.class)).getHostname();
-                clientMessageReceiver = new ClientMessageReceiver(this);
+                hostname =  (new Gson().fromJson(event.getMessageInJsonFormat(), LoginRequest.class)).getHostname();
                 virtualView.registerMessageReceiver(hostname, clientMessageReceiver);
             }catch(RemoteException e) {
                 //TODO: non riesce a contattare il server

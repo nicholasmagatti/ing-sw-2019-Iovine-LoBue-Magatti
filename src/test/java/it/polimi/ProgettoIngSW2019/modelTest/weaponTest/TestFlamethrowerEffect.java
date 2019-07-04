@@ -9,7 +9,6 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import it.polimi.ProgettoIngSW2019.model.weapon_effects.FlamethrowerEffect;
 import it.polimi.ProgettoIngSW2019.model.weapon_effects.WeaponEffect;
 import it.polimi.ProgettoIngSW2019.modelTest.SetupMapForTest;
-import javafx.scene.effect.Effect;
 import org.junit.*;
 
 import java.io.BufferedReader;

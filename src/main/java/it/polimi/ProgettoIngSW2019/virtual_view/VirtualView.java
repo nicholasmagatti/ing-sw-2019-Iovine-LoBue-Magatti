@@ -36,6 +36,9 @@ public class VirtualView extends Observable<Event> implements IVirtualView, Obse
     //NOT TO BE TESTED
     @Override
     public synchronized void registerMessageReceiver(String hostname, IClientMessageReceiver<Event> clientMessageReceiver) {
+        if(this.clientMessageReceiver.containsKey(hostname)){
+            this.clientMessageReceiver.remove(hostname);
+        }
         this.clientMessageReceiver.put(hostname, clientMessageReceiver);
         notifyAll();
     }
