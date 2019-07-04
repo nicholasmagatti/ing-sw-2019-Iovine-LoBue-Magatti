@@ -20,8 +20,8 @@ import java.util.List;
 public class ReloadState extends State{
 
     private String input;
-    WeaponsCanPayResponse reloadInfo;
-    IdleState idleState;
+    private WeaponsCanPayResponse reloadInfo;
+    private IdleState idleState;
     boolean endReloadState;
 
     public ReloadState(IdleState idleState){

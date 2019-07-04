@@ -70,6 +70,8 @@ public class GrabState extends State{
     private void sendPositionToGrab(GrabInfoResponse grabInfo){
         int i;
         int[] positionChosen;
+        possibleChoice = new ArrayList<>();
+        sb = new StringBuilder();
 
         msg = "You can choose one of this positions to move to and grab what's on that square\n";
         sb.append(msg);
@@ -98,6 +100,8 @@ public class GrabState extends State{
         int idWeaponChosen;
         int idWeaponToDiscard = -2;
         PaymentChoiceInfo payment = null;
+        possibleChoice = new ArrayList<>();
+        sb = new StringBuilder();
 
         //
 
@@ -133,6 +137,8 @@ public class GrabState extends State{
     private int askWeapon(WeaponsCanPayResponse weaponInfo){
         int i;
         String cost;
+        possibleChoice = new ArrayList<>();
+        sb = new StringBuilder();
 
         for (i = 0; i < weaponInfo.getWeaponsCanReload().size(); i++) {
             cost = getCost(weaponInfo.getWeaponsCanReload().get(i), weaponInfo.getListPaymentReload());
@@ -156,6 +162,9 @@ public class GrabState extends State{
     private int askDiscardWeapon( List<WeaponLM> weaponToDiscardList){
         int i;
         int idWeaponToDiscard = -1;
+        possibleChoice = new ArrayList<>();
+        sb = new StringBuilder();
+
         msg = "Too many cards on your hand! Choose one to discard between the following:\n";
         sb.append(msg);
 

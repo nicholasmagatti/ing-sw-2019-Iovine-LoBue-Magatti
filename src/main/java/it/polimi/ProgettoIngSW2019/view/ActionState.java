@@ -74,7 +74,7 @@ public class ActionState extends State {
             }
             System.out.println("You have " + actionsLeft + " " + actionOrActions + " available for this turn.");
         } else { //no actions left
-            System.out.println("You don't have any action left for this turn. You can only reload now.");
+            System.out.println("You don't have any action left for this turn. You can only reload now (only if you have enough ammo).");
         }
         if (!infoStart.getPowerUpsCanUse().isEmpty()) {
             System.out.print("But first: ");
@@ -128,7 +128,7 @@ public class ActionState extends State {
     private void chooseAction() {
         String userAnswer;
         List<String> acceptableInputs = new ArrayList<>();
-        System.out.println("Choose one of this actions: ");
+        System.out.println("Choose one of these actions: ");
         System.out.println(GeneralInfo.MOVE_COMMAND + ": move your player");
         System.out.println(GeneralInfo.GRAB_COMMAND + ": grab ammo card or weapon from a square");
         System.out.println(GeneralInfo.SHOOT_COMMAND + ": use a weapon");

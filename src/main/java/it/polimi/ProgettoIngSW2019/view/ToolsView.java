@@ -821,7 +821,7 @@ public abstract class ToolsView {
      * @author: Luca Iovine
      */
     public static PaymentChoiceInfo askPayment(int[] costToPay, int[] ammoInAmmoBox, List<PowerUpLM> ammoInPowerUp){
-        boolean checkResult = true;
+        boolean checkResult;
         possibleChoice = new ArrayList<>();
         paymentSB = new StringBuilder();
         responeForAmmo = new ArrayList<>();
@@ -851,7 +851,7 @@ public abstract class ToolsView {
 
         msg = ToolsView.costToString(costToPay) + "\n\n";
         paymentSB.append(msg);
-
+        checkResult = checkIfNeedMore(tmpCostToPay);
         while(checkResult) {
             messageConstructor();
             System.out.print(paymentSB);
@@ -879,8 +879,20 @@ public abstract class ToolsView {
                     }
                     checkResult = checkIfNeedMore(tmpCostToPay);
                 } else if (responseForPowerUp.contains(userChoice)) {
-                    powerUpIdChosenList.add(tmpAmmoInPowerUp.get(Integer.parseInt(userChoice) - 1).getIdPowerUp());
+                    PowerUpLM powerToDiscard = tmpAmmoInPowerUp.get(Integer.parseInt(userChoice) - 1);
+                    powerUpIdChosenList.add(powerToDiscard.getIdPowerUp());
                     tmpAmmoInPowerUp.remove(Integer.parseInt(userChoice) - 1);
+
+                    if(powerToDiscard.getGainAmmoColor().equals(AmmoType.RED))
+                        tmpCostToPay[GeneralInfo.RED_ROOM_ID]--;
+                    else if(powerToDiscard.getGainAmmoColor().equals(AmmoType.BLUE))
+                        tmpCostToPay[GeneralInfo.BLUE_ROOM_ID]--;
+                    else if(powerToDiscard.getGainAmmoColor().equals(AmmoType.YELLOW))
+                        tmpCostToPay[GeneralInfo.YELLOW_ROOM_ID]--;
+
+                    //tmpAmmoInPowerUp.remove(Integer.parseInt(userChoice) - 1);
+                    checkResult = checkIfNeedMore(tmpCostToPay);
+
                 }
             }
             else
@@ -975,13 +987,15 @@ public abstract class ToolsView {
 
         if (!responeForAmmo.isEmpty()) {
             possibleChoice.addAll(responeForAmmo);
-            msg = "Chose a letter R/B/Y or ";
+            msg = "Chose a letter R/B/Y \n";
             paymentSB.append(msg);
         }
 
-        possibleChoice.addAll(responseForPowerUp);
-        msg = "choose a number from 1 to " + i + ": ";
-        paymentSB.append(msg);
+        if(!responseForPowerUp.isEmpty()) {
+            possibleChoice.addAll(responseForPowerUp);
+            msg = "choose a number from 1 to " + i + ": ";
+            paymentSB.append(msg);
+        }
     }
 
 

@@ -86,15 +86,15 @@ public class GeneralMessageObserver implements Observer<Event> {
                 else{
                     CARD_OR_CARDS = "card";
                 }
-                System.out.println(messageDraw.getNamePlayer() + "drawn " + messageDraw.getnCards() + CARD_OR_CARDS + ".");
+                System.out.println(messageDraw.getNamePlayer() + "drew " + messageDraw.getnCards() + " " + CARD_OR_CARDS + ".");
                 break;
             case MSG_POWERUP_DISCARDED_TO_SPAWN:
                 MessagePowerUpsDiscarded pwUpsDiscardedSpawn = new Gson().fromJson(jsonMessage, MessagePowerUpsDiscarded.class);
 
                 PowerUpLM pwDiscardedSpawn =  pwUpsDiscardedSpawn.getPowerUpsToDiscard().get(0);
                 printYouOrNameOther(pwUpsDiscardedSpawn);
-                System.out.println(" discarded " +  pwDiscardedSpawn.getName() + "to spawn on the " +
-                        ToolsView.ammoTypeToString(pwDiscardedSpawn.getGainAmmoColor()) + "spawn point.");
+                System.out.println(" discarded " +  pwDiscardedSpawn.getName() + " to spawn on the " +
+                        ToolsView.ammoTypeToString(pwDiscardedSpawn.getGainAmmoColor()) + " spawn point.");
                 break;
 
             case MSG_POWERUPS_DISCARDED_AS_AMMO:
