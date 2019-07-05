@@ -348,7 +348,6 @@ public class CreateJson {
         return new Gson().toJson(drawCardsInfoResponse);
     }
 
-//todo
     String createWeaponsToPayJson(Player player, List<WeaponCard> weaponCards, List<PayAmmoList> payment) {
         if(player == null)
             throw new NullPointerException("Player cannot be null");

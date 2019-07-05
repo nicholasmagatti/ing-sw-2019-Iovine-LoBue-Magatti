@@ -87,7 +87,6 @@ public class ConnectionController implements Observer<Event> {
             MessageConnection disconnectedPlayer = new MessageConnection(msg.getUsername(), "");
             virtualView.sendMessage(new Event(EventType.USER_HAS_DISCONNECTED, serialize(disconnectedPlayer)), loginHandler.getActiveUsersHostname());
             loginHandler.disconnectPlayer(msg.getHostname());
-            //TODO: verificare il caso in cui chiudi l'applicazione e sei in setup state
         }
 
         // --> NOT TO BE TESTED

@@ -39,7 +39,7 @@ public class IdleState extends State{
         while(!startAction && !firstSpawn && !goInSetup && !canUseGrenade){
             ToolsView.waitServerResponse();
         }
-        //TODO verity if this if(..) else if(...) else if(..) etc works properly
+
         if(startAction) {
             startAction = false;
             actionState.startState();

@@ -234,7 +234,6 @@ public class TestEndTurnController {
     }
 
 
-    //todo:
     @Test
     public void finalScoreTest() {
         when(gameTable.isKillshotTrackFull()).thenReturn(true);
