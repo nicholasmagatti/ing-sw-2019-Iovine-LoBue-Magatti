@@ -7,6 +7,9 @@ import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 
 public abstract class State extends Observable<Event> implements Observer<Event> {
+    /**
+     * Enters in this state when triggered and manage all the possible interactions regarding the respective state.
+     */
     abstract void startState();
 
     /**

@@ -42,12 +42,4 @@ public class StateManager {
         triggerNextState(state);
     }
 
-    /**
-     * Set the current state to null: the user is just watching the game until an action from him/her will be requested.
-     * @deprecated
-     */
-    static void setNullState(){
-        currentState = null;
-    }
-
 }

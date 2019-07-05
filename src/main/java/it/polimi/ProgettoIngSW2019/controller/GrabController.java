@@ -393,6 +393,8 @@ public class GrabController extends Controller {
         }
 
         grabberPlayer.grabAmmoCardFromThisSquare();
+        getTurnManager().resetDecksIfNecessary();
+
         String updatePlayer = getCreateJson().createPlayerLMJson(grabberPlayer);
         sendInfo(EventType.UPDATE_PLAYER_INFO, updatePlayer, getHostNameCreateList().addAllHostName());
 

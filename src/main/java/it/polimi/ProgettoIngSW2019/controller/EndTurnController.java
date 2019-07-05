@@ -244,8 +244,10 @@ public class EndTurnController extends Controller {
                 if (square != null) {
                     if (square.getSquareType() == SquareType.SPAWNING_POINT)
                         square.reset(weaponDeck);
-                    if (square.getSquareType() == SquareType.AMMO_POINT)
+                    if (square.getSquareType() == SquareType.AMMO_POINT) {
                         square.reset(ammoDeck);
+                        getTurnManager().resetDecksIfNecessary();
+                    }
                 }
             }
         }

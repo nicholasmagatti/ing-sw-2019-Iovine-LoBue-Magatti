@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Ask the user to
  * @author Nicholas Magatti
  */
 public class PowerUpState extends State {
@@ -26,10 +27,17 @@ public class PowerUpState extends State {
     private NewtonInfoResponse newtonInfoResponse = null;
     private boolean useNewton = false;
 
+    /**
+     * Constructor
+     * @param idleState
+     */
     public PowerUpState(IdleState idleState){
         this.idleState = idleState;
     }
 
+    /**
+     * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     */
     @Override
     void startState() {
 
@@ -93,16 +101,16 @@ public class PowerUpState extends State {
         }
     }
 
+    /**
+     * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     * @param event
+     */
     @Override
     public void update(Event event) {
 
         EventType command = event.getCommand();
         String jsonMessage = event.getMessageInJsonFormat();
 
-        //TODO questi deve farli fare nell'idle state e nello shoot state
-        if(command == EventType.CAN_USE_TAGBACK || command == EventType.CAN_USE_TARGETING_SCOPE) {
-            askUsePowerUpAndTriggerStateIfYes(jsonMessage);
-        }
 
         if(command == EventType.RESPONSE_NEWTON_INFO){
             newtonInfoResponse = new Gson().fromJson(jsonMessage, NewtonInfoResponse.class);
@@ -137,6 +145,7 @@ public class PowerUpState extends State {
     /**
      * Ask the player if he/she wants to use a powerup and proceed if the answer is yes
      * @param jsonMessage
+     * @deprecated
      */
     private void askUsePowerUpAndTriggerStateIfYes(String jsonMessage){
         ShootPowerUpInfo shootPowerUpInfo = new Gson().fromJson(jsonMessage, ShootPowerUpInfo.class);
