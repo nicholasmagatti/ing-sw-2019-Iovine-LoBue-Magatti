@@ -13,6 +13,7 @@ import java.util.List;
 public class SpawningPoint extends Square {
     private final static int MAX_CARD = 3;
     private List<WeaponCard> weaponCards;
+    WeaponCard weapon;
 
     /**
      * Constructor
@@ -58,7 +59,9 @@ public class SpawningPoint extends Square {
     @Override
     public void reset(Deck deck){
         while(weaponCards.size() != MAX_CARD){
-            weaponCards.add((WeaponCard) deck.drawCard());
+            weapon = (WeaponCard) deck.drawCard();
+            if(weapon != null)
+                weaponCards.add(weapon);
         }
     }
 

@@ -35,9 +35,11 @@ public class SameRoom extends Distance {
 
         for(Square[] s: getBoard()){
             for(Square square: s){
-                if(fromPosition.getIdRoom() == square.getIdRoom()){
-                    if(!square.getPlayerOnSquare().isEmpty()){
-                        targetPosition.add(square);
+                if(square != null) {
+                    if (fromPosition.getIdRoom() == square.getIdRoom()) {
+                        if (!square.getPlayerOnSquare().isEmpty()) {
+                            targetPosition.add(square);
+                        }
                     }
                 }
             }

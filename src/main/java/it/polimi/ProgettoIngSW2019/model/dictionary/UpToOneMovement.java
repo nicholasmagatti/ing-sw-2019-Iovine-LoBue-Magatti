@@ -36,6 +36,6 @@ public class UpToOneMovement extends Distance {
         List<Square> upToOneMovement = new ArrayList<>();
         upToOneMovement.add(fromPosition);
         upToOneMovement.addAll(fromPosition.getSquaresVisibleFromHere());
-       return upToOneMovement;
+        return upToOneMovement;
     }
 }

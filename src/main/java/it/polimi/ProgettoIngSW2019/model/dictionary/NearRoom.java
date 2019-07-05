@@ -45,10 +45,12 @@ public class NearRoom extends Distance {
 
         for(Square[] s: getBoard()){
             for(Square square: s){
-                idRoom = square.getIdRoom();
-                if(listIdRoom.contains(idRoom)){
-                    if(!square.getPlayerOnSquare().isEmpty()){
-                        targetPosition.add(square);
+                if(square != null) {
+                    idRoom = square.getIdRoom();
+                    if (listIdRoom.contains(idRoom)) {
+                        if (!square.getPlayerOnSquare().isEmpty()) {
+                            targetPosition.add(square);
+                        }
                     }
                 }
             }

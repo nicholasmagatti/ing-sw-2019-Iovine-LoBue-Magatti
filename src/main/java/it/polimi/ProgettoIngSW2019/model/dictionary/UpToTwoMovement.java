@@ -40,8 +40,10 @@ public class UpToTwoMovement extends Distance {
         upToTwoMovement.addAll(upToOneMovement);
         for(Square s: upToOneMovement){
             for(Square secondSquare: UpToOneMovement.calculateDistance(s)){
-                if(!upToTwoMovement.contains(secondSquare) && !upToOneMovement.contains(secondSquare))
-                    upToTwoMovement.add(secondSquare);
+                if(secondSquare != null) {
+                    if (!upToTwoMovement.contains(secondSquare) && !upToOneMovement.contains(secondSquare))
+                        upToTwoMovement.add(secondSquare);
+                }
             }
         }
         return upToTwoMovement;

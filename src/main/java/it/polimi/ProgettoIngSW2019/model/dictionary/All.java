@@ -35,7 +35,9 @@ public class All extends Distance {
         List<Square> targetPosition = new ArrayList<>();
         for(Square[] s: getBoard()){
             for(Square square: s){
-                targetPosition.add(square);
+                if(square != null) {
+                    targetPosition.add(square);
+                }
             }
         }
         return targetPosition;

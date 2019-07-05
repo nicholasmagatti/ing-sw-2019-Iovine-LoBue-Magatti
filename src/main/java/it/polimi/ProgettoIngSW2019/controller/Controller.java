@@ -345,7 +345,7 @@ abstract class Controller implements Observer<Event> {
             throw new NullPointerException("player cannot be null");
 
         if(weaponCard == null)
-            throw new NullPointerException("player cannot be null");
+            throw new NullPointerException("WeaponCard cannot be null");
 
         if (unloadedWeapon) {
             if (player.getUnloadedWeapons().contains(weaponCard))

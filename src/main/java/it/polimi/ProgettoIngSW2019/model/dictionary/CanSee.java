@@ -34,7 +34,8 @@ public class CanSee extends Distance {
         List<Square> nearRoomSquare = NearRoom.calculateDistance(fromPosition);
 
         for(Square near: nearRoomSquare){
-            sameRoomSquare.add(near);
+            if(near != null)
+                sameRoomSquare.add(near);
         }
         return sameRoomSquare;
     }

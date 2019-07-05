@@ -68,7 +68,7 @@ public class IdConverter {
         WeaponCard weaponCardLoaded = null;
 
         if(idWeapon >= DeckFactory.getFirstIdWeapon() && idWeapon <= DeckFactory.getFirstIdWeapon() + NR_OF_WEAPON - 1) {
-            List<WeaponCard> weaponCardLoadedList = gameTable.getPlayers()[idPlayer].getUnloadedWeapons();
+            List<WeaponCard> weaponCardLoadedList = gameTable.getPlayers()[idPlayer].getLoadedWeapons();
 
             for (WeaponCard wl : weaponCardLoadedList) {
                 if (wl.getIdCard() == idWeapon) {

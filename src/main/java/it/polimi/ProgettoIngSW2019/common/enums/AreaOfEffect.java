@@ -22,10 +22,10 @@ public enum AreaOfEffect {
     NEAR_ROOM_VISIBLE ("near_room_visible"),
     @SerializedName("cannot_see")
     CANNOT_SEE ("cannot_see"),
-    @SerializedName("can_see_atleast_one")
-    CAN_SEE_ATLEAST_ONE ("can_see_atleast_one"),
-    @SerializedName("can_see_atleast_two")
-    CAN_SEE_ATLEAST_TWO ("can_see_atleast_two"),
+    @SerializedName("can_see_at_least_one")
+    CAN_SEE_ATLEAST_ONE ("can_see_at_least_one"),
+    @SerializedName("can_see_at_least_two")
+    CAN_SEE_ATLEAST_TWO ("can_see_at_least_two"),
     @SerializedName("up_to_one")
     UP_TO_ONE("up_to_one"),
     @SerializedName("up_to_two")

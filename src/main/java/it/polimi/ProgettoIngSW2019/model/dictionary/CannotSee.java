@@ -37,8 +37,10 @@ public class CannotSee extends Distance {
 
         for(Square[] s: getBoard()){
             for(Square square: s){
-                if(!toRemoveSquare.contains(square)){
-                    targetPosition.add(square);
+                if(square != null) {
+                    if (!toRemoveSquare.contains(square)) {
+                        targetPosition.add(square);
+                    }
                 }
             }
         }

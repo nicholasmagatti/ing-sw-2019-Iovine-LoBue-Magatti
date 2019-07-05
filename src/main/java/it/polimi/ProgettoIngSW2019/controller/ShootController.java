@@ -89,13 +89,15 @@ public class ShootController extends Controller{
                                        sendTargetingScopeInfo();
                                        sendTagbackGranedeInfo(enemyChosenList);
 
+                                       getTurnManager().decreaseActionsLeft();
+
                                        sendInfo(EventType.UPDATE_MY_LOADED_WEAPONS, getCreateJson().createMyLoadedWeaponsListLMJson(weaponUser), getHostNameCreateList().addOneHostName(weaponUser));
                                        sendInfo(EventType.UPDATE_MAP, getCreateJson().createMapLMJson(), getHostNameCreateList().addAllHostName());
                                        sendInfo(EventType.UPDATE_PLAYER_INFO, getCreateJson().createPlayerLMJson(weaponUser), getHostNameCreateList().addAllHostName());
                                        for(Player enemy: enemyChosenList){
                                            sendInfo(EventType.UPDATE_PLAYER_INFO, getCreateJson().createPlayerLMJson(enemy), getHostNameCreateList().addAllHostName());
                                        }
-
+                                       
                                        sendInfo(EventType.MSG_BEFORE_ENEMY_ACTION_OR_RELOAD, "", getHostNameCreateList().addAllExceptOneHostName(weaponUser));
                                        msgActionLeft(weaponUser);
                                    }
@@ -155,6 +157,7 @@ public class ShootController extends Controller{
      */
     private void activateEffect() throws EnemySizeLimitExceededException{
         weaponChosen.activateBaseEff(weaponUser, enemyChosenList);
+        weaponUser.unloadWeaponAfterUse(weaponChosen);
     }
 
     /**

@@ -40,8 +40,10 @@ public class CanSeeAtLeastOne extends Distance {
         }
 
         for(Square toRemoveSquare: squareToRemove){
-            if(squareCanSee.contains(toRemoveSquare)){
-                squareCanSee.remove(toRemoveSquare);
+            if(toRemoveSquare != null) {
+                if (squareCanSee.contains(toRemoveSquare)) {
+                    squareCanSee.remove(toRemoveSquare);
+                }
             }
         }
         return squareCanSee;
