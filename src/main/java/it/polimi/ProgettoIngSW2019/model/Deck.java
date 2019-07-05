@@ -59,6 +59,9 @@ public class Deck {
      * @return  the drawned card
      */
     public Card drawCard () {
+        if((deckType == DeckType.WEAPON_CARD) && (cards.isEmpty()))
+            return null;
+
         Card card;
 
         card = cards.get(0);

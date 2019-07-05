@@ -71,19 +71,6 @@ public class PowerUp extends Card {
     }
 
 
-
-    /**
-     * Show the info of the PowerUp card
-     * @return      msg, a string with all the info
-     */
-    public String showPowerUpInfo() {
-        String msg;
-        msg = "Name: " + getName() + "\nDescription: " + getDescription() + "\nAmmo: " + this.getGainAmmoColor();
-        return msg;
-    }
-
-
-
     public PowerUpEffect getPowerUpEffect() {
         return powerUpEffect;
     }

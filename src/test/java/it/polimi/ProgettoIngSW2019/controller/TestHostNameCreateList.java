@@ -44,6 +44,9 @@ public class TestHostNameCreateList {
         when(player3.getHostname()).thenReturn("HostName3");
 
         when(gameTable.getPlayers()).thenReturn(players);
+        when(player1.isActive()).thenReturn(true);
+        when(player2.isActive()).thenReturn(true);
+        when(player3.isActive()).thenReturn(true);
     }
 
 

@@ -76,7 +76,6 @@ public class TestDeck {
         assertEquals("must be POWERUP_CARD", DeckType.POWERUP_CARD, powerUpCardDrawn.getCardType());
         assertEquals("must be YELLOW", AmmoType.YELLOW, powerUpCardDrawn.getGainAmmoColor());
         assertEquals("must be TAGBACK GRENADE", "TAGBACK GRENADE", powerUpCardDrawn.getName());
-        assertEquals("", powerUpCardDrawn.getDescription());
         assertTrue(powerUpCardDrawn.getPowerUpEffect() instanceof TagbackGrenadeEff);
         assertEquals(nCardsExp, powerUpDeck.getCards().size());
         assertEquals(36, DeckFactory.getFirstIdPowerUp());
@@ -103,7 +102,6 @@ public class TestDeck {
         assertEquals(60, weaponCardDrawn.getIdCard());
         assertEquals(DeckType.WEAPON_CARD, weaponCardDrawn.getCardType());
         assertEquals("LOCK RIFLE", weaponCardDrawn.getName());
-        assertEquals("", weaponCardDrawn.getDescription());
         assertEquals(reload, weaponCardDrawn.getreloadCost());
         assertEquals(nCardsExp, weaponDeck.getCards().size());
         assertEquals(60, DeckFactory.getFirstIdWeapon());
@@ -118,7 +116,4 @@ public class TestDeck {
         assertNotEquals(null, powerUpDeck.getCards());
         assertNotEquals(null, weaponDeck.getCards());
     }
-
-
-    //TODO: test the gets null
 }
