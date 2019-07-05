@@ -11,11 +11,16 @@ import it.polimi.ProgettoIngSW2019.virtual_view.IVirtualView;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 
 import javax.tools.Tool;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 public class MainClass {
@@ -32,20 +37,21 @@ public class MainClass {
             loginHandler.addObserver(virtualView);
 
             try{
-                LocateRegistry.createRegistry(RMISettings.REGISTRY_PORT);
+                System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getHostName());
+                Registry reg = LocateRegistry.createRegistry(RMISettings.REGISTRY_PORT);
                 IVirtualView exportedVW = (IVirtualView) UnicastRemoteObject.exportObject(virtualView, RMISettings.REGISTRY_PORT);
-                Naming.rebind(RMISettings.SERVICE_NAME, exportedVW);
+                reg.rebind(RMISettings.SERVICE_NAME, exportedVW);
 
                 System.out.println("Server ready");
-            }catch(RemoteException | MalformedURLException e){
+            }catch(RemoteException | UnknownHostException /*| MalformedURLException*/ e){
                 System.out.println("Non è stato possibile avviare il server.");
-                e.printStackTrace();
                 System.exit(-1);
             }
         }else if(args[0].equalsIgnoreCase("--Client") || args[0].equalsIgnoreCase("--C")
         || args[0].equalsIgnoreCase("--L")){
             try {
-                IVirtualView virtualView = (IVirtualView) Naming.lookup(RMISettings.SERVICE_NAME);
+                Registry reg = LocateRegistry.getRegistry(args[1], RMISettings.REGISTRY_PORT);
+                IVirtualView virtualView = (IVirtualView) reg.lookup(RMISettings.SERVICE_NAME);
                 IdleState idleState = new IdleState();
                 ReloadState reloadState = new ReloadState(idleState);
                 PowerUpState powerUpState = new PowerUpState(idleState);
@@ -97,9 +103,9 @@ public class MainClass {
 
                 StateManager stateManager = new StateManager();
                 stateManager.triggerState(loginState);
-            }catch(MalformedURLException | NotBoundException | RemoteException e){
-                System.out.println("Non è stato possibile avviare il server.");
-                System.exit(-1);
+            }catch(NotBoundException | RemoteException e){
+                System.out.println("Non è stato possibile avviare il client.");
+                System.exit(0);
             }
         }else
             System.out.println(args[0]);

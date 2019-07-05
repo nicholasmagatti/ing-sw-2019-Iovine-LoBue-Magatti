@@ -43,7 +43,4 @@ public class TestPowerUp {
             System.out.println(e);
         }
     }
-
-
-    //TODO: fare i get nel caso ritornassero null
 }
