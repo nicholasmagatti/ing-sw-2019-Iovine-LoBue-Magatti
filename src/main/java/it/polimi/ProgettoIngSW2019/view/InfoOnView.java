@@ -258,7 +258,9 @@ public class InfoOnView implements Observer<Event> {
         else{
             activeOrNot = "inactive";
         }
-        System.out.print(markerPlayer + (player.getIdPlayer()+1) + ": " + player.getNickname() + " (" + activeOrNot + "),\t");
+        System.out.print(markerPlayer + (player.getIdPlayer()+1) + ": " +
+                player.getNickname() + " (" + activeOrNot + "),\t");
+
         System.out.print("Skulls: " + player.getnSkulls() + ",\t");
         System.out.println("Ammo: " + player.getnRedAmmo() + " red, " +
                                     player.getnBlueAmmo() + " blue, " +

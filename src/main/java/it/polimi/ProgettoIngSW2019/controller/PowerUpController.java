@@ -205,9 +205,10 @@ public class PowerUpController extends Controller {
                         if (powerUpToUse.getName().equals(GeneralInfo.NEWTON)) {
                             List<int[]> coordinatesMovements = new ArrayList<>();
                             List<Square> directions = new ArrayList<>();
+                            enemyInfos.clear();
 
                             for (int i = 0; i < getTurnManager().getGameTable().getPlayers().length; i++) {
-                                if (i != ownerPlayer.getIdPlayer()) {
+                                if (i != ownerPlayer.getIdPlayer() && getTurnManager().getGameTable().getPlayers()[i].getPosition() != null) {
                                     Player player = convertPlayerWithId(i);
                                     directions.clear();
                                     directions = getDirectionsMovement(player);

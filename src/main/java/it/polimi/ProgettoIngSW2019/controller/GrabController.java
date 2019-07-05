@@ -397,7 +397,7 @@ public class GrabController extends Controller {
         sendInfo(EventType.UPDATE_PLAYER_INFO, updatePlayer, getHostNameCreateList().addAllHostName());
 
         if(powerUp != null) {
-            grabberPlayer.getPowerUps().add(powerUp);
+
 
             String messageDrawMyPowerUp = getCreateJson().createMessageDrawMyPowerUpJson(grabberPlayer, Arrays.asList(powerUp));
             sendInfo(EventType.MSG_DRAW_MY_POWERUP, messageDrawMyPowerUp, getHostNameCreateList().addOneHostName(grabberPlayer));
