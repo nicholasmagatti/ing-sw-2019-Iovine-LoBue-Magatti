@@ -13,6 +13,7 @@ import it.polimi.ProgettoIngSW2019.common.Message.toView.ShootPowerUpInfo;
 import it.polimi.ProgettoIngSW2019.common.utilities.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,6 +23,8 @@ public class PowerUpState extends State {
     private IdleState idleState;
     private ShootPowerUpInfo shootPowerUpInfo = null;
     private int idPowerUp = -1;
+    private NewtonInfoResponse newtonInfoResponse = null;
+    private boolean useNewton = false;
 
     public PowerUpState(IdleState idleState){
         this.idleState = idleState;
@@ -48,12 +51,20 @@ public class PowerUpState extends State {
                 switch (chosenPwUp.getName()) {
                     case GeneralInfo.NEWTON:
                         //keep ONLY the chosen powerup in usablePowerUps: remove the others
-                        for(PowerUpLM pw : usablePowerups){
-                            if(pw.getIdPowerUp() != idPowerUp){
-                                usablePowerups.remove(pw);
+                        PowerUpLM chosenPow = null;
+                        for(PowerUpLM pw : usablePowerups) {
+                            if(pw.getIdPowerUp() == idPowerUp) {
+                                chosenPow = pw;
                             }
                         }
+                        if(chosenPow == null)
+                            throw new Error();
+
+                        usablePowerups.clear();
+                        usablePowerups.add(chosenPow);
+
                         newtonInfoRequest();
+                        newton();
                         break;
                     case GeneralInfo.TELEPORTER:
                         teleporter();
@@ -88,12 +99,13 @@ public class PowerUpState extends State {
         EventType command = event.getCommand();
         String jsonMessage = event.getMessageInJsonFormat();
 
+        //TODO questi deve farli fare nell'idle state e nello shoot state
         if(command == EventType.CAN_USE_TAGBACK || command == EventType.CAN_USE_TARGETING_SCOPE) {
             askUsePowerUpAndTriggerStateIfYes(jsonMessage);
         }
 
         if(command == EventType.RESPONSE_NEWTON_INFO){
-            NewtonInfoResponse newtonInfoResponse = new Gson().fromJson(jsonMessage, NewtonInfoResponse.class);
+            newtonInfoResponse = new Gson().fromJson(jsonMessage, NewtonInfoResponse.class);
             if(newtonInfoResponse.getEnemyInfoMovement().isEmpty()){
                 System.out.println("You cannot use this powerup because you have no targets available for its effect.");
             }
@@ -108,7 +120,8 @@ public class PowerUpState extends State {
                         shootPowerUpInfo.getPowerUpUsableList(), newtonInfoResponse.getEnemyInfoMovement(),
                         shootPowerUpInfo.getPowerUpAsPayment(), shootPowerUpInfo.getAmmoAsPayment());
                 idPowerUp = shootPowerUpInfo.getPowerUpUsableList().get(0).getIdPowerUp();
-                newton();
+                /*I removed this from here to avoid deadlock
+                newton();*/
             }
         }
 
@@ -264,7 +277,7 @@ public class PowerUpState extends State {
     }
 
     /**
-     *  Ask the user to set what is necessary for the user of the Newton powerup and
+     *  Ask the user to set what is necessary for the use of the Newton powerup and
      *  if the timer does not expire first, send the choice to the server
      */
     private void newton(){

@@ -52,7 +52,18 @@ public class GeneralMessageObserver implements Observer<Event> {
                 String username = new Gson().fromJson(jsonMessage, MessageConnection.class).getUsername();
                 if(!username.equals(InfoOnView.getMyNickname())){
                     System.out.println(username + " disconnected from the game.");
+                    //set that player as disconnected in the light model (like before but with active = false)
+                    for(int i=0; i < InfoOnView.getPlayers().length; i++){
+                        PlayerDataLM p = InfoOnView.getPlayers()[i];
+                        if(p.getNickname().equals(username)){
+                         InfoOnView.getPlayers()[i] = new PlayerDataLM(p.getIdPlayer(), p.getNickname(), p.getUnloadedWeapons(),
+                                    p.getnRedAmmo(), p.getnBlueAmmo(), p.getnYellowAmmo(), p.getnSkulls(),
+                                    false, p.getDown(), p.getDamageLine(), p.getMarkLine(),
+                                    p.getnMyLoadedWeapons(), p.getnPowerUps());
+                        }
+                    }
                 }
+
                 break;
 
             case SCORE_DEAD_PLAYERS:
