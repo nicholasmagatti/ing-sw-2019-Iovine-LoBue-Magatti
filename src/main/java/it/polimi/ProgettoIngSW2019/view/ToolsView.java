@@ -482,6 +482,14 @@ public abstract class ToolsView {
                 }
             }
         }
+        //search between the weapons on the spawn points
+        for(SpawnPointLM spawnPoint : InfoOnView.spawnPoints()){
+            for(WeaponLM weapon : spawnPoint.getWeapons()){
+                if (cardName.equalsIgnoreCase(weapon.getName())){
+                    descToReturn = detailedDescriptionWeapon(weapon);
+                }
+            }
+        }
         return descToReturn;
     }
 

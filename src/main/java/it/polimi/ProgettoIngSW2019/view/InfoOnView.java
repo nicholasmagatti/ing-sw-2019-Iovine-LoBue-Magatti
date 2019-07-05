@@ -338,7 +338,7 @@ public class InfoOnView implements Observer<Event> {
      * @return the spawn points in an array with the spawn point of the color corresponding to
      * the id room X at position X.
      */
-    private static SpawnPointLM[] spawnPoints(){
+    static SpawnPointLM[] spawnPoints(){
         SpawnPointLM[] spawnPoints = new SpawnPointLM[3];
         SquareLM[][] mapLM = map.getMap();
 
