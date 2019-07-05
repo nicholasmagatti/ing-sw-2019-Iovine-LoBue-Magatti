@@ -76,6 +76,10 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
         notify(event);
     }
 
+    /**
+     * During the connection export an object of the client to the server and notify the events.
+     * @param event
+     */
     //NOT TO BE TESTED
     @Override
     public void update(Event event) {

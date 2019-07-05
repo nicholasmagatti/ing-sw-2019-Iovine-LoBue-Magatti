@@ -12,6 +12,10 @@ import it.polimi.ProgettoIngSW2019.model.WeaponCard;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller of the payment
+ * @author Priscilla Lo Bue
+ */
 public class PayAmmoController {
     private CreateJson createJson;
 
@@ -31,8 +35,10 @@ public class PayAmmoController {
     private int yellowPP = 0;
 
 
-
-
+    /**
+     * Constructor
+     * @param createJson
+     */
     public PayAmmoController(CreateJson createJson) {
         this.createJson = createJson;
     }

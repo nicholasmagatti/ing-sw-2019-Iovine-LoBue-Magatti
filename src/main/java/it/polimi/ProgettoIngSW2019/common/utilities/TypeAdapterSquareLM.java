@@ -13,7 +13,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter for the serialization of the square for the light model of the client
+ * in the two different cases of spawn point and ammo point
+ * @author Luca Iovine
+ */
 public class TypeAdapterSquareLM extends TypeAdapter<SquareLM>{
+
+    /**
+     * Write for the serialization of squares for light model
+     * @param jsonWriter
+     * @param squareLM
+     * @throws IOException
+     */
     @Override
     public void write(JsonWriter jsonWriter, SquareLM squareLM) throws IOException {
         if(squareLM != null) {
@@ -56,6 +68,12 @@ public class TypeAdapterSquareLM extends TypeAdapter<SquareLM>{
             jsonWriter.nullValue();
     }
 
+    /**
+     * Read for the serialization of squares for light model
+     * @param jsonReader
+     * @return
+     * @throws IOException
+     */
     @Override
     public SquareLM read(JsonReader jsonReader) throws IOException {
         String type;

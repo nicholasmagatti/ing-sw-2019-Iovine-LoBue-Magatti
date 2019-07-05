@@ -5,6 +5,10 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Get the squares of adjacent room
+ * @author Luca Iovine
+ */
 public class NearRoom extends Distance {
     protected NearRoom(Square[][] board) {
         super(board);

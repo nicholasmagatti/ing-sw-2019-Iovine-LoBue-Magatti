@@ -9,10 +9,14 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Effect of the vortex
+ * @author Luca Iovine
+ */
 public class VortexEffect extends WeaponEffect {
     /**
      * Constructor class
-     * Read the weapon effect file and associate to paramater
+     * Read the weapon effect file and associate to parameter
      *
      * @param jsonObj
      * @suthor: Luca Iovine
@@ -41,6 +45,9 @@ public class VortexEffect extends WeaponEffect {
         return enemyList;
     }
 
+    /**
+     * Get the list of the square the user can see at least distante one square and also the squares that surrounds the target
+     */
     @Override
     public List<Square> getMovementList(Player player, Player enemy) {
         /*

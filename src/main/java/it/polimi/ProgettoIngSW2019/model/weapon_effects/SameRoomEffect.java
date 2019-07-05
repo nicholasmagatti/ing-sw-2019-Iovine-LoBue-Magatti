@@ -9,6 +9,10 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 
 import java.util.List;
 
+/**
+ * Effects that target players on the same room
+ * @author Luca Iovine
+ */
 public class SameRoomEffect extends WeaponEffect{
     /**
      * Constructor class

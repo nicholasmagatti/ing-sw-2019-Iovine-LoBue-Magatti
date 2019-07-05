@@ -7,6 +7,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * Customized instrument to manage the inputs from the user linked to
+ * the timer that will block the input when the timer expires
+ */
 public class InputScanner extends Observable<Event>{
     private String input = "";
     private boolean timeExpired;
@@ -15,6 +19,9 @@ public class InputScanner extends Observable<Event>{
     private InputStreamReader isr;
     private BufferedReader br;
 
+    /**
+     * Constructor
+     */
     public InputScanner(){
         timeExpired = false;
         keepTimerAlive = false;

@@ -5,6 +5,10 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Get the same square
+ * @author Luca Iovine
+ */
 public class SameSquare extends Distance{
 
     protected SameSquare(Square[][] board) {
@@ -23,7 +27,7 @@ public class SameSquare extends Distance{
     }
 
     /**
-     * It return the samme square of the position passed as parameter
+     * It return the same square of the position passed as parameter
      *
      * @param fromPosition position from where calculate the possible position
      * @return list of square that indicates the position visible.

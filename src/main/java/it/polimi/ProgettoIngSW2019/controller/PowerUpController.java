@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class that manages the use of the powerups
+ * @author Priscilla Lo Bue
+ */
 public class PowerUpController extends Controller {
     private PowerUp powerUpToUse;
     private Player ownerPlayer;

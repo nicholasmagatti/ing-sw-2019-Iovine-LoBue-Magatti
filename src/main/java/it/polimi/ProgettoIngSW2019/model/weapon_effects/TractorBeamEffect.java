@@ -10,6 +10,10 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import javax.naming.SizeLimitExceededException;
 import java.util.List;
 
+/**
+ * Effect of the Tractor Beam
+ * @author Luca Iovine
+ */
 public class TractorBeamEffect extends WeaponEffect {
     List<Square> positionList;
     Square chosenPosition;

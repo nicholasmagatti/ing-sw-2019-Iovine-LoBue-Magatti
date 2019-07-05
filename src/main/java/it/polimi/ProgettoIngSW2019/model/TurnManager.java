@@ -7,6 +7,7 @@ import java.util.List;
 
 
 /**
+ * Manage change of turn, points and keep track of actions left per turn.
  * @author Nicholas Magatti
  */
 public class TurnManager{

@@ -45,6 +45,7 @@ public class WeaponEffect {
     }
 
     /**
+     * Return the effect type of the weapon
      * @return the effect type of the weapon
      * @suthor: Luca Iovine
      */
@@ -178,6 +179,7 @@ public class WeaponEffect {
     }
 
     /**
+     * Return the number of target this effect can hit
      * @return the number of target this effect can hit
      */
     //NOT TO BE TESTED

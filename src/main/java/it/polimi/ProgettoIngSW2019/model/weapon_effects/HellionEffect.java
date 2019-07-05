@@ -8,6 +8,10 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import javax.naming.SizeLimitExceededException;
 import java.util.List;
 
+/**
+ * Effect of the Hellion
+ * @author Luca Iovine
+ */
 public class HellionEffect extends  WeaponEffect {
     private final int nrOfMarkToGiveAfterEffect = 1;
     /**

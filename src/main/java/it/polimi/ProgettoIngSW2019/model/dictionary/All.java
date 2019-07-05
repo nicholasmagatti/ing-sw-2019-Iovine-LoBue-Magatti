@@ -5,8 +5,16 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that calculates all the squares on the map
+ * @author Luca Iovine
+ */
 public class All extends Distance {
 
+    /**
+     * Constructor
+     * @param board
+     */
     protected All(Square[][] board) {
         super(board);
     }

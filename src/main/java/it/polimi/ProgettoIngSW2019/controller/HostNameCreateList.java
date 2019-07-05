@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Creates list of HostName of each client to send info
+ * @author Luca Iovine
  */
 public class HostNameCreateList {
     private List<String> hostNamePlayers = new ArrayList<>();

@@ -10,6 +10,10 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import javax.naming.SizeLimitExceededException;
 import java.util.List;
 
+/**
+ * Effects that shift a player
+ * @author Luca Iovine
+ */
 public class ShiftOneMovementEffect extends WeaponEffect {
     private Square chosenPosition;
     private List<Square> positionList;

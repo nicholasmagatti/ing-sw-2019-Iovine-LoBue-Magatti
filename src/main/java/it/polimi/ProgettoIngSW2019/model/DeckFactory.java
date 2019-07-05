@@ -38,6 +38,10 @@ public class DeckFactory {
     private static int lastIdWeapon = 0;
 
 
+    /**
+     * Constructor
+     * @param distanceDictionary
+     */
     public  DeckFactory(DistanceDictionary distanceDictionary) {
         this.distanceDictionary = distanceDictionary;
     }
@@ -210,31 +214,55 @@ public class DeckFactory {
     }
 
 
+    /**
+     * Get the id of the last ammo generated
+     * @return id of the last ammo generated
+     */
     public static int getLastIdAmmo() {
         return lastIdAmmo;
     }
 
 
+    /**
+     * Get the id of the first ammo generated
+     * @return id of the first ammo generated
+     */
     public static int getFirstIdAmmo() {
         return firstIdAmmo;
     }
 
 
+    /**
+     * Get the id of the first powerup generated
+     * @return id of the first powerup generated
+     */
     public static int getFirstIdPowerUp() {
         return firstIdPowerUp;
     }
 
 
+    /**
+     * Get the id of the last powerup generated
+     * @return id of the last powerup generated
+     */
     public static int getLastIdPowerUp() {
         return lastIdPowerUp;
     }
 
 
+    /**
+     * Get the id of the first weapon card generated
+     * @return id of the first weapon card generated
+     */
     public static int getFirstIdWeapon() {
         return firstIdWeapon;
     }
 
 
+    /**
+     * Get the id of the last weapon card generated
+     * @return id of the last weapon card generated
+     */
     public static int getLastIdWeapon() {
         return lastIdWeapon;
     }

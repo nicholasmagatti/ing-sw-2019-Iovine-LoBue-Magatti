@@ -6,6 +6,10 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Squares at east
+ * @author Luca Iovine
+ */
 public class EastDirection extends Distance {
     /**
      * Constructor of the class
@@ -17,6 +21,11 @@ public class EastDirection extends Distance {
         super(board);
     }
 
+    /**
+     * Get all the squares at east of the specified square
+     * @param fromPosition position from where calculate the possible position
+     * @return list of all the squares at east of the specified square
+     */
     @Override
     protected List<Square> getDistance(Square fromPosition) {
         List<Square> eastDirection = new ArrayList<>();

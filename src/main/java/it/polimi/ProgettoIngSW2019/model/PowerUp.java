@@ -71,12 +71,22 @@ public class PowerUp extends Card {
     }
 
 
+    /**
+     * Get the effect of the powerups.
+     */
     public PowerUpEffect getPowerUpEffect() {
         return powerUpEffect;
     }
 
 
-
+    /**
+     * Use the effect of the specific powerup given the details of its use
+     * @param ammoDiscard
+     * @param powerUpToDiscard
+     * @param playerTarget
+     * @param playerOwner
+     * @param position
+     */
     public void usePowerUpEffect(AmmoType ammoDiscard, PowerUp powerUpToDiscard, Player playerTarget, Player playerOwner, Square position) {
         powerUpEffect.activateEffect(ammoDiscard, powerUpToDiscard, playerTarget, playerOwner, position);
     }

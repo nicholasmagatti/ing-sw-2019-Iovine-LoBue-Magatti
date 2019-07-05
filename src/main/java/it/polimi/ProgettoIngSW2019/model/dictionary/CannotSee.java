@@ -5,8 +5,16 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Squares that are not visible from a position
+ * @author Luca Iovine
+ */
 public class CannotSee extends Distance {
 
+    /**
+     * Constructor
+     * @param board
+     */
     protected CannotSee(Square[][] board) {
         super(board);
     }
