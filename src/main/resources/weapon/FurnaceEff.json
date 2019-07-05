@@ -6,9 +6,5 @@
 		"aoe":"near_room",
 		"nrTarget":4,
 		"hitAllPlayers":true
-	},
-	"move":{
-		"hasToMove":false,
-		"nrOfMovement":0
 	}
 }

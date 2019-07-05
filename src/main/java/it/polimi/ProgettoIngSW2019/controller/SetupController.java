@@ -15,6 +15,7 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class SetupController implements Observer<Event> {
     private VirtualView virtualView;
@@ -64,7 +65,19 @@ public class SetupController implements Observer<Event> {
         gt.setPlayersBeforeStart(loginHandler.getSessions());
         turnManager = new TurnManager(gt);
         loginHandler.setTurnManager(turnManager);
-        gt.setPlayersBeforeStart(loginHandler.getSessions());
+
+        List<String> activePlayerHostname = loginHandler.getActiveUsersHostname();
+
+        for(Player p: gt.getPlayers()){
+            if(!activePlayerHostname.contains(p.getHostname()))
+                p.suspendPlayer();
+        }
+
+        Player currentPlayer = turnManager.getCurrentPlayer();
+        while(!currentPlayer.isActive()){
+            turnManager.changeCurrentPlayer();
+            currentPlayer = turnManager.getCurrentPlayer();
+        }
     }
 
     /**

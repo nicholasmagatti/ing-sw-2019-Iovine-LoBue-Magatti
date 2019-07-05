@@ -59,7 +59,7 @@ public class MainClass {
                 GeneralMessageObserver generalMessageObserver = new GeneralMessageObserver();
                 InfoOnView infoOnView = new InfoOnView();
 
-                idleState.linkState(actionState, spawnState);
+                idleState.linkState(actionState, spawnState, setupGameState);
                 actionState.linkToMoveGrabShoot(moveState, grabState, shootState);
 
                 NetworkHandler networkHandler = new NetworkHandler(virtualView);

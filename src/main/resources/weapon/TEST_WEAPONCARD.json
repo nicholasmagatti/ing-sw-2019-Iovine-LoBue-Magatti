@@ -5,9 +5,5 @@
 		"mark":0,
 		"aoe":"",
 		"nrTarget":0
-	},
-	"move":{
-		"hasToMove":false,
-		"nrOfMovement":0
 	}
 }

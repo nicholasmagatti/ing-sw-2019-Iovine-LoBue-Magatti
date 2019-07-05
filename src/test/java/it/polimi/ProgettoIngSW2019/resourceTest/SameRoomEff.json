@@ -1,6 +1,6 @@
 {
 	"typeOfEffect":"sameroom",
-	"dmg":{
+	"effect":{
 		"dmg":2,
 		"mark":2,
 		"aoe":"near_room_visible",

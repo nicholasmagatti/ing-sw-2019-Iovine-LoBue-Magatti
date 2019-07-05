@@ -6,9 +6,5 @@
 		"aoe":"",
 		"nrTarget":0,
 		"hitAllPlayers":false
-	},
-	"move":{
-		"hasToMove":false,
-		"nrOfMovement":0
 	}
 }

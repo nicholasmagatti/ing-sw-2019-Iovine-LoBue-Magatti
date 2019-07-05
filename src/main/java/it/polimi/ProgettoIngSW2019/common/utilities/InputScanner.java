@@ -82,7 +82,8 @@ public class InputScanner extends Observable<Event>{
      */
     public void close(){
         keepTimerAlive = false;
-        notify(new Event(EventType.STOP_ACTION_TIMER, ""));
+        if(!timeExpired)
+            notify(new Event(EventType.STOP_ACTION_TIMER, ""));
         if(inputThread.isAlive())
             inputThread.interrupt();
     }

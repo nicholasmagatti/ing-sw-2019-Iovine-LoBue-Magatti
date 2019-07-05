@@ -1,6 +1,6 @@
 {
 	"typeOfEffect":"vortex",
-	"dmg":{
+	"effect":{
 		"dmg":2,
 		"mark":2,
 		"aoe":"none",

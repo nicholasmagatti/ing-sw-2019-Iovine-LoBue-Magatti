@@ -1,9 +1,10 @@
 package it.polimi.ProgettoIngSW2019.modelTest;
 
-import it.polimi.ProgettoIngSW2019.model.LoginHandler;
+import it.polimi.ProgettoIngSW2019.model.*;
 import org.junit.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.spy;
 
 public class TestLoginHandler {
     LoginHandler loginHandler;
@@ -34,6 +35,12 @@ public class TestLoginHandler {
 
     @Test
     public void checkLoginIsCorrect(){
+        GameTable gt = new GameTable(new Maps().getMaps()[0], 5);
+        Player p1 = new Player(0, username_1, gt, hostname_1);
+        gt.setPlayersBeforeStart(loginHandler.getSessions());
+        TurnManager turnManager = spy(new TurnManager(gt));
+        loginHandler.setTurnManager(turnManager);
+
         assertTrue(loginHandler.checkLoginValidity("Pippo", "abc", "hostname1"));
     }
 
@@ -49,6 +56,12 @@ public class TestLoginHandler {
 
     @Test
     public void disconnectBeforeGameStart(){
+        GameTable gt = new GameTable(new Maps().getMaps()[0], 5);
+        Player p1 = new Player(0, username_1, gt, hostname_1);
+        gt.setPlayersBeforeStart(loginHandler.getSessions());
+        TurnManager turnManager = spy(new TurnManager(gt));
+        loginHandler.setTurnManager(turnManager);
+
         loginHandler.disconnectPlayer(hostname_1);
         assertTrue(loginHandler.getNrOfPlayerConnected() == 1);
         assertFalse(loginHandler.checkLoginValidity(username_1, pwd_1, hostname_1));

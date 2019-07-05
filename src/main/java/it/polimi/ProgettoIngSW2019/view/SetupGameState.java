@@ -22,6 +22,7 @@ public class SetupGameState extends State {
 
     private boolean gotInfoBeforeStartGame = false;
     private boolean isReconnection = false;
+    private boolean succesfullSetup = true;
     private String myName;
     private String hostname;
     private String playerWhoSetsTheGame;
@@ -74,7 +75,8 @@ public class SetupGameState extends State {
 
         if(playerWhoSetsTheGame.equals(myName)){
             chooseSetting();
-            spawnState.triggerFirstSpawn();
+            if(succesfullSetup)
+                spawnState.triggerFirstSpawn();
         }
         else{
             System.out.println(playerWhoSetsTheGame + " is setting the game. Wait...");
@@ -122,8 +124,10 @@ public class SetupGameState extends State {
                 //notify choice to server
                 SetupRequest setupRequest = new SetupRequest(hostname, map, skulls);
                 notifyEvent(setupRequest, EventType.REQUEST_SETUP);
-            }
-        }
+            }else
+                succesfullSetup = false;
+        }else
+            succesfullSetup = false;
     }
 
     /**

@@ -6,9 +6,5 @@
 		"aoe":"can_see",
 		"nrTarget":1,
 		"hitAllPlayers":false
-	},
-	"move":{
-		"hasToMove":false,
-		"nrOfMovement":0
 	}
 }

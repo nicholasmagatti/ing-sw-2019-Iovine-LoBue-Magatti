@@ -147,6 +147,7 @@ public class LoginState extends State{
      * @param setupInfo
      */
     void goToGameSetup(SetupInfo setupInfo){
+        idleState.setInfoBeforeSetup(name, hostname);
         setupGameState.setInfoBeforeStartGame(name, hostname, setupInfo.getMapLMList(), setupInfo.getUsername());
         StateManager.triggerNextState(setupGameState);
     }

@@ -7,12 +7,13 @@ import it.polimi.ProgettoIngSW2019.common.Message.toView.LoginResponse;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageConnection;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.utilities.ClientMessageReceiver;
-import it.polimi.ProgettoIngSW2019.model.LoginHandler;
+import it.polimi.ProgettoIngSW2019.model.*;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -135,6 +136,13 @@ public class TestConnectionController {
 
     @Test
     public void RequestLoginAfterStartValidCredentialTest(){
+        GameTable gt = new GameTable(new Maps().getMaps()[0], 5);
+        Player p1 = new Player(0, username, gt, hostname);
+        loginHandler.generateNewLogin(username, "a", hostname);
+        gt.setPlayersBeforeStart(loginHandler.getSessions());
+        TurnManager turnManager = spy(new TurnManager(gt));
+        loginHandler.setTurnManager(turnManager);
+
         Event testEventRequest = new Event(EventType.REQUEST_LOGIN, serialize(testLoginRequest));
         /*
             Primo inserimento
@@ -152,7 +160,7 @@ public class TestConnectionController {
         LoginResponse testLoginResponse = (LoginResponse)deserialize(eventCapture.getValue().getMessageInJsonFormat(), LoginResponse.class);
 
         assertEquals(EventType.RESPONSE_RECONNECT, eventCapture.getValue().getCommand());
-        assertTrue(testLoginResponse.isLoginSuccessfull());
+        assertFalse(testLoginResponse.isLoginSuccessfull());
     }
 
     @Test
@@ -227,6 +235,13 @@ public class TestConnectionController {
     @Test
     public void notAliveBeforeStartTest(){
         //Primo Inserimento
+        GameTable gt = new GameTable(new Maps().getMaps()[0], 5);
+        Player p1 = new Player(0, username, gt, hostname);
+        loginHandler.generateNewLogin(username, "a", hostname);
+        gt.setPlayersBeforeStart(loginHandler.getSessions());
+        TurnManager turnManager = spy(new TurnManager(gt));
+        loginHandler.setTurnManager(turnManager);
+
         Event testEventRequest = new Event(EventType.REQUEST_LOGIN, serialize(testLoginRequest));
         when(loginHandler.isGameStarted()).thenReturn(false);
         testVW.forwardEvent(testEventRequest);
@@ -244,6 +259,13 @@ public class TestConnectionController {
     @Test
     public void notAliveAfterStartTest(){
         //Primo Inserimento
+        GameTable gt = new GameTable(new Maps().getMaps()[0], 5);
+        Player p1 = new Player(0, username, gt, hostname);
+        loginHandler.generateNewLogin(username, "a", hostname);
+        gt.setPlayersBeforeStart(loginHandler.getSessions());
+        TurnManager turnManager = spy(new TurnManager(gt));
+        loginHandler.setTurnManager(turnManager);
+
         Event testEventRequest = new Event(EventType.REQUEST_LOGIN, serialize(testLoginRequest));
         when(loginHandler.isGameStarted()).thenReturn(false);
         testVW.forwardEvent(testEventRequest);

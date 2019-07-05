@@ -6,9 +6,5 @@
 		"aoe":"same_square",
 		"nrTarget":4,
 		"hitAllPlayers":true
-	},
-	"move":{
-		"hasToMove":false,
-		"nrOfMovement":0
 	}
 }

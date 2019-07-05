@@ -1,6 +1,6 @@
 {
 	"typeOfEffect":"one_per_square",
-	"dmg":{
+	"effect":{
 		"dmg":2,
 		"mark":2,
 		"aoe":"can_see",

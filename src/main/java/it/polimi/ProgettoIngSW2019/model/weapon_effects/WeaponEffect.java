@@ -28,7 +28,7 @@ public class WeaponEffect {
      * @suthor: Luca Iovine
      */
     public WeaponEffect(JsonObject jsonObj, DistanceDictionary distance){
-        effect = gson.fromJson(jsonObj.getAsJsonObject("dmg"), WeaponDmg.class);
+        effect = gson.fromJson(jsonObj.getAsJsonObject("effect"), WeaponDmg.class);
         this.distance = distance;
     }
 

@@ -1,6 +1,7 @@
 package it.polimi.ProgettoIngSW2019.view;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import it.polimi.ProgettoIngSW2019.common.Event;
 import it.polimi.ProgettoIngSW2019.common.LightModel.PlayerDataLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
@@ -49,7 +50,7 @@ public class ShootState extends State {
     public void update(Event event) {
         switch(event.getCommand()){
             case RESPONSE_REQUEST_WEAPON_INFO:
-                weaponInfoList = gsonReader.fromJson(event.getMessageInJsonFormat(), List.class);
+                weaponInfoList = gsonReader.fromJson(event.getMessageInJsonFormat(), new TypeToken<List<WeaponInfo>>(){}.getType());
                 break;
         }
     }

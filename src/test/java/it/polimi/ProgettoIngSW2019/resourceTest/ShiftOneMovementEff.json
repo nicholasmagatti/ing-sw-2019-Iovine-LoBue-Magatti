@@ -1,6 +1,6 @@
 {
 	"typeOfEffect":"shift_one_movement",
-	"dmg":{
+	"effect":{
 		"dmg":2,
 		"mark":2,
 		"aoe":"can_see",

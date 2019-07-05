@@ -10,6 +10,7 @@ import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -108,7 +109,7 @@ public class VirtualView extends Observable<Event> implements IVirtualView, Obse
         if(event.getCommand().equals(EventType.INPUT_TIME_EXPIRED)){
             try {
                 clientMessageReceiver.get(msg.getHostname()).send(event);
-                notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
+                //notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
             }catch(RemoteException e){
                 notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
             }
@@ -120,6 +121,13 @@ public class VirtualView extends Observable<Event> implements IVirtualView, Obse
             }catch(RemoteException e){
                 notify(new Event(EventType.NOT_ALIVE, event.getMessageInJsonFormat()));
             }
+        }
+
+        if(event.getCommand().equals(EventType.USER_HAS_DISCONNECTED)){
+            String hostnames[] = msg.getHostname().split(";");
+            for(String host: hostnames)
+                if(host != "")
+                    sendMessage(event, Arrays.asList(host));
         }
     }
 

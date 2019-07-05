@@ -6,9 +6,5 @@
 		"aoe":"can_see_at_least_one",
 		"nrTarget":1,
 		"hitAllPlayers":false
-	},
-	"move":{
-		"hasToMove":false,
-		"nrOfMovement":0
 	}
 }

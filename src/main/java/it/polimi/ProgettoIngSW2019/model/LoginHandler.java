@@ -24,13 +24,16 @@ public class LoginHandler extends Observable<Event> {
     private boolean inSetupMode = false;
     private int nrOfPlayerConnected = 0;
     private final int timeForPing = 100;
-    private final int timeBeforeStartingGame = 10000;
+    private final int timeBeforeStartingGame = 5000;
+    private final int timeForInput = 180000;
     private boolean timerStarted = false;
     private Iterator<Map.Entry<String, Session>> entryIterator;
 
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private TimerTask timerTask;
     private Timer timer;
+
+    private String setupUser;
 
     public LoginHandler(){
         sessions = new HashMap<>();
@@ -157,11 +160,11 @@ public class LoginHandler extends Observable<Event> {
         System.out.println("Going in setup");
         gameStarted = true;
         inSetupMode = true;
-        String username = entryIterator.next().getValue().getUsername();
+        setupUser = entryIterator.next().getValue().getUsername();
 
         for(String hostname: getActiveUsersHostname()) {
             List<MapLM> mapLMList = generateMapLMListForGameSetup();
-            SetupInfo msg = new SetupInfo(username, hostname, mapLMList);
+            SetupInfo msg = new SetupInfo(setupUser, hostname, mapLMList);
 
             notify(new Event(EventType.GO_IN_GAME_SETUP, serialize(msg)));
         }
@@ -208,16 +211,19 @@ public class LoginHandler extends Observable<Event> {
     //TESTED --> disconnectBeforeGameStart
     public void disconnectPlayer(String hostname){
         nrOfPlayerConnected--;
-        turnManager.getPlayerFromCharaName(sessions.get(hostname).getUsername()).suspendPlayer();
+        usernameConnected.remove(sessions.get(hostname).getUsername());
         if(!isGameStarted()){
             sessions.remove(hostname);
         }else {
-            if(turnManager.getCurrentPlayer().getHostname().equals(hostname)
-            || nrOfPlayerConnected < 3)
-                notify(new Event(EventType.END_TURN_DUE_USER_DISCONNECTION, ""));
+            if(!inSetupMode) {
+                turnManager.getPlayerFromCharaName(sessions.get(hostname).getUsername()).suspendPlayer();
+                if (turnManager.getCurrentPlayer().getHostname().equals(hostname)
+                        || nrOfPlayerConnected < 3)
+                    notify(new Event(EventType.END_TURN_DUE_USER_DISCONNECTION, ""));
+            }else {
+                goInSetup();
+            }
         }
-
-        usernameConnected.remove(sessions.get(hostname).getUsername());
     }
 
     /**
@@ -313,7 +319,7 @@ public class LoginHandler extends Observable<Event> {
             }
         };
         timerStarted = true;
-        timer.schedule(timerTask, timeBeforeStartingGame);
+        timer.schedule(timerTask, timeForInput);
     }
 
     /**
@@ -337,11 +343,30 @@ public class LoginHandler extends Observable<Event> {
     //NOT TO BE TESTED
     private void sendTimeExpired(){
         MessageConnection msg = null;
+        String host = "";
         if(!inSetupMode) {
-            msg = new MessageConnection(turnManager.getCurrentPlayer().getCharaName(), turnManager.getCurrentPlayer().getHostname());
+            host = turnManager.getCurrentPlayer().getHostname();
+            msg = new MessageConnection(turnManager.getCurrentPlayer().getCharaName(), host);
+        }else{
+            for(Map.Entry<String, Session> entry: sessions.entrySet()){
+                if(entry.getValue().getUsername().equals(setupUser)) {
+                    host = entry.getValue().gethostname();
+                }
+            }
+            msg = new MessageConnection(setupUser, host);
         }
         stopActionTimer();
         notify(new Event(EventType.INPUT_TIME_EXPIRED, serialize(msg)));
+
+        StringBuilder listOfHostname = new StringBuilder();
+        for(int i = 0; i < getActiveUsersHostname().size()-1; i++){
+            listOfHostname.append(getActiveUsersHostname().get(i)+";");
+        }
+        listOfHostname.append(getActiveUsersHostname().get(getActiveUsersHostname().size()-1));
+
+        msg = new MessageConnection(setupUser, listOfHostname.toString());
+        notify(new Event(EventType.USER_HAS_DISCONNECTED, serialize(msg)));
+        disconnectPlayer(host);
     }
 
     /**

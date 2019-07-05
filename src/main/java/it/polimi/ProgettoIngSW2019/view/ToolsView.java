@@ -7,6 +7,7 @@ import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
 import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.common.utilities.InputScanner;
+import it.polimi.ProgettoIngSW2019.common.utilities.Observer;
 import it.polimi.ProgettoIngSW2019.model.AmmoPoint;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
@@ -914,16 +915,14 @@ public abstract class ToolsView {
      */
     private static boolean checkIfNeedMore(int[] costToPayToCheck){
         boolean result = false;
-        Iterator<PowerUpLM> iter = tmpAmmoInPowerUp.iterator();
-        PowerUpLM power;
+        List<PowerUpLM> copyOfPowerUpLMList = copyOf(tmpAmmoInPowerUp);
 
         if(costToPayToCheck[GeneralInfo.RED_ROOM_ID] > 0){
             result = true;
         }
         else{
             tmpAmmoInAmmoBox[GeneralInfo.RED_ROOM_ID] = 0;
-            while(iter.hasNext()) {
-                power = iter.next();
+            for(PowerUpLM power: copyOfPowerUpLMList){
                 if(power.getGainAmmoColor().equals(AmmoType.RED))
                     tmpAmmoInPowerUp.remove(power);
             }
@@ -934,8 +933,7 @@ public abstract class ToolsView {
         }
         else{
             tmpAmmoInAmmoBox[GeneralInfo.BLUE_ROOM_ID] = 0;
-            while(iter.hasNext()) {
-                power = iter.next();
+            for(PowerUpLM power: copyOfPowerUpLMList){
                 if (power.getGainAmmoColor().equals(AmmoType.BLUE))
                     tmpAmmoInPowerUp.remove(power);
             }
@@ -946,8 +944,7 @@ public abstract class ToolsView {
         }
         else{
             tmpAmmoInAmmoBox[GeneralInfo.YELLOW_ROOM_ID] = 0;
-            while(iter.hasNext()) {
-                power = iter.next();
+            for(PowerUpLM power: copyOfPowerUpLMList){
                 if(power.getGainAmmoColor().equals(AmmoType.YELLOW))
                     tmpAmmoInPowerUp.remove(power);
             }
@@ -956,6 +953,12 @@ public abstract class ToolsView {
         return result;
     }
 
+    private static List<PowerUpLM> copyOf(List<PowerUpLM> powerUpLMList){
+        List<PowerUpLM> cloneList = new ArrayList<>();
+        cloneList.addAll(powerUpLMList);
+
+        return cloneList;
+    }
     /**
      * Used to construct the interaction with the user.
      * It ask how the user are gonna pay the amount cost.

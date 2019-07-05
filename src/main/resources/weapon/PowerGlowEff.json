@@ -6,9 +6,5 @@
 		"aoe":"up_to_one",
 		"nrTarget":1,
 		"hitAllPlayers":false
-	},
-	"move":{
-		"hasToMove":false,
-		"nrOfMovement":0
 	}
 }
