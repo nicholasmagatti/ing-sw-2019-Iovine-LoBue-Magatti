@@ -7,6 +7,7 @@ import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageConnection;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.SetupInfo;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.SquareType;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import it.polimi.ProgettoIngSW2019.common.utilities.Observable;
 import it.polimi.ProgettoIngSW2019.common.utilities.TypeAdapterSquareLM;
 
@@ -60,7 +61,7 @@ public class LoginHandler extends Observable<Event> {
         usernameConnected.add(username);
         nrOfPlayerConnected++;
         System.out.println("Giocatori connessi: " + nrOfPlayerConnected);
-        if(nrOfPlayerConnected == 3){
+        if(nrOfPlayerConnected == GeneralInfo.MIN_NUM_PLAYERS){
             System.out.println("Timer started");
             timer = new Timer();
             timerTask = new TimerTask() {
@@ -72,7 +73,7 @@ public class LoginHandler extends Observable<Event> {
             };
             timerStarted = true;
             timer.schedule(timerTask, timeBeforeStartingGame);
-        }else if(nrOfPlayerConnected == 5){
+        }else if(nrOfPlayerConnected == GeneralInfo.MAX_NUM_PLAYERS){
             timerTask.cancel();
             timer.cancel();
             timer.purge();
