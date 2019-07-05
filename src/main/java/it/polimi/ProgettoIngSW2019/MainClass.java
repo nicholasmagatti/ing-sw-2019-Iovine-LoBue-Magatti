@@ -51,7 +51,7 @@ public class MainClass {
                 PowerUpState powerUpState = new PowerUpState(idleState);
                 ActionState actionState = new ActionState(powerUpState, reloadState);
                 GrabState grabState = new GrabState(actionState);
-                ShootState shootState = new ShootState(actionState);
+                ShootState shootState = new ShootState(actionState, powerUpState);
                 MoveState moveState = new MoveState(actionState);
                 SpawnState spawnState = new SpawnState(idleState);
                 SetupGameState setupGameState = new SetupGameState(spawnState, idleState);
@@ -59,7 +59,7 @@ public class MainClass {
                 GeneralMessageObserver generalMessageObserver = new GeneralMessageObserver();
                 InfoOnView infoOnView = new InfoOnView();
 
-                idleState.linkState(actionState, spawnState, setupGameState);
+                idleState.linkState(actionState, spawnState, setupGameState, powerUpState);
                 actionState.linkToMoveGrabShoot(moveState, grabState, shootState);
 
                 NetworkHandler networkHandler = new NetworkHandler(virtualView);

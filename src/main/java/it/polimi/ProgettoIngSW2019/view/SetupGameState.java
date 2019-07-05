@@ -31,6 +31,11 @@ public class SetupGameState extends State {
 
     private SpawnState spawnState;
 
+    /**
+     * Constructor
+     * @param spawnState
+     * @param idleState
+     */
     public SetupGameState(SpawnState spawnState, IdleState idleState){
         this.spawnState = spawnState;
         this.idleState = idleState;
@@ -63,7 +68,9 @@ public class SetupGameState extends State {
         isReconnection = true;
     }
 
-
+    /**
+     * Enters in this state when triggered and manage all the possible interactions for the settings.
+     */
     @Override
     public void startState() {
         if(!gotInfoBeforeStartGame){
@@ -85,6 +92,10 @@ public class SetupGameState extends State {
 
     }
 
+    /**
+     * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     * @param event
+     */
     @Override
     public void update(Event event) {
         EventType command = event.getCommand();

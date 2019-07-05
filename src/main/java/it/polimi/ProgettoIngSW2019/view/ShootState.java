@@ -7,54 +7,92 @@ import it.polimi.ProgettoIngSW2019.common.LightModel.PlayerDataLM;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.InfoRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toController.ShootChoiceRequest;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.EnemyInfo;
+import it.polimi.ProgettoIngSW2019.common.Message.toView.ShootPowerUpInfo;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.WeaponInfo;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
 import it.polimi.ProgettoIngSW2019.common.enums.WeaponEffectType;
+import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * State of the view that manages the actions of shooting.
+ * @author Luca Iovine
+ */
 public class ShootState extends State {
-    Gson gsonReader;
-    ActionState actionState;
-    StringBuilder sb;
-    String msg;
+    private Gson gsonReader;
+    private ActionState actionState;
+    private PowerUpState powerUpState;
+    private StringBuilder sb;
+    private String msg;
 
-    int j;
-    int i;
-    String userChoice;
-    List<String> possibleChoice;
-    int[] positionChosen;
-    List<Integer> idEnemyChosen;
-    List<EnemyInfo> enemyChosenInfoList;
-    List<WeaponInfo> weaponInfoList;
+    private int j;
+    private int i;
+    private String userChoice;
+    private List<String> possibleChoice;
+    private int[] positionChosen;
+    private List<Integer> idEnemyChosen;
+    private List<EnemyInfo> enemyChosenInfoList;
+    private List<WeaponInfo> weaponInfoList;
+    private ShootPowerUpInfo shootPowerUpInfo;
+    private boolean canUseTargetingScope = false;
 
     /**
-     * @author: Luca Iovine
+     * Constructor
+     * @param actionState
+     * @param powerUpState
      */
-    public ShootState(ActionState actionState){
+    public ShootState(ActionState actionState, PowerUpState powerUpState){
         this.actionState = actionState;
+        this.powerUpState = powerUpState;
         gsonReader = new Gson();
         sb = new StringBuilder();
     }
 
+    /**
+     * Enters in this state when triggered and manage all the possible interactions.
+     */
     @Override
     void startState() {
         InfoRequest infoRequest = new InfoRequest(InfoOnView.getHostname(), InfoOnView.getMyId());
         notifyEvent(infoRequest, EventType.REQUEST_WEAPON_INFO);
 
         interaction(weaponInfoList);
+
+        if(canUseTargetingScope){
+            //reset boolean
+            canUseTargetingScope = false;
+            String userAnswer = powerUpState.askUsePowerup(shootPowerUpInfo.getPowerUpUsableList());
+            if (userAnswer != null && userAnswer.equals(GeneralInfo.YES_COMMAND)) {
+                    powerUpState.triggerPowerupState(shootPowerUpInfo);
+            }
+        }
+
+
     }
 
+    /**
+     * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     * @param event
+     */
     @Override
     public void update(Event event) {
         switch(event.getCommand()){
             case RESPONSE_REQUEST_WEAPON_INFO:
                 weaponInfoList = gsonReader.fromJson(event.getMessageInJsonFormat(), new TypeToken<List<WeaponInfo>>(){}.getType());
                 break;
+            case CAN_USE_TARGETING_SCOPE:
+                canUseTargetingScope = true;
+                shootPowerUpInfo = new Gson().fromJson(event.getMessageInJsonFormat(), ShootPowerUpInfo.class);
+                break;
         }
     }
 
+    /**
+     * Interation with the user for the actions of shooting
+     * @param weaponInfoList
+     */
     private void interaction(List<WeaponInfo> weaponInfoList){
         if(weaponInfoList.isEmpty()){
             msg = "You have no valid weapon to hit any enemy.\n" +
@@ -70,7 +108,12 @@ public class ShootState extends State {
             askWhichWeapon(weaponInfoList);
     }
 
+    /**
+     * Ask the weapon to use
+     * @param weaponInfoList
+     */
     private void askWhichWeapon(List<WeaponInfo> weaponInfoList){
+        resetParam();
         int choiceNumber = 1;
         WeaponInfo weaponChosen;
 
@@ -93,7 +136,6 @@ public class ShootState extends State {
         System.out.println(sb);
         ToolsView.printGeneralOptions();
 
-        resetParam();
         System.out.print("Make your choice: ");
         /*
             Input utente
@@ -101,6 +143,7 @@ public class ShootState extends State {
         userChoice = ToolsView.readUserChoice(possibleChoice, true);
         if(userChoice != null) {
             weaponChosen = weaponInfoList.get(Integer.parseInt(userChoice) - 1);
+            resetParam();
             if(weaponChosen.getEffectType().equals(WeaponEffectType.FLAMETHROWER))
                 flamethrowerEffectMenu(weaponChosen);
             else if(weaponChosen.getEffectType().equals(WeaponEffectType.SAME_ROOM))
@@ -116,6 +159,10 @@ public class ShootState extends State {
         }
     }
 
+    /**
+     * Manage the effect of a simple weapon
+     * @param weaponChosen
+     */
     private void generalEffectMenu(WeaponInfo weaponChosen) {
         EnemyInfo enemyChosen;
         int choiceNumber = 1;
@@ -155,6 +202,10 @@ public class ShootState extends State {
         }
     }
 
+    /**
+     * Manages the flamethrower
+     * @param weaponChosen
+     */
     private void flamethrowerEffectMenu(WeaponInfo weaponChosen){
         int i;
         PlayerDataLM myData = null;
@@ -284,6 +335,10 @@ public class ShootState extends State {
 
     }
 
+    /**
+     * Manages effects for every enemy on a specific square
+     * @param weaponChosen
+     */
     private void onepersquareEffectMenu(WeaponInfo weaponChosen){
         idEnemyChosen = new ArrayList<>();
         int j;
@@ -361,6 +416,10 @@ public class ShootState extends State {
         }
     }
 
+    /**
+     * Manages effect for players in the same room
+     * @param weaponChosen
+     */
     private void sameroomEffectMenu(WeaponInfo weaponChosen){
         List<Integer> rooms = new ArrayList<>();
         List<List<EnemyInfo>> enemyDividedByRoom = new ArrayList<>();
@@ -418,6 +477,10 @@ public class ShootState extends State {
         }
     }
 
+    /**
+     * Manage effects that concern movements.
+     * @param weaponChosen
+     */
     private void withMovementEffectMenu(WeaponInfo weaponChosen){
         generalEffectMenu(weaponChosen);
 
@@ -451,6 +514,9 @@ public class ShootState extends State {
         }
     }
 
+    /**
+     * Reset the parameters
+     */
     private void resetParam(){
         userChoice = null;
         possibleChoice = new ArrayList<>();

@@ -6,7 +6,6 @@ import it.polimi.ProgettoIngSW2019.common.Message.toView.MessageScorePlayer;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.ScorePlayerWhoHit;
 import it.polimi.ProgettoIngSW2019.common.Message.toView.TotalPointsAndWinner;
 import it.polimi.ProgettoIngSW2019.common.enums.EventType;
-import it.polimi.ProgettoIngSW2019.model.GameTable;
 import it.polimi.ProgettoIngSW2019.model.Player;
 import it.polimi.ProgettoIngSW2019.model.TurnManager;
 import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
@@ -32,6 +31,10 @@ public class FinalScoreController extends Controller {
         super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
     }
 
+    /**
+     * Method that brings the game to its end: calculate the points and send all the information
+     * about the total points and the winner to the players.
+     */
     void endGame(){
         notifyTheGameIsEnding();
         scoreNonDeadPlayersWithDamage();
@@ -39,6 +42,11 @@ public class FinalScoreController extends Controller {
         finalResults();
     }
 
+    /**
+     * This method does nothing because this class was meant to be an observer but also needed
+     * to extend the class Controller to use the method sendInfo.
+     * @param message
+     */
     @Override
     public void update(Event message) {
 

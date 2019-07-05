@@ -109,8 +109,10 @@ public class SpawnController extends Controller {
     private void spawnDrawTwoCards() {
         //spawnPlayer draw due powerUp all'inizio del game per lo spawn
         powerUpsDraw.clear();
-        powerUpsDraw.add((PowerUp) getTurnManager().getGameTable().getPowerUpDeck().drawCard());
-        powerUpsDraw.add((PowerUp) getTurnManager().getGameTable().getPowerUpDeck().drawCard());
+        for(int i=0; i < 2; i++) {
+            powerUpsDraw.add((PowerUp) getTurnManager().getGameTable().getPowerUpDeck().drawCard());
+            getTurnManager().resetDecksIfNecessary();
+        }
 
         //send message spawn player draw cards
         String messageDrawMyPowerUpJson = getCreateJson().createMessageDrawMyPowerUpJson(spawnPlayer, powerUpsDraw);
@@ -143,6 +145,7 @@ public class SpawnController extends Controller {
 
         //draw 1 powerUp and add it on powerUps list of the spawnPlayer
         powerUpsDraw.add((PowerUp) getTurnManager().getGameTable().getPowerUpDeck().drawCard());
+        getTurnManager().resetDecksIfNecessary();
 
         //send message spawn player draw cards
         String messageDrawMyPowerUpJson = getCreateJson().createMessageDrawMyPowerUpJson(spawnPlayer, powerUpsDraw);

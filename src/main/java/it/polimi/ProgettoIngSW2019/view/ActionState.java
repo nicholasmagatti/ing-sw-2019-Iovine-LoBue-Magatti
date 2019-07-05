@@ -54,6 +54,9 @@ public class ActionState extends State {
         moveGrabShootLinked = true;
     }
 
+    /**
+     * Enters in this state when triggered and manage all the possible interactions.
+     */
     @Override
     public void startState() {
 
@@ -96,6 +99,10 @@ public class ActionState extends State {
         StateManager.triggerNextState(this);
     }
 
+    /**
+     * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     * @param event
+     */
     @Override
     public void update(Event event) {
 
@@ -108,6 +115,10 @@ public class ActionState extends State {
         }
     }
 
+    /**
+     * Store the information about the possibilities for the next action (including the possibility to use powerups)
+     * @param infoStart
+     */
     void setInfoStart(MessageActionLeft infoStart){
         this.infoStart = infoStart;
     }

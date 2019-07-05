@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * State that manages the interactions with the user for reloading weapons
  * @author Nicholas Magatti
  */
 public class ReloadState extends State{
@@ -45,6 +46,10 @@ public class ReloadState extends State{
         StateManager.triggerNextState(idleState);
     }
 
+    /**
+     * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     * @param event
+     */
     @Override
     public void update(Event event){
 

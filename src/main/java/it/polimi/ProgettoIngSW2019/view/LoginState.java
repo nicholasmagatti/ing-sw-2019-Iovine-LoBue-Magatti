@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 /**
+ * Login interactions.
  * @author Nicholas Magatti
  */
 public class LoginState extends State{
@@ -85,6 +86,10 @@ public class LoginState extends State{
         }
     }
 
+    /**
+     * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     * @param event
+     */
     @Override
     public void update(Event event) {
         EventType command = event.getCommand();
@@ -235,10 +240,19 @@ public class LoginState extends State{
         return inputFromUser;
     }
 
+    /**
+     * Set the client for local game
+     * @param isLocalOnly
+     */
     public void setIsLocalOnly(boolean isLocalOnly){
         this.isLocalOnly = isLocalOnly;
     }
 
+    /**
+     * Use for the deserialization of the squares for th light model
+     * @param json
+     * @return return the information of setup
+     */
     public SetupInfo deserialize(String json){
         Gson gsonReader = new GsonBuilder()
                 .registerTypeAdapter(SquareLM.class, new TypeAdapterSquareLM())

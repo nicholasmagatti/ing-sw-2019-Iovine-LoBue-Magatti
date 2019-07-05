@@ -22,10 +22,17 @@ public class SpawnState extends State{
     private IdleState idleState;
     private DrawCardsInfoResponse drawCardsInfo;
 
+    /**
+     * Constructor
+     * @param idleState
+     */
     public SpawnState(IdleState idleState){
         this.idleState = idleState;
     }
 
+    /**
+     * Enters in this state when triggered and manage all the possible interactions.
+     */
     @Override
     public void startState() {
 
@@ -49,6 +56,10 @@ public class SpawnState extends State{
 
     }
 
+    /**
+     * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     * @param event
+     */
     @Override
     public void update(Event event) {
 

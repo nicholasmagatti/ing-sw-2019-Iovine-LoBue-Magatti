@@ -16,28 +16,36 @@ import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * State of the view that manages the action of grabbing
+ * @author Luca Iovine
+ */
 public class GrabState extends State{
-    Gson gsonReader = new Gson();
-    ActionState actionState;
-    StringBuilder sb;
-    String msg;
+    private Gson gsonReader = new Gson();
+    private ActionState actionState;
+    private StringBuilder sb;
+    private String msg;
 
-    List<WeaponLM> weaponToDiscardList;
-    List<String> possibleChoice;
-    GrabInfoResponse grabInfo;
-    WeaponsCanPayResponse weaponInfo;
+    private List<WeaponLM> weaponToDiscardList;
+    private List<String> possibleChoice;
+    private GrabInfoResponse grabInfo;
+    private WeaponsCanPayResponse weaponInfo;
     boolean youAreInSpawningPoint = false;
     boolean youHaveToDiscardWeapon = false;
 
     final String EXPLANATION_GRAB = ") to indicate where you want to move and grab: ";
 
     /**
+     * Enters in this state when triggered and manage all the possible interactions.
      * @author: Luca Iovine
      */
     public GrabState(ActionState actionState){
         this.actionState = actionState;
     }
 
+    /**
+     * Enters in this state when triggered and manage all the possible interactions.
+     */
     @Override
     void startState() {
         InfoRequest infoRequest = new InfoRequest(InfoOnView.getHostname(), InfoOnView.getMyId());
@@ -50,6 +58,10 @@ public class GrabState extends State{
         }
     }
 
+    /**
+     * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     * @param event
+     */
     @Override
     public void update(Event event) {
         possibleChoice= new ArrayList<>();
@@ -67,6 +79,10 @@ public class GrabState extends State{
         }
     }
 
+    /**
+     * Notify position to grab o the server
+     * @param grabInfo
+     */
     private void sendPositionToGrab(GrabInfoResponse grabInfo){
         int i;
         int[] positionChosen;
@@ -96,6 +112,11 @@ public class GrabState extends State{
         }
     }
 
+    /**
+     * Notify weapon to buy to the controller
+     * @param weaponInfo
+     * @param weaponToDiscardList
+     */
     private void sendWeaponToBuy(WeaponsCanPayResponse weaponInfo, List<WeaponLM> weaponToDiscardList){
         int idWeaponChosen;
         int idWeaponToDiscard = -2;
@@ -122,6 +143,12 @@ public class GrabState extends State{
         }
     }
 
+    /**
+     * Get the cost to pay as a string understandable to the user
+     * @param weapon
+     * @param payAmmoLists
+     * @return
+     */
     private String getCost(WeaponLM weapon, List<PayAmmoList> payAmmoLists){
         String cost = "";
         for(PayAmmoList payment: payAmmoLists){
@@ -134,6 +161,11 @@ public class GrabState extends State{
         return cost;
     }
 
+    /**
+     * Ask the weapons to use
+     * @param weaponInfo
+     * @return
+     */
     private int askWeapon(WeaponsCanPayResponse weaponInfo){
         int i;
         String cost;
@@ -159,6 +191,11 @@ public class GrabState extends State{
             return -1;
     }
 
+    /**
+     * Ask the user to choose the weapon to discard to get the new one
+     * @param weaponToDiscardList
+     * @return
+     */
     private int askDiscardWeapon( List<WeaponLM> weaponToDiscardList){
         int i;
         int idWeaponToDiscard = -1;

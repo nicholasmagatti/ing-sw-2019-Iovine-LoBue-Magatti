@@ -60,6 +60,10 @@ public abstract class ToolsView {
     private static int i;
 
 
+    /**
+     * Set the input scanner for this clint.
+     * @param scanner
+     */
     public static void setInputScanner(InputScanner scanner){
         inputScanner = scanner;
     }
@@ -136,20 +140,6 @@ public abstract class ToolsView {
         for(PowerUpLM pu : powerUps){
             System.out.print(pu.getName() + "(" + ToolsView.ammoTypeToString(pu.getGainAmmoColor()) + ")");
             if(powerUps.indexOf(pu) != powerUps.size()-1){
-                System.out.print(", ");
-            }
-        }
-    }
-
-    /**
-     * Print list of players with their names in a line.
-     * @param players
-     * @author Nicholas Magatti
-     */
-    static void printListOfPlayersNames(List<PlayerDataLM> players){
-        for(PlayerDataLM p : players){
-            System.out.print(p.getNickname());
-            if(players.indexOf(p) != players.size()-1){
                 System.out.print(", ");
             }
         }
@@ -1005,7 +995,10 @@ public abstract class ToolsView {
         }
     }
 
-
+    /**
+     * When waiting for a response from the server that has not arrived yer, wait a
+     * short time before checking again if the server sent the required information
+     */
     static void waitServerResponse(){
         try {
             Thread.sleep(5000);

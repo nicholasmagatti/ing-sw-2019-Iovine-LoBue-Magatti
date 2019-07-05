@@ -11,6 +11,10 @@ import it.polimi.ProgettoIngSW2019.common.utilities.GeneralInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * State of the view that manages the actions of move.
+ * @author Luca Iovine
+ */
 public class MoveState extends State{
     Gson gsonReader = new Gson();
     ActionState actionState;
@@ -20,12 +24,16 @@ public class MoveState extends State{
     MoveInfoResponse moveInfo;
 
     /**
+     * Constructor
      * @author: Luca Iovine
      */
     public MoveState(ActionState actionState){
         this.actionState = actionState;
     }
 
+    /**
+     * Enters in this state when triggered and manage all the possible interactions.
+     */
     @Override
     void startState() {
         InfoRequest infoRequest = new InfoRequest(InfoOnView.getHostname(), InfoOnView.getMyId());
@@ -34,6 +42,10 @@ public class MoveState extends State{
         interaction(moveInfo);
     }
 
+    /**
+     * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     * @param event
+     */
     @Override
     public void update(Event event) {
         if(event.getCommand().equals(EventType.RESPONSE_REQUEST_MOVE_INFO)){
@@ -41,6 +53,10 @@ public class MoveState extends State{
         }
     }
 
+    /**
+     * Interaction with the user for the movements.
+     * @param moveInfo
+     */
     private void interaction(MoveInfoResponse moveInfo){
         sb = new StringBuilder();
         int i;
