@@ -30,6 +30,7 @@ public class LoginState extends State{
     private SetupGameState setupGameState;
     private boolean isLocalOnly = false;
     private boolean isReconnection = false;
+    private boolean stopEverything = false;
 
     /**
      * Constructor
@@ -62,8 +63,17 @@ public class LoginState extends State{
             login(ongoingGame);
 
             while(!succesfullLogin) {
-                askCredentials();
+                if(stopEverything){
+                    //ends here and does nothing
+                    return;
+                }
+                else {
+                    askCredentials();
+                }
             }
+
+            if(stopEverything)
+                return;
 
             if(isReconnection) {
                 LoginRequest msg = new LoginRequest("", "", hostname);
@@ -124,7 +134,13 @@ public class LoginState extends State{
                 isReconnection = true;
             }
             else{
-                System.out.println("Wrong name or password. Write them again.");
+                if(ongoingGame) {
+                    System.out.println("Wrong name or password. Write them again.");
+                }
+                else{
+                    System.out.println("Too late. We are sorry but the game is already starting. Wait for the next one.");
+                    stopEverything = true;
+                }
             }
         }
 

@@ -37,7 +37,8 @@ public class HellionEffect extends  WeaponEffect {
     public void activateEffect(Player weaponUser, List<Player> enemyChosenList) throws EnemySizeLimitExceededException {
         super.activateEffect(weaponUser, enemyChosenList);
         for(Player target: enemyChosenList.get(0).getPosition().getPlayerOnSquare()){
-            target.markPlayer(nrOfMarkToGiveAfterEffect, target);
+            if(weaponUser.getIdPlayer() != enemyChosenList.get(0).getIdPlayer())
+                weaponUser.markPlayer(nrOfMarkToGiveAfterEffect, target);
         }
     }
 }

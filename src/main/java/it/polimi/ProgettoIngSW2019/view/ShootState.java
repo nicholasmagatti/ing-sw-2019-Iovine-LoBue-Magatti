@@ -159,11 +159,7 @@ public class ShootState extends State {
         }
     }
 
-    /**
-     * Manage the effect of a simple weapon
-     * @param weaponChosen
-     */
-    private void generalEffectMenu(WeaponInfo weaponChosen) {
+    private void generalInteraction(WeaponInfo weaponChosen){
         EnemyInfo enemyChosen;
         int choiceNumber = 1;
         /*
@@ -172,6 +168,10 @@ public class ShootState extends State {
         msg = "You can target to " + weaponChosen.getNumberOfTargetHittable() + " players.\n";
         sb.append(msg);
         for (i = weaponChosen.getNumberOfTargetHittable(); i > 0; i--){
+            sb = new StringBuilder();
+            possibleChoice = new ArrayList<>();
+            if(weaponChosen.getEnemyVisible().isEmpty())
+                break;
             for (EnemyInfo enemy : weaponChosen.getEnemyVisible()) {
                 possibleChoice.add(Integer.toString(choiceNumber));
                 sb.append(choiceNumber + ": " + enemy.getName() + "\n");
@@ -195,6 +195,13 @@ public class ShootState extends State {
                 weaponChosen.getEnemyVisible().remove(Integer.parseInt(userChoice) - 1);
             }
         }
+    }
+    /**
+     * Manage the effect of a simple weapon
+     * @param weaponChosen
+     */
+    private void generalEffectMenu(WeaponInfo weaponChosen) {
+        generalInteraction(weaponChosen);
 
         if(userChoice != null){
             ShootChoiceRequest shootChoiceRequest = new ShootChoiceRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), weaponChosen.getWeaponId(), idEnemyChosen, null);
@@ -254,41 +261,49 @@ public class ShootState extends State {
         possibleChoice.add(EAST);
 
         //Costruisco il messaggio
-        msg = "North: ";
-        sb.append(msg);
-        for(i = 0; i < northEnemy.size() - 1; i++){
-           msg = northEnemy.get(i).getName() + ", ";
-           sb.append(msg);
+        if(!northEnemy.isEmpty()) {
+            msg = "North: ";
+            sb.append(msg);
+            for (i = 0; i < northEnemy.size() - 1; i++) {
+                msg = northEnemy.get(i).getName() + ", ";
+                sb.append(msg);
+            }
+            msg = northEnemy.get(i).getName() + ", ";
+            sb.append(msg);
         }
-        msg = northEnemy.get(i).getName() + ", ";
-        sb.append(msg);
 
-        msg = "\nSouth: ";
-        sb.append(msg);
-        for(i = 0; i < southEnemy.size() - 1; i++){
+        if(!southEnemy.isEmpty()) {
+            msg = "\nSouth: ";
+            sb.append(msg);
+            for (i = 0; i < southEnemy.size() - 1; i++) {
+                msg = southEnemy.get(i).getName() + ", ";
+                sb.append(msg);
+            }
             msg = southEnemy.get(i).getName() + ", ";
             sb.append(msg);
         }
-        msg = southEnemy.get(i).getName() + ", ";
-        sb.append(msg);
 
-        msg = "\nEast: ";
-        sb.append(msg);
-        for(i = 0; i < eastEnemy.size() - 1; i++){
+        if(!eastEnemy.isEmpty()) {
+            msg = "\nEast: ";
+            sb.append(msg);
+            for (i = 0; i < eastEnemy.size() - 1; i++) {
+                msg = eastEnemy.get(i).getName() + ", ";
+                sb.append(msg);
+            }
             msg = eastEnemy.get(i).getName() + ", ";
             sb.append(msg);
         }
-        msg = eastEnemy.get(i).getName() + ", ";
-        sb.append(msg);
 
-        msg = "\nWest: ";
-        sb.append(msg);
-        for(i = 0; i < westEnemy.size() - 1; i++){
+        if(!westEnemy.isEmpty()) {
+            msg = "\nWest: ";
+            sb.append(msg);
+            for (i = 0; i < westEnemy.size() - 1; i++) {
+                msg = westEnemy.get(i).getName() + ", ";
+                sb.append(msg);
+            }
             msg = westEnemy.get(i).getName() + ", ";
             sb.append(msg);
         }
-        msg = westEnemy.get(i).getName() + ", ";
-        sb.append(msg);
 
         msg = "Type one of the four directions to shoot the corresponding enemies: ";
         sb.append(msg);
@@ -346,6 +361,7 @@ public class ShootState extends State {
         List<List<String>> enemyDividedBySquare = new ArrayList<>();
         List<int[]> squares = new ArrayList<>();
 
+
         //Estrapolo tutti i quadrati in cui ho dei nemici
         for(EnemyInfo enemy: weaponChosen.getEnemyVisible()){
             if(!squares.contains(enemy.getPosition())){
@@ -371,6 +387,10 @@ public class ShootState extends State {
         sb.append(msg);
 
         for (int s = weaponChosen.getNumberOfTargetHittable(); s > 0; s--) {
+            possibleChoice = new ArrayList<>();
+            sb = new StringBuilder();
+            if(weaponChosen.getEnemyVisible().isEmpty())
+                break;
             for (i = 0; i < enemyDividedBySquare.size(); i++) {
                 msg = "Square " + (i + 1) + ": ";
                 sb.append(msg);
@@ -427,7 +447,7 @@ public class ShootState extends State {
 
         //Estrapolo tutte le stanze in cui ho dei nemici
         for(EnemyInfo enemy: weaponChosen.getEnemyVisible()){
-            if(!rooms.contains(enemy.getPosition())){
+            if(!rooms.contains(enemy.getIdRoom())){
                 rooms.add(enemy.getIdRoom());
             }
         }
@@ -451,7 +471,7 @@ public class ShootState extends State {
                 msg = enemyDividedByRoom.get(i).get(j).getName() + " - ";
                 sb.append(msg);
             }
-            msg = enemyDividedByRoom.get(i).get(j).getName();
+            msg = enemyDividedByRoom.get(i).get(j).getName()+"\n";
             sb.append(msg);
         }
 
@@ -482,14 +502,14 @@ public class ShootState extends State {
      * @param weaponChosen
      */
     private void withMovementEffectMenu(WeaponInfo weaponChosen){
-        generalEffectMenu(weaponChosen);
+        generalInteraction(weaponChosen);
 
         msg = "With this weapon you can move the opponent to one of this positions: \n";
         sb.append(msg);
 
         for(i= 0; i < enemyChosenInfoList.get(0).getMovement().size(); i++){
             possibleChoice.add(Integer.toString(i+1));
-            msg = (i+1) + ": " + ToolsView.coordinatesForUser(enemyChosenInfoList.get(0).getMovement().get(i));
+            msg = (i+1) + ": " + ToolsView.coordinatesForUser(enemyChosenInfoList.get(0).getMovement().get(i))[0]+ToolsView.coordinatesForUser(enemyChosenInfoList.get(0).getMovement().get(i))[1];
             sb.append(msg);
             if(enemyChosenInfoList.get(0).getMovement().get(i)[0] == enemyChosenInfoList.get(0).getPosition()[0] &&
                     enemyChosenInfoList.get(0).getMovement().get(i)[1] == enemyChosenInfoList.get(0).getPosition()[1])
@@ -500,7 +520,7 @@ public class ShootState extends State {
         msg = "Choose a number(from 1 to " + i + ") to indicate where to move the target to: ";
         sb.append(msg);
 
-        System.out.println(msg);
+        System.out.println(sb);
 
         userChoice = ToolsView.readUserChoice(possibleChoice, false);
 

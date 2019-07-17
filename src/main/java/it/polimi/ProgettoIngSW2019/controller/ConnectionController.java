@@ -85,7 +85,8 @@ public class ConnectionController implements Observer<Event> {
         if(event.getCommand().equals(EventType.NOT_ALIVE)){
             MessageConnection msg = (MessageConnection) deserialize(event.getMessageInJsonFormat(), MessageConnection.class);
             MessageConnection disconnectedPlayer = new MessageConnection(msg.getUsername(), "");
-            virtualView.sendMessage(new Event(EventType.USER_HAS_DISCONNECTED, serialize(disconnectedPlayer)), loginHandler.getActiveUsersHostname());
+            //TODO: va in deadlock se chiudi l'applicazione, non se scadce l'input perché è gestito diversamente
+            //virtualView.sendMessage(new Event(EventType.USER_HAS_DISCONNECTED, serialize(disconnectedPlayer)), loginHandler.getActiveUsersHostname());
             loginHandler.disconnectPlayer(msg.getHostname());
         }
 

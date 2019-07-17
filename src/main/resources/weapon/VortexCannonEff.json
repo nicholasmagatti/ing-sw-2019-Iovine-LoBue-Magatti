@@ -1,10 +1,10 @@
 {
 	"typeOfEffect":"vortex",
 	"effect":{
-		"dmg":0,
+		"dmg":2,
 		"mark":0,
 		"aoe":"",
-		"nrTarget":0,
+		"nrTarget":1,
 		"hitAllPlayers":false
 	}
 }

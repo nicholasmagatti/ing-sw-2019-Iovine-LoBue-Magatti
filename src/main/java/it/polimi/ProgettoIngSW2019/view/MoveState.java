@@ -86,5 +86,8 @@ public class MoveState extends State{
             MoveChoiceRequest moveChoiceRequest = new MoveChoiceRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), positionChosen);
             notifyEvent(moveChoiceRequest, EventType.REQUEST_MOVE);
         }
+        else{
+            actionState.setTimeExipred();
+        }
     }
 }

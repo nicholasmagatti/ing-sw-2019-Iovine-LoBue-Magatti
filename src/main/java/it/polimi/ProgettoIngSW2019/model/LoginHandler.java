@@ -26,7 +26,7 @@ public class LoginHandler extends Observable<Event> {
     private int nrOfPlayerConnected = 0;
     private final int timeForPing = 100;
     private final int timeBeforeStartingGame = 5000;
-    private final int timeForInput = 180000;
+    private final int timeForInput = 30000;
     private boolean timerStarted = false;
     private Iterator<Map.Entry<String, Session>> entryIterator;
 

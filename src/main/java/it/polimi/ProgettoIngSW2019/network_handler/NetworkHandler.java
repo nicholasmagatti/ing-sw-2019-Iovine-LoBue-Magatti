@@ -59,7 +59,13 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
         }catch(RemoteException ex){
             System.out.println("Cannot reach the server.\n" +
                     "You have been disconnected");
-            System.exit(-1);
+            ex.printStackTrace();
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //System.exit(-1);
         }
     }
 
@@ -86,7 +92,13 @@ public class NetworkHandler extends Observable<Event> implements Observer<Event>
             }catch(RemoteException e) {
                 System.out.println("Cannot reach the server.\n" +
                         "You have been disconnected");
-                System.exit(-1);
+                e.printStackTrace();
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    e.printStackTrace();
+                }
+                //System.exit(-1);
             }
         }
         forwardEvent(event);

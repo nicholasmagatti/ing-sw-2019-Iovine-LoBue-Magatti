@@ -37,25 +37,25 @@ public class MainClass {
             loginHandler.addObserver(virtualView);
 
             try{
-                System.setProperty("java.rmi.server.hostname", InetAddress.getLocalHost().getHostName());
                 Registry reg = LocateRegistry.createRegistry(RMISettings.REGISTRY_PORT);
                 IVirtualView exportedVW = (IVirtualView) UnicastRemoteObject.exportObject(virtualView, RMISettings.REGISTRY_PORT);
                 reg.rebind(RMISettings.SERVICE_NAME, exportedVW);
 
                 System.out.println("Server ready");
-            }catch(RemoteException | UnknownHostException /*| MalformedURLException*/ e){
+            }catch(RemoteException /*| UnknownHostException | MalformedURLException*/ e){
                 System.out.println("Non è stato possibile avviare il server.");
                 System.exit(-1);
             }
         }else if(args[0].equalsIgnoreCase("--Client") || args[0].equalsIgnoreCase("--C")
         || args[0].equalsIgnoreCase("--L")){
             try {
+                //Registry reg = LocateRegistry.getRegistry(RMISettings.REGISTRY_PORT);
                 Registry reg = LocateRegistry.getRegistry(args[1], RMISettings.REGISTRY_PORT);
                 IVirtualView virtualView = (IVirtualView) reg.lookup(RMISettings.SERVICE_NAME);
                 IdleState idleState = new IdleState();
                 ReloadState reloadState = new ReloadState(idleState);
-                PowerUpState powerUpState = new PowerUpState(idleState);
-                ActionState actionState = new ActionState(powerUpState, reloadState);
+                ActionState actionState = new ActionState(reloadState, idleState);
+                PowerUpState powerUpState = new PowerUpState(idleState, actionState);
                 GrabState grabState = new GrabState(actionState);
                 ShootState shootState = new ShootState(actionState, powerUpState);
                 MoveState moveState = new MoveState(actionState);
@@ -66,7 +66,7 @@ public class MainClass {
                 InfoOnView infoOnView = new InfoOnView();
 
                 idleState.linkState(actionState, spawnState, setupGameState, powerUpState);
-                actionState.linkToMoveGrabShoot(moveState, grabState, shootState);
+                actionState.linkToMoveGrabShootPwUp(moveState, grabState, shootState, powerUpState);
 
                 NetworkHandler networkHandler = new NetworkHandler(virtualView);
 
@@ -105,7 +105,13 @@ public class MainClass {
                 stateManager.triggerState(loginState);
             }catch(NotBoundException | RemoteException e){
                 System.out.println("Non è stato possibile avviare il client.");
-                System.exit(0);
+                e.printStackTrace();
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+                //System.exit(0);
             }
         }else
             System.out.println(args[0]);

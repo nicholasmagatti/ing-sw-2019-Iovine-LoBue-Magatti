@@ -18,8 +18,8 @@ public enum AreaOfEffect {
     CAN_SEE ("can_see"),
     @SerializedName("same_square")
     SAME_SQUARE ("same_square"),
-    @SerializedName("near_room_visible")
-    NEAR_ROOM_VISIBLE ("near_room_visible"),
+    @SerializedName("near_room")
+    NEAR_ROOM_VISIBLE ("near_room"),
     @SerializedName("cannot_see")
     CANNOT_SEE ("cannot_see"),
     @SerializedName("can_see_at_least_one")

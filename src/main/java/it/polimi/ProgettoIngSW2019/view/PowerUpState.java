@@ -22,6 +22,7 @@ import java.util.List;
  */
 public class PowerUpState extends State {
     private IdleState idleState;
+    private ActionState actionState;
     private ShootPowerUpInfo shootPowerUpInfo = null;
     private int idPowerUp = -1;
     private NewtonInfoResponse newtonInfoResponse = null;
@@ -31,8 +32,9 @@ public class PowerUpState extends State {
      * Constructor
      * @param idleState
      */
-    public PowerUpState(IdleState idleState){
+    public PowerUpState(IdleState idleState, ActionState actionState){
         this.idleState = idleState;
+        this.actionState = actionState;
     }
 
     /**
@@ -72,7 +74,12 @@ public class PowerUpState extends State {
                         usablePowerups.add(chosenPow);
 
                         newtonInfoRequest();
-                        newton();
+                        if(shootPowerUpInfo.getEnemy().isEmpty()){
+                            System.out.println("No possible targets at the moment. You can't use this powerup now.");
+                        }
+                        else {
+                            newton();
+                        }
                         break;
                     case GeneralInfo.TELEPORTER:
                         teleporter();
@@ -98,6 +105,7 @@ public class PowerUpState extends State {
         }
         else{ //reset shootPowerUpInfo to null
             shootPowerUpInfo = null;
+            actionState.setTimeExipred();
         }
     }
 
@@ -309,10 +317,12 @@ public class PowerUpState extends State {
             }
             else{//reset shootPowerUpInfo (time expired)
                 shootPowerUpInfo = null;
+                actionState.setTimeExipred();
             }
         }
         else{ //reset shootPowerUpInfo (time expired)
             shootPowerUpInfo = null;
+            actionState.setTimeExipred();
         }
     }
 
@@ -331,6 +341,7 @@ public class PowerUpState extends State {
         }
         else{ //reset shootPowerUpInfo
             shootPowerUpInfo = null;
+            actionState.setTimeExipred();
         }
     }
 
@@ -349,6 +360,7 @@ public class PowerUpState extends State {
         }
         else{//reset shootPowerUpInfo to null
             shootPowerUpInfo = null;
+            actionState.setTimeExipred();
         }
     }
 
@@ -390,10 +402,12 @@ public class PowerUpState extends State {
             }
             else{//reset shootPowerUpInfo to null if the time has expired
                 shootPowerUpInfo = null;
+                actionState.setTimeExipred();
             }
         }
         else{ //reset shootPowerUpInfo to null if the time has expired
             shootPowerUpInfo = null;
+            actionState.setTimeExipred();
         }
     }
 

@@ -852,7 +852,7 @@ public abstract class ToolsView {
                 "This is the cost you need to pay: ";
         paymentSB.append(msg);
 
-        msg = ToolsView.costToString(costToPay) + "\n\n";
+        msg = ToolsView.costToString(tmpCostToPay) + "\n\n";
         paymentSB.append(msg);
         checkResult = checkIfNeedMore(tmpCostToPay);
         while(checkResult) {
@@ -896,6 +896,14 @@ public abstract class ToolsView {
                     //tmpAmmoInPowerUp.remove(Integer.parseInt(userChoice) - 1);
                     checkResult = checkIfNeedMore(tmpCostToPay);
 
+                    if(checkResult){
+                        paymentSB = new StringBuilder();
+                        msg = "This is the cost left to pay: ";
+                        paymentSB.append(msg);
+
+                        msg = ToolsView.costToString(tmpCostToPay) + "\n\n";
+                        paymentSB.append(msg);
+                    }
                 }
             }
             else

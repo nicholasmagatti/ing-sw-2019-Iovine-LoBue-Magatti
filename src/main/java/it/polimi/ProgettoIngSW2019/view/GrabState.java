@@ -32,6 +32,7 @@ public class GrabState extends State{
     private WeaponsCanPayResponse weaponInfo;
     boolean youAreInSpawningPoint = false;
     boolean youHaveToDiscardWeapon = false;
+    private boolean stopGrabState = false;
 
     final String EXPLANATION_GRAB = ") to indicate where you want to move and grab: ";
 
@@ -53,7 +54,7 @@ public class GrabState extends State{
 
         sendPositionToGrab(grabInfo);
 
-        if(youAreInSpawningPoint){
+        if(youAreInSpawningPoint && !stopGrabState){
             sendWeaponToBuy(weaponInfo, weaponToDiscardList);
         }
     }
@@ -110,6 +111,10 @@ public class GrabState extends State{
             GrabChoiceRequest moveChoiceRequest = new GrabChoiceRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), positionChosen);
             notifyEvent(moveChoiceRequest, EventType.REQUEST_GRAB);
         }
+        else {
+            actionState.setTimeExipred();
+            stopGrabState = false;
+        }
     }
 
     /**
@@ -124,12 +129,20 @@ public class GrabState extends State{
         possibleChoice = new ArrayList<>();
         sb = new StringBuilder();
 
-        //
 
         idWeaponChosen = askWeapon(weaponInfo);
+        //if time expired, stop here and notify that to action state
+        if(idWeaponChosen == -1){
+            actionState.setTimeExipred();
+            return;
+        }
         if(youHaveToDiscardWeapon)
             idWeaponToDiscard = askDiscardWeapon(weaponToDiscardList);
-
+        //if time expired, stop here and notify that to action state
+        if(idWeaponChosen == -1){
+            actionState.setTimeExipred();
+            return;
+        }
         //Cerco l'arma corrispondente
         for(PayAmmoList payAmmo: weaponInfo.getListPaymentReload()){
             if(payAmmo.getIdWeapon() == idWeaponChosen) {
@@ -140,6 +153,9 @@ public class GrabState extends State{
         if(idWeaponChosen != -1 && idWeaponToDiscard != - 1 && payment != null) {
             GrabWeaponChoiceRequest grabWeapon = new GrabWeaponChoiceRequest(InfoOnView.getHostname(), InfoOnView.getMyId(), idWeaponToDiscard, idWeaponChosen, payment.getAmmoToDiscard(), payment.getIdPowerUpToDiscard());
             notifyEvent(grabWeapon, EventType.REQUEST_GRAB_WEAPON);
+        }
+        if(payment == null){
+            actionState.setTimeExipred();
         }
     }
 

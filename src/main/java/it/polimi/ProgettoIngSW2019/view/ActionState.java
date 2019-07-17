@@ -25,19 +25,19 @@ public class ActionState extends State {
     private PowerUpState powerUpState;
     private ReloadState reloadState;
     private IdleState idleState;
+    private boolean timeExpiredFromOtherState = false;
 
     private  int actionsLeft;
 
 
     /**
      * Constructor
-     * @param powerUpState
      * @param reloadState
      */
-    public ActionState(PowerUpState powerUpState, ReloadState reloadState) {
+    public ActionState(ReloadState reloadState, IdleState idleState) {
 
-        this.powerUpState = powerUpState;
         this.reloadState = reloadState;
+        this.idleState = idleState;
     }
 
     /**
@@ -46,11 +46,12 @@ public class ActionState extends State {
      * @param grabState
      * @param shootState
      */
-    public void linkToMoveGrabShoot(MoveState moveState, GrabState grabState,
-                                           ShootState shootState) {
+    public void linkToMoveGrabShootPwUp(MoveState moveState, GrabState grabState,
+                                           ShootState shootState, PowerUpState powerUpState) {
         this.moveState = moveState;
         this.grabState = grabState;
         this.shootState = shootState;
+        this.powerUpState = powerUpState;
         moveGrabShootLinked = true;
     }
 
@@ -67,6 +68,11 @@ public class ActionState extends State {
 
         String userAnswer;
 
+        /*
+        //wait the update of n actions left and usable powerups
+        while(infoStart == null)
+            ToolsView.waitServerResponse();
+        */
         actionsLeft = infoStart.getnActionsLeft();
         if (actionsLeft > 0) {
             String actionOrActions;
@@ -88,15 +94,20 @@ public class ActionState extends State {
                 if (userAnswer.equals(GeneralInfo.YES_COMMAND)) {
                     powerUpState.triggerPowerupState(infoStart.getPowerUpsCanUse());
                 }
-                if (userAnswer.equals(GeneralInfo.NO_COMMAND)) {
+                else if (userAnswer.equals(GeneralInfo.NO_COMMAND)) {
                     proceedWithActionOrReload();
                 }
             }
+            else return;
         } else {
             proceedWithActionOrReload();
         }
 
-        StateManager.triggerNextState(this);
+        if(!timeExpiredFromOtherState) {
+            //reset infoStart
+            //infoStart = null;
+            StateManager.triggerNextState(this);
+        }
     }
 
     /**
@@ -121,6 +132,14 @@ public class ActionState extends State {
      */
     void setInfoStart(MessageActionLeft infoStart){
         this.infoStart = infoStart;
+    }
+
+    /**
+     * Set time expired from the outside to stop the loop in this state after the expiration
+     * of the timer in a state called from this (action state).
+     */
+    void setTimeExipred(){
+        timeExpiredFromOtherState = true;
     }
 
     /**
