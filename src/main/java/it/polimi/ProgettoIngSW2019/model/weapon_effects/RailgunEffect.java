@@ -9,6 +9,10 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Effect of the Railgun
+ * @author Luca Iovine
+ */
 public class RailgunEffect extends WeaponEffect {
 
     /**
@@ -44,6 +48,11 @@ public class RailgunEffect extends WeaponEffect {
         return enemyList;
     }
 
+    /**
+     * Get the list of the players you can hit
+     * @param direction
+     * @return list of the players you can hit
+     */
     private List<Player> calculateEnemy(List<Square> direction){
         List<Player> enemyInDirection = new ArrayList<>();
 

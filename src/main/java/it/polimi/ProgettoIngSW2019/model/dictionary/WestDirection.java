@@ -6,6 +6,10 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Squares at west
+ * @author Luca Iovine
+ */
 public class WestDirection extends Distance {
     /**
      * Constructor of the class
@@ -17,6 +21,11 @@ public class WestDirection extends Distance {
         super(board);
     }
 
+    /**
+     * Get all the squares at west of the specified square
+     * @param fromPosition position from where calculate the possible position
+     * @return list of all the squares at west of the specified square
+     */
     @Override
     protected List<Square> getDistance(Square fromPosition) {
         List<Square> westDirection = new ArrayList<>();

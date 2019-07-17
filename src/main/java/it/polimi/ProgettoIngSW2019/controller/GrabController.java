@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Controller of teh actions of grabbing stuff
  * @author Priscilla Lo Bue
  */
 public class GrabController extends Controller {
@@ -33,6 +34,15 @@ public class GrabController extends Controller {
     private WeaponCard weaponToGrab;
 
 
+    /**
+     * Constructor
+     * @param turnManager
+     * @param virtualView
+     * @param idConverter
+     * @param createJson
+     * @param hostNameCreateList
+     * @param payAmmoController
+     */
     public GrabController(TurnManager turnManager, VirtualView virtualView, IdConverter idConverter, CreateJson createJson, HostNameCreateList hostNameCreateList, PayAmmoController payAmmoController){
         super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
         powerUpDeck = turnManager.getGameTable().getPowerUpDeck();
@@ -40,7 +50,10 @@ public class GrabController extends Controller {
     }
 
 
-
+    /**
+     * update to receive the events
+     * @param event     event message from view
+     */
     public void update(Event event) {
         if(event.getCommand().equals(EventType.REQUEST_GRAB_INFO)) {
             checkGrabInfoFromView(event.getMessageInJsonFormat());

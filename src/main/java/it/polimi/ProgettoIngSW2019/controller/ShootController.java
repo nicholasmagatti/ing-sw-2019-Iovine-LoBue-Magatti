@@ -41,12 +41,26 @@ public class ShootController extends Controller{
     private String somethingWentWrong = "Ops, something went wrong!";
     private String wrongChoiceErr;
 
+    /**
+     * Constructor
+     * @param turnManager
+     * @param idConverter
+     * @param virtualView
+     * @param createJson
+     * @param hostNameCreateList
+     * @param distance
+     */
     public ShootController(TurnManager turnManager, IdConverter idConverter, VirtualView virtualView, CreateJson createJson, HostNameCreateList hostNameCreateList, DistanceDictionary distance) {
         super(turnManager, virtualView, idConverter, createJson, hostNameCreateList);
         this.distance = distance;
         enemyChosenList = new ArrayList<>();
     }
 
+    /**
+     * Get the information from the view that the user sends, check their correctness and is correct, perform
+     * the consequent modifications
+     * @param event
+     */
     @Override
     public void update(Event event) {
         resetParam();

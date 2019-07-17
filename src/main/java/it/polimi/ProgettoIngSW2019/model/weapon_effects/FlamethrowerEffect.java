@@ -10,6 +10,10 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Effect of the Flamethrower
+ * @author Luca Iovine
+ */
 public class FlamethrowerEffect extends WeaponEffect {
     private static final int maxNrTarget = 2;
     private List<Player> northEnemyList;
@@ -29,6 +33,12 @@ public class FlamethrowerEffect extends WeaponEffect {
 
     /*
         TESTED --> flamethrowerGetEnemyList
+     */
+
+    /**
+     * Get the list of the possible targets
+     * @param fromPlayer the player who uses the weapon
+     * @return list of the possible targets
      */
     @Override
     public List<Player> getEnemyList(Player fromPlayer){

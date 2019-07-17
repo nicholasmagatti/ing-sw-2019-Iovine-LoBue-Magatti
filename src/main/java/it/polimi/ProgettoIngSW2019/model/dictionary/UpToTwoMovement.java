@@ -5,8 +5,16 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Squares at not more that two movements away
+ * @author Luca Iovine
+ */
 public class UpToTwoMovement extends Distance {
 
+    /**
+     * Constructor
+     * @param board
+     */
     protected UpToTwoMovement(Square[][] board) {
         super(board);
     }

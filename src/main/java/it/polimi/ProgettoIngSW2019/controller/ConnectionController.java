@@ -13,15 +13,28 @@ import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Manages the login before the setup of the game
+ * @author Luca Iovine
+ */
 public class ConnectionController implements Observer<Event> {
     private LoginHandler loginHandler;
     private VirtualView virtualView;
 
+    /**
+     * Constructor
+     * @param virtualView
+     * @param loginHandler
+     */
     public ConnectionController(VirtualView virtualView, LoginHandler loginHandler) {
         this.loginHandler = loginHandler;
         this.virtualView = virtualView;
     }
 
+    /**
+     * update to receive the events
+     * @param event     event message from view
+     */
     //TESTED:
     @Override
     public void update(Event event) {

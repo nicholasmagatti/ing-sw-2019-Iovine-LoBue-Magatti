@@ -4,6 +4,9 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 
 import java.util.List;
 
+/**
+ * Squares that are visible from a position
+ */
 public class CanSee extends Distance {
     protected CanSee(Square[][] board) {
         super(board);

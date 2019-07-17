@@ -17,6 +17,10 @@ import it.polimi.ProgettoIngSW2019.virtual_view.VirtualView;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class Setup Controller (before the start of the game)
+ * @author Luca Iovine
+ */
 public class SetupController implements Observer<Event> {
     private VirtualView virtualView;
     private LoginHandler loginHandler;
@@ -26,12 +30,22 @@ public class SetupController implements Observer<Event> {
     private SetupResponse setupResponse;
     private CreateJson createJson;
 
+    /**
+     * Constructor
+     * @param virtualView
+     * @param loginHandler
+     */
     public SetupController(VirtualView virtualView, LoginHandler loginHandler){
         this.virtualView = virtualView;
         this.loginHandler = loginHandler;
         maps = new Maps();
     }
 
+    /**
+     * Get the information from the view that the user sends, check their correctness and is correct, perform
+     * the consequent modifications
+     * @param event
+     */
     @Override
     public void update(Event event) {
         if(event.getCommand().equals(EventType.REQUEST_SETUP)){

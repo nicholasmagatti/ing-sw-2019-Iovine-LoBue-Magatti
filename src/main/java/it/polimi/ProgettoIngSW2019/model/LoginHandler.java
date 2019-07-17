@@ -16,6 +16,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Class that manages the login of the players.
+ * @author Luca Iovine
+ */
 public class LoginHandler extends Observable<Event> {
     //Key value: hostname
     private TurnManager turnManager;
@@ -36,6 +40,9 @@ public class LoginHandler extends Observable<Event> {
 
     private String setupUser;
 
+    /**
+     * Constructor
+     */
     public LoginHandler(){
         sessions = new HashMap<>();
         usernameConnected = new ArrayList<>();

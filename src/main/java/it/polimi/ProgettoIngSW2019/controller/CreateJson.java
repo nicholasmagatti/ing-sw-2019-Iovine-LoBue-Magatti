@@ -13,6 +13,9 @@ import it.polimi.ProgettoIngSW2019.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that converts the classes to send through the network to json
+ */
 public class CreateJson {
     private TurnManager turnManager;
 

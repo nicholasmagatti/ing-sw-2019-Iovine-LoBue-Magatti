@@ -4,8 +4,16 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 
 import java.util.List;
 
+/**
+ * Square that are at least two movement of distance and that it could be seen
+ * @author Luca Iovine
+ */
 public class CanSeeAtLeastTwo extends Distance {
 
+    /**
+     * Constructor
+     * @param board
+     */
     protected CanSeeAtLeastTwo(Square[][] board) {
         super(board);
     }

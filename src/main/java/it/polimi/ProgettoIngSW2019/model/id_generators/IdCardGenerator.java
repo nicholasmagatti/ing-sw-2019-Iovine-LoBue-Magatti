@@ -15,6 +15,10 @@ public class IdCardGenerator {
         return id++;
     }
 
+    /**
+     * Get the id
+     * @return id
+     */
     public int getId() {
         return id;
     }

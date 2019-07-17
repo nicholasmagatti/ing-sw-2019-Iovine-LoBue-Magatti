@@ -4,6 +4,10 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 
 import java.util.List;
 
+/**
+ * Square that are at leastone movement of distance and that it could be seen
+ * @author Luca Iovine
+ */
 public class CanSeeAtLeastOne extends Distance {
 
     protected CanSeeAtLeastOne(Square[][] board) {

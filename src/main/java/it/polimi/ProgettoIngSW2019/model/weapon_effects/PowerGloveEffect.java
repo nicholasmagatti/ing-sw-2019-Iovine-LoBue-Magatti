@@ -8,6 +8,10 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 import javax.naming.SizeLimitExceededException;
 import java.util.List;
 
+/**
+ * Effect of the Power Glove
+ * @author Luca Iovine
+ */
 public class PowerGloveEffect extends WeaponEffect {
     /**
      * Constructor class

@@ -1,5 +1,8 @@
 package it.polimi.ProgettoIngSW2019.common.enums;
 
+/**
+ * Lables used to indicate the kind of event in the communication between server and client
+ */
 public enum EventType {
     //Request View to Controller
     REQUEST_SPAWN_CARDS,                             //toController: request draw 1 card to spawn

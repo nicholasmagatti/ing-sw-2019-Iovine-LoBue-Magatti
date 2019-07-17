@@ -35,6 +35,10 @@ public enum AreaOfEffect {
 
     private String stringValue;
 
+    /**
+     * Area of the effect
+     * @param stringValue
+     */
     AreaOfEffect(String stringValue){
         this.stringValue = stringValue;
     }

@@ -7,6 +7,10 @@ import it.polimi.ProgettoIngSW2019.model.dictionary.DistanceDictionary;
 
 import java.util.List;
 
+/**
+ * Effects that regard one target per square
+ * @author Luca Iovine
+ */
 public class OnePerSquareEffect extends WeaponEffect {
     /**
      * Constructor class

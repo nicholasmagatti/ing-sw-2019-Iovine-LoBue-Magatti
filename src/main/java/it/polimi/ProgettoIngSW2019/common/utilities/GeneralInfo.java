@@ -3,7 +3,7 @@ package it.polimi.ProgettoIngSW2019.common.utilities;
 import it.polimi.ProgettoIngSW2019.common.enums.AmmoType;
 
 /**
- * Class that contains the constants needed.
+ * Class that contains the constants needed from different parts of the project.
  * It only contains public static final attributes, with no methods.
  * @author Nicholas Magatti
  */

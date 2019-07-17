@@ -5,6 +5,10 @@ import it.polimi.ProgettoIngSW2019.model.Square;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Get the squares belonging to the same room
+ * @author Luca Iovine
+ */
 public class SameRoom extends Distance {
     protected SameRoom(Square[][] board) {
         super(board);
