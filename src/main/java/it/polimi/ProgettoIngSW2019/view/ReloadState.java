@@ -107,9 +107,6 @@ public class ReloadState extends State{
                 chosenOption = Integer.parseInt(input);
                 idWeapon = weapons.get(chosenOption - 1).getIdWeapon(); //to send to server
                 PayAmmoList payInfo = reloadInfo.getListPaymentReload().get(chosenOption - 1);
-                if(payInfo.getIdWeapon() != idWeapon){
-                    throw new Error("This ids should be equal. Something went wrong.");
-                }
 
                 PaymentChoiceInfo inputUserPayment = ToolsView.
                         askPayment(payInfo.getAmmoCost(), payInfo.getAmmoInAmmoBox(), payInfo.getAmmoInPowerUp());

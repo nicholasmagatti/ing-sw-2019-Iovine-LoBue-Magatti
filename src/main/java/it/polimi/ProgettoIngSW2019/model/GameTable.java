@@ -32,8 +32,9 @@ public class GameTable{
      * also shuffle the three decks on the table
      * @param chosenMap - requested map
      * @param initialNumberOfSkulls - number of skulls requested
+     * @throws IllegalArgumentException the number of skulls indicated is not in the allowed range
      */
-    public GameTable(Square[][] chosenMap, int initialNumberOfSkulls){
+    public GameTable(Square[][] chosenMap, int initialNumberOfSkulls) throws IllegalArgumentException{
         if(initialNumberOfSkulls < GeneralInfo.MIN_SKULLS || initialNumberOfSkulls > GeneralInfo.MAX_SKULLS){
             throw new IllegalArgumentException("The number of skulls for the game is " + initialNumberOfSkulls +
                     " but should be between" + GeneralInfo.MIN_SKULLS + " and " + GeneralInfo.MAX_SKULLS + ".");
@@ -153,10 +154,12 @@ public class GameTable{
     /**
      * Add token on killshot track, after a player has been put down.
      * This method should be called when the player still has the damage on his/her damage line.
+     * could not have if they were actually dead
      * @param deadPlayer
      * @param killer
+     * @throws RuntimeException when the player declared as dead has a number of damages that they
      */
-    public void addTokenOnKillshotTrack(Player deadPlayer, Player killer){
+    public void addTokenOnKillshotTrack(Player deadPlayer, Player killer) throws RuntimeException{
 
         KillToken token;
         final int DAMAGE_TO_KILL = 11;
@@ -246,8 +249,9 @@ public class GameTable{
     /**
      * Set the cards on the table before starting: the weapons on the
      * spawn points and the ammo cards on the spawn points.
+     * @throws RuntimeException if the type of a square on the game table is not acceptable
      */
-    void setCardsOnGameTable(){
+    void setCardsOnGameTable() throws RuntimeException{
         //for each square that is not null
         for(Square[]row : map) {
             for(Square square : row) {

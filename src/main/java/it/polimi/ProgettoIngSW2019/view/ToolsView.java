@@ -96,9 +96,10 @@ public abstract class ToolsView {
      * From an ammo type get the string of the respective color in lowercase.
      * @param ammoType
      * @return string of the requested color in lowercase
+     * @throws IllegalArgumentException when the ammo type is not acceptable
      * @author Nicholas Magatti
      */
-    static String ammoTypeToString(AmmoType ammoType){
+    static String ammoTypeToString(AmmoType ammoType) throws IllegalArgumentException{
         String color;
         switch (ammoType) {
             case BLUE:
@@ -256,8 +257,9 @@ public abstract class ToolsView {
      * @return the id of the target chosen by the user if the time has not expired first,
      * or return the only possible target if there is no choice to make. Return null if the
      * timer expired.
+     * @throws IllegalArgumentException if the list of the possible targets is empty
      */
-    static Integer readTargetChoice(List<EnemyInfo> enemyInfoList){
+    static Integer readTargetChoice(List<EnemyInfo> enemyInfoList) throws IllegalArgumentException{
         if(enemyInfoList.isEmpty()){
             throw new IllegalArgumentException("The list of possible targets should not be empty.");
         }
@@ -333,11 +335,12 @@ public abstract class ToolsView {
      * Translate coordinates for developers in coordinates for users (eg: (0,1) becomes (A,2) ).
      * @param coordinatesForDeveloper - numeric coordinates as row and column, beginning from 0 (eg: row=0, column=3).
      * @return coordinates for users (eg: [C, 3]).
+     * @throws IllegalArgumentException when the length of array of coordinates passed  is not 2
      * @author Nicholas Magatti
      */
-    static char[] coordinatesForUser(int[]coordinatesForDeveloper){
+    static char[] coordinatesForUser(int[]coordinatesForDeveloper) throws IllegalArgumentException{
         if(coordinatesForDeveloper.length != 2){
-            throw new RuntimeException("The coordinates should be 2 (row and column), not " + coordinatesForDeveloper.length +".");
+            throw new IllegalArgumentException("The coordinates should be 2 (row and column), not " + coordinatesForDeveloper.length +".");
         }
         char[]coordinatesForUser = new char[2];
         //row (with letters: A,B,C instead of 0,1,2)
@@ -419,13 +422,15 @@ public abstract class ToolsView {
      * the hand of the player. If not, print a message that explains that the requested name has not
      * been found.
      * @param inputFromUser
+     * @throws IllegalArgumentException if the request of description passed as argument is not formatted
+     * correctly
      * @author Nicholas Magatti
      */
-    private static void printDescription(String inputFromUser){
+    private static void printDescription(String inputFromUser) throws IllegalArgumentException{
         for(int index = 0; index < GeneralInfo.PREFIX_COMMAND_DESCRIPTION.length(); index++){
             if(inputFromUser.charAt(index) != GeneralInfo.PREFIX_COMMAND_DESCRIPTION.charAt(index)){
-                throw new IllegalArgumentException("The input is not a description request. It " +
-                        "this method should not have been called");
+                throw new IllegalArgumentException("The input is not a correct description request. " +
+                        "This method should not have been called");
             }
         }
         String nameCard = inputFromUser.substring(GeneralInfo.PREFIX_COMMAND_DESCRIPTION.length());
@@ -611,10 +616,12 @@ public abstract class ToolsView {
      * Return the colored square as a list of Ansi
      * @param squareOfStrings
      * @param squareLM
-     * @return
+     * @return the colored square as a list of Ansi
+     * @throws IllegalArgumentException when the identifier of the color of the room received in input is
+     * not one of the acceptable ones
      * @author Nicholas Magatti
      */
-    private static List<Ansi>colorSquare(List<String> squareOfStrings, SquareLM squareLM){
+    private static List<Ansi>colorSquare(List<String> squareOfStrings, SquareLM squareLM) throws IllegalArgumentException{
         List<Ansi> squareAnsi = new ArrayList<>();
         Ansi.Color background;
         if(squareLM == null){
@@ -640,7 +647,7 @@ public abstract class ToolsView {
                 background = GREEN;
             }
             else {
-                throw new RuntimeException("The idRoom does not correspond to the ones considered available for the map.");
+                throw new IllegalArgumentException("The idRoom does not correspond to the ones considered available for the map.");
             }
         }
         for(String string : squareOfStrings){
@@ -687,10 +694,11 @@ public abstract class ToolsView {
     /**
      * Return the line with the info about the players to draw on a specific square
      * @param squareLM
-     * @return
+     * @return the line with the info about the players to draw on a specific square
      * @author Nicholas Magatti
+     * @throws NullPointerException if the square received is null
      */
-    private static String playersToDrawOnSquare(SquareLM squareLM){
+    private static String playersToDrawOnSquare(SquareLM squareLM) throws NullPointerException{
         if(squareLM == null){
             throw new NullPointerException("The parameter should not be null");
         }
@@ -716,8 +724,9 @@ public abstract class ToolsView {
      * @param ammoPointLM
      * @return the lines with the info about the indicated ammo point to draw in it.
      * @author Nicholas Magatti
+     * @throws NullPointerException if the ammo point is null
      */
-    private static String [] specificInfoAmmoPointToDraw(AmmoPointLM ammoPointLM){
+    private static String [] specificInfoAmmoPointToDraw(AmmoPointLM ammoPointLM) throws NullPointerException{
         if(ammoPointLM == null){
             throw new NullPointerException("The parameter should not be null.");
         }
@@ -760,8 +769,9 @@ public abstract class ToolsView {
      * @param spawnPointLM
      * @return he lines with the info about the indicated spawn point to draw in it.
      * @author Nicholas Magatti
+     * @throws NullPointerException if the spawn point is null
      */
-    private static String[] specificInfoSpawnPointToDraw(SpawnPointLM spawnPointLM){
+    private static String[] specificInfoSpawnPointToDraw(SpawnPointLM spawnPointLM) throws NullPointerException{
         if(spawnPointLM == null){
             throw new NullPointerException("The parameter should not be null.");
         }
