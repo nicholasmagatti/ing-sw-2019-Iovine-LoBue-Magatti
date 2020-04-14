@@ -96,16 +96,17 @@ public class TurnManager{
      * Convert the name of the character in the actual player if present,
      * throw exception otherwise
      * @param charaName - Name of the character
-     * @return the player with that character name if there is one, null otherwise
+     * @return the player with that character name if there is one
+     * @throws IllegalArgumentException if a player with such a name does not exist
      */
-    public Player getPlayerFromCharaName(String charaName){
+    public Player getPlayerFromCharaName(String charaName) throws IllegalArgumentException{
         for(Player player : gameTable.getPlayers()) {
             if (player.getCharaName().equals(charaName)) {
                 return player;
             }
         }
         //if there is no player with such name:
-        throw new RuntimeException("There is no player with the name '" + charaName + "'.");
+        throw new IllegalArgumentException("There is no player with the name '" + charaName + "'.");
     }
 
     /**
@@ -184,11 +185,14 @@ public class TurnManager{
 
     /**
      * Get the id of the player who hit first between the given ids
-     * @param ids
+     * @param ids - list of ids of the player of which we want to get the one who hit first, given the order of
+     *              first hits
      * @param playersInOrderOfFirstHit
      * @return id of the player who hit first between the given ids
+     * @throws RuntimeException if none of the ids of the parameters corresponds to the id of any player in the game
      */
-    private int IdOfThePlayerWhoHitFirstBetweenThese(List<Integer> ids, List<Player> playersInOrderOfFirstHit) {
+    private int IdOfThePlayerWhoHitFirstBetweenThese(List<Integer> ids, List<Player> playersInOrderOfFirstHit)
+            throws RuntimeException{
         if (ids.size() == 1){
             return ids.get(0);
         }

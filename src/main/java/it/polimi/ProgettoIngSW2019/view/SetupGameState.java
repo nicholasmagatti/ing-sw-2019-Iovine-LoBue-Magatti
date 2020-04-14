@@ -70,9 +70,11 @@ public class SetupGameState extends State {
 
     /**
      * Enters in this state when triggered and manage all the possible interactions for the settings.
+     * @throws RuntimeException if this method is called before calling the method to set the starting information for
+     * this state to start working properly
      */
     @Override
-    public void startState() {
+    public void startState() throws RuntimeException {
         if(!gotInfoBeforeStartGame){
             throw new RuntimeException("You did not set the required information before the start of the state, with " +
                     "the method setInfoBeforeStart(...).");

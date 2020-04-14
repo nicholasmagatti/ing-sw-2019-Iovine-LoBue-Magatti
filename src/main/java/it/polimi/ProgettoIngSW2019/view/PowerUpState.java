@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Ask the user to
+ * Guide the user through the usage of powerups.
  * @author Nicholas Magatti
  */
 public class PowerUpState extends State {
@@ -39,9 +39,12 @@ public class PowerUpState extends State {
 
     /**
      * Get the information sent from the server and store it or immediately use it, relatively to the specific situation.
+     * @throws NullPointerException if the information about the powerup to use has not been inserted before calling
+     * this method
+     * @throws Error if the chosen name of the weapon is not correct
      */
     @Override
-    void startState() {
+    void startState() throws NullPointerException, Error{
 
         if(shootPowerUpInfo == null){
             throw new NullPointerException("The info about the powerup to use etc should have " +
@@ -170,10 +173,11 @@ public class PowerUpState extends State {
      * The exact strings for the answer (yes or no) are accessible with GeneralInfo.YES_COMMAND and GeneralInfo.NO_COMMAND.
      * @param usablePowerups - non-empty list of powerups that the player can you in the presented situation
      * @return null if the timer expired, otherwise return the user's answer (yes or no)
+     * @throws IllegalArgumentException when the list of powerups is empty
      */
-    String askUsePowerup(List<PowerUpLM> usablePowerups){
+    String askUsePowerup(List<PowerUpLM> usablePowerups) throws IllegalArgumentException{
         if(usablePowerups.isEmpty()){
-            throw new RuntimeException("This method should not be called with an empty list of powerups.");
+            throw new IllegalArgumentException("This method should not be called with an empty list of powerups.");
         }
         System.out.println("Do you want to use one of these powerups?");
         ToolsView.printListOfPowerups(usablePowerups);
@@ -214,12 +218,13 @@ public class PowerUpState extends State {
      * @param powerups - non-empty list of powerups
      * @return the powerup in the list if there is only one, the one chosen from the player if
      * there are at least two and the timer did not expire first, null otherwise
+     * @throws IllegalArgumentException if the list of powerups is empty
      */
-    private PowerUpLM choosePowerup(List<PowerUpLM> powerups){
+    private PowerUpLM choosePowerup(List<PowerUpLM> powerups) throws IllegalArgumentException{
         PowerUpLM chosenPwUp;
         String userInput;
         if(powerups.isEmpty()){
-            throw new RuntimeException("This method should not be called to 'choose' between a 'list' of one powerup.");
+            throw new IllegalArgumentException("The list of powerup passed as argument should not be empty.");
         }
         if(powerups.size() > 1) {
             List<String> acceptableInputs = new ArrayList<>();

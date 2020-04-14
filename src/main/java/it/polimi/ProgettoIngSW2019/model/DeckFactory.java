@@ -51,10 +51,11 @@ public class DeckFactory {
      * creates the deck from the deckType with all the cards
      * @param deckType      type of the deck
      * @return              deck, list of cards
+     * @throws IllegalArgumentException when the deck type indicated is not acceptable
      * @author Priscilla Lo Bue
      * @author Nichoals Magatti
      */
-    List<Card> setDeck(DeckType deckType){
+    List<Card> setDeck(DeckType deckType) throws IllegalArgumentException{
         switch(deckType){
             case AMMO_CARD:
                 deck = new ArrayList<>();
@@ -208,7 +209,7 @@ public class DeckFactory {
                 break;
 
              default:
-                 throw new IllegalArgumentException("It is not passed a DeckType");
+                 throw new IllegalArgumentException("The Deck Type passed is not acceptable");
         }
         return deck;
     }
@@ -285,12 +286,14 @@ public class DeckFactory {
     /**
      * Get the description of the card with the indicated name belonging to
      * the json file linked to the json object used in that circumstance
+     * the json object with the information requested
      * @param name - name card
      * @return description of the card with the indicated name belonging to
      * the json file linked to the json object used in that circumstance
+     * @throws NullPointerException if this method is called before setting
      * @author Nicholas Magatti
      */
-    private String getDescription(String name){
+    private String getDescription(String name) throws NullPointerException{
         if(jsonObject == null){
             throw new NullPointerException("this method should not have been called if the json object is null.");
         }

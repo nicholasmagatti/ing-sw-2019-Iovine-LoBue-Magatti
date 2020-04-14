@@ -39,12 +39,15 @@ public class Player{
 
     /**
      * Constructor
-     * @param idPlayer
-     * @param charaName
-     * @param gameTable
-     * @param hostname
+     * @param idPlayer - player id
+     * @param charaName - player name
+     * @param gameTable - game table this player is assigned to
+     * @param hostname - hostname bound to this player
+     * @throws RuntimeException when either the name of the host or the name of the player is an empty string
+     * @throws NullPointerException when either the name of the player or their host name is null
      */
-    public Player(int idPlayer, String charaName, GameTable gameTable, String hostname){
+    public Player(int idPlayer, String charaName, GameTable gameTable, String hostname) throws NullPointerException,
+            RuntimeException{
         this.idPlayer = idPlayer;
         this.charaName = charaName;
         this.gameTable = gameTable;
@@ -191,8 +194,11 @@ public class Player{
      * and also set that player down if he/she dies as a result of this attack
      * @param nrDamage - number of damages
      * @param targetPlayer
+     * @throws NullPointerException when the target is null
+     * @throws IllegalArgumentException either when the damage is a negative value or when the target is the same
+     * player who is trying to deal damage
      */
-    public void dealDamage(int nrDamage, Player targetPlayer){
+    public void dealDamage(int nrDamage, Player targetPlayer) throws NullPointerException, IllegalArgumentException{
 
         if(targetPlayer == null){
             throw new NullPointerException("The target of a damage cannot be null.");
@@ -221,8 +227,11 @@ public class Player{
      * This player marks another player, but wasting the marks that exceed the limit of three marks from this player
      * @param nrMarks - number of marks
      * @param targetPlayer
+     * @throws IllegalArgumentException if the number of marks to assign are negative or
+     * if the player is targeting themselves
+     * @throws NullPointerException if the target is null
      */
-    public void markPlayer(int nrMarks, Player targetPlayer){
+    public void markPlayer(int nrMarks, Player targetPlayer) throws IllegalArgumentException, NullPointerException{
         if(nrMarks < 0){
             throw new IllegalArgumentException("Number of marks to assign cannot be negative.");
         }
@@ -313,8 +322,9 @@ public class Player{
      * Get the ammo card on the square on which the player is, and add its ammo to the ammo box
      * (and also draw a power up if the ammo card give you one
      * @param ammoPoint - a square with an ammo card on it, that the player wants to grab
+     * @throws NullPointerException when the player is trying to grab ammo on a square where there is none
      */
-    private void grabAmmoCardFromAmmoPoint(AmmoPoint ammoPoint){
+    private void grabAmmoCardFromAmmoPoint(AmmoPoint ammoPoint) throws NullPointerException{
 
         AmmoCard grabbedCard = ammoPoint.grabCard();
         if(grabbedCard == null){
@@ -333,8 +343,9 @@ public class Player{
     /**
      * Grab the ammo card from the square the player is on, adding ammo to the ammo box and also,
      * if specified on the ammo card, get the player
+     * @throws RuntimeException when the square the player is on, is not an ammo point
      */
-    public void grabAmmoCardFromThisSquare(){
+    public void grabAmmoCardFromThisSquare() throws RuntimeException{
         if(square.getSquareType() == SquareType.AMMO_POINT) {
             grabAmmoCardFromAmmoPoint((AmmoPoint)square);
         }
@@ -347,8 +358,9 @@ public class Player{
      * Get a weapon from a spawnpoint, paying its cost
      * @param cardToGet - weapon to buy
      * @param cardToLeave - weapon to leave if the player already has one, it is null otherwise
+     * @throws RuntimeException if the player is on a square that is not a spawn point
      */
-    public void grabWeapon(WeaponCard cardToGet, WeaponCard cardToLeave){
+    public void grabWeapon(WeaponCard cardToGet, WeaponCard cardToLeave) throws RuntimeException{
         if(square.getSquareType() == SquareType.SPAWNING_POINT){
             loadedWeapons.add(cardToGet);
             discardAmmo(cardToGet.getBuyCost());
@@ -454,11 +466,11 @@ public class Player{
 
     /**
      *  Discard the indicated ammo and/or powerups. The parameters can be empty lists but not null.
-     *  Throw exception if one of the parameters is null.
      * @param ammoToSpend
      * @param powerUpsToSpend
+     * @throws NullPointerException if one of the parameters is null
      */
-    public void pay(List<AmmoType> ammoToSpend, List<PowerUp> powerUpsToSpend){
+    public void pay(List<AmmoType> ammoToSpend, List<PowerUp> powerUpsToSpend) throws NullPointerException{
         if(ammoToSpend == null || powerUpsToSpend == null){
             String s;
             if(ammoToSpend == null){
@@ -467,7 +479,7 @@ public class Player{
             else{
                 s = "powerUpsToSpend";
             }
-            throw new RuntimeException("The parameter " + s + "should not be null.");
+            throw new NullPointerException("The parameter " + s + "should not be null.");
         }
         discardAmmo(ammoToSpend);
         discardPowerUps(powerUpsToSpend);
